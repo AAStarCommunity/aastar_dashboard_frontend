@@ -2,15 +2,11 @@
 import React, {
   createContext, useMemo, useState, useContext,
 } from 'react';
-import { IPropChild } from './types';
+import { IPropChild, IStore } from './types';
 
-interface IStore<T> {
-  key: string;
-  store: T;
-  setStore: (payload: Partial<T>) => void;
-}
 
-function getCxtProvider<T>(
+
+export function getCxtProvider<T>(
   key: string,
   defaultValue: T,
   AppContext: React.Context<IStore<T>>,
@@ -36,7 +32,7 @@ function getCxtProvider<T>(
 
 const cxtCache: Record<string, Cxt> = {};
 
-class Cxt<T = any> {
+export class Cxt<T = any> {
   defaultStore: IStore<T>;
 
   AppContext: React.Context<IStore<T>>;

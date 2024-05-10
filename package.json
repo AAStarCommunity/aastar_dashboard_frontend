@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "tailwind:dev": "tailwindcss build src/assets/css/tailwind.css -o src/assets/css/tailwind.output.css",
+    "tailwind:build": "cross-env NODE_ENV=production postcss src/styles/tailwind.css -o src/styles/tailwind.output.css",
     "dev": "export NODE_ENV=development && next dev",
     "build": "export NODE_ENV=production && next build && next export",
     "start": "export NODE_ENV=development && next start",
@@ -15,13 +17,16 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "cross-env": "^7.0.3",
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
     "postcss": "^8",
+    "postcss-cli": "^11.0.0",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }

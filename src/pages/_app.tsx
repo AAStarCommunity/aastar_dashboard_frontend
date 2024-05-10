@@ -1,9 +1,13 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
-// import '@/styles/globals.scss'
+import "@/assets/styles/globals.css";
+import '@/assets/styles/tailwind.output.css'
 import { Windmill } from '@windmill/react-ui'
-import Header from '@/components/Header';
-import '@/styles/tailwind.output.css'
+import UserInfo from '@/components/UserInfo';
+import Layout from './layout';
+
+
+
 
 export default function App({ Component, pageProps }: AppProps) {
 
@@ -18,8 +22,11 @@ export default function App({ Component, pageProps }: AppProps) {
         {/* <meta name="keywords" content=""/> */}
       </Head>
       <Windmill usePreferences>
-        <Header></Header>
-        <Component {...pageProps} />
+        <UserInfo>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </UserInfo>
       </Windmill>
     </>
   )

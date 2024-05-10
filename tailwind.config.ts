@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 import windmill from "@windmill/react-ui/config";
 import defaultTheme from "tailwindcss/defaultTheme";
 
-const config: Config = windmill({
+const config: Config = {
   purge: ["src/**/*.js"],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -27,5 +27,5 @@ const config: Config = windmill({
   },
   variants: {},
   plugins: [],
-});
+};
 export default config;
