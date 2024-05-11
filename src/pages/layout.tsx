@@ -30,14 +30,18 @@ export default function RootLayout({
   useEffect(() => {
     // closeSidebar()
   }, [closeSidebar, router.pathname])
+
+
   return (
     <div
       className={`flex h-screen bg-gray-50 dark:bg-gray-900 ${isSidebarOpen && 'overflow-hidden'}`}
     >
-      <Sidebar />
+      {/* <div > */}
+      {store.id && <Sidebar />}
+      {/* </div> */}
       <div className="flex flex-col flex-1 w-full">
 
-        {store.id && <Header></Header>}
+        <Header style={{ display: store.id ? 'block' : 'none' }}></Header>
         {children}
       </div>
     </div>

@@ -21,38 +21,38 @@ const routes: IRoutes = [
     name: "Dashboard", // name that appear in Sidebar
   },
   {
-    path: "/app/forms",
+    path: "/apikeys",
     icon: "FormsIcon",
-    name: "Forms",
+    name: "APIKey apply",
   },
   {
-    path: "/app/cards",
+    path: "/cards",
     icon: "CardsIcon",
-    name: "Cards",
+    name: "Regist Project Info",
   },
-  {
-    path: "/app/charts",
-    icon: "ChartsIcon",
-    name: "Charts",
-  },
-  {
-    path: "/app/buttons",
-    icon: "ButtonsIcon",
-    name: "Buttons",
-  },
-  {
-    path: "/app/modals",
-    icon: "ModalsIcon",
-    name: "Modals",
-  },
-  {
-    path: "/app/tables",
-    icon: "TablesIcon",
-    name: "Tables",
-  },
+  // {
+  //   path: "/charts",
+  //   icon: "ChartsIcon",
+  //   name: "Charts",
+  // },
+  // {
+  //   path: "/buttons",
+  //   icon: "ButtonsIcon",
+  //   name: "Buttons",
+  // },
+  // {
+  //   path: "/modals",
+  //   icon: "ModalsIcon",
+  //   name: "Modals",
+  // },
+  // {
+  //   path: "/tables",
+  //   icon: "TablesIcon",
+  //   name: "Tables",
+  // },
   {
     icon: "PagesIcon",
-    name: "Pages",
+    name: "Strategy Data",
     routes: [
       // submenu
       {
@@ -68,11 +68,11 @@ const routes: IRoutes = [
         name: "Forgot password",
       },
       {
-        path: "/app/404",
+        path: "/404",
         name: "404",
       },
       {
-        path: "/app/blank",
+        path: "/blank",
         name: "Blank",
       },
     ],

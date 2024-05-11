@@ -1,5 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { SidebarContext } from '@/context/SidebarContext'
+import { ThemeContext } from '@/context/ThemeContext'
+
 import {
     SearchIcon,
     MoonIcon,
@@ -9,12 +11,14 @@ import {
     OutlinePersonIcon,
     OutlineCogIcon,
     OutlineLogoutIcon,
-} from '@/assets/icons'
-import { Avatar, Badge, Dropdown, DropdownItem, WindmillContext } from '@windmill/react-ui'
+} from '../../../public/icons'
+import { Avatar, Badge, Dropdown, DropdownItem } from '@windmill/react-ui'
 import Input from '@/components/Input';
-
-function Header() {
-    const { mode, toggleMode } = useContext(WindmillContext)
+interface Iprops {
+    style: Record<string, string>
+}
+function Header(props: Iprops) {
+    const { theme, toggleTheme, } = useContext(ThemeContext)
     const { toggleSidebar } = useContext(SidebarContext)
 
     const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false)
@@ -28,12 +32,21 @@ function Header() {
         setIsProfileMenuOpen(!isProfileMenuOpen)
     }
 
+    // default dark theme
+    useEffect(() => {
+        setTimeout(() => {
+            toggleTheme('dark')
+        }, 0)
+    }, [])
+
+
+
     return (
-        <header className="z-40 py-4 bg-white shadow-bottom dark:bg-gray-800">
-            <div className="container flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300">
+        <header className="z-40 py-4 bg-white shadow-bottom dark:bg-gray-800" style={props.style}>
+            <div className="container flex items-center justify-between h-full px-6 mx-auto text-aastar-600 dark:text-aastar-300">
                 {/* <!-- Mobile hamburger --> */}
                 <button
-                    className="p-1 mr-5 -ml-1 rounded-md lg:hidden focus:outline-none focus:shadow-outline-purple"
+                    className="p-1 mr-5 -ml-1 rounded-md lg:hidden focus:outline-none "
                     onClick={toggleSidebar}
                     aria-label="Menu"
                 >
@@ -41,7 +54,7 @@ function Header() {
                 </button>
                 {/* <!-- Search input --> */}
                 <div className="flex justify-center flex-1 lg:mr-32">
-                    <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
+                    <div className="relative w-full max-w-xl mr-6 focus-within:text-aastar-500">
                         <div className="absolute inset-y-0 flex items-center pl-2">
                             <SearchIcon className="w-4 h-4" aria-hidden="true" />
                         </div>
@@ -55,11 +68,11 @@ function Header() {
                     {/* <!-- Theme toggler --> */}
                     <li className="flex">
                         <button
-                            className="rounded-md focus:outline-none focus:shadow-outline-purple"
-                            onClick={toggleMode}
+                            className="rounded-md focus:outline-none "
+                            onClick={toggleTheme}
                             aria-label="Toggle color mode"
                         >
-                            {mode === 'dark' ? (
+                            {theme === 'dark' ? (
                                 <SunIcon className="w-5 h-5" aria-hidden="true" />
                             ) : (
                                 <MoonIcon className="w-5 h-5" aria-hidden="true" />
@@ -69,7 +82,7 @@ function Header() {
                     {/* <!-- Notifications menu --> */}
                     <li className="relative">
                         <button
-                            className="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
+                            className="relative align-middle rounded-md focus:outline-none "
                             onClick={handleNotificationsClick}
                             aria-label="Notifications"
                             aria-haspopup="true"
@@ -103,7 +116,7 @@ function Header() {
                     {/* <!-- Profile menu --> */}
                     <li className="relative">
                         <button
-                            className="rounded-full focus:shadow-outline-purple focus:outline-none"
+                            className="rounded-full  focus:outline-none"
                             onClick={handleProfileClick}
                             aria-label="Account"
                             aria-haspopup="true"
@@ -136,7 +149,7 @@ function Header() {
                     </li>
                 </ul>
             </div>
-        </header>
+        </header >
     )
 }
 

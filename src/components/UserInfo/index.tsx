@@ -1,7 +1,6 @@
 import { IPropChild } from '@/utils/types';
 import { connect, useGetUser } from '@/hooks/userHook';
-import { LoadingIcon } from "@/assets/icons";
-import "./index.module.css"
+import { LoadingIcon } from "~/public/icons";
 
 /**
 * 获取用户信息组件

@@ -5,9 +5,7 @@ import React, {
   useEffect,
   useRef,
   useLayoutEffect,
-  useMemo,
-  Dispatch,
-  SetStateAction,
+  useMemo
 } from "react";
 
 /**
@@ -15,8 +13,8 @@ import React, {
  * @param {string} theme - Name of curent theme
  * @return {string} previousTheme
  */
-function usePrevious(theme: string | boolean) {
-  const ref: { [key: string]: any } = useRef({});
+function usePrevious(theme: string | boolean): string {
+  const ref: { [key: string]: any } = useRef();
   useEffect(() => {
     ref.current = theme;
   });
@@ -29,14 +27,13 @@ function usePrevious(theme: string | boolean) {
  * @return {array} getter and setter for user preferred theme
  */
 function useStorageTheme(key: string): Array<setStateType | string | boolean> {
-  const userPreference =
-    !!window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  const [theme, setTheme] = useState(
-    // use stored theme; fallback to user preference
-    localStorage.getItem(key) || userPreference
-  );
+  const [theme, setTheme] = useState<boolean | string>('');
+  useEffect(() => {
+    const userPreference = window && window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setTheme(localStorage.getItem(key) || userPreference)
+  }, [])
 
   // update stored theme
   useEffect(() => {
@@ -63,9 +60,10 @@ export const ThemeProvider = ({
     document.documentElement.classList.remove(`theme-${oldTheme}`);
     document.documentElement.classList.add(`theme-${theme}`);
   }, [theme, oldTheme]);
-
-  function toggleTheme() {
-    if (theme === "light") (setTheme as setStateType)("dark");
+  const ModeList = ['dark', 'light']
+  function toggleTheme(mode: string) {
+    if (ModeList.includes(mode)) (setTheme as setStateType)(mode)
+    else if (theme === "light") (setTheme as setStateType)("dark");
     else (setTheme as setStateType)("light");
   }
 

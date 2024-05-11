@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "tailwind:dev": "tailwindcss build src/assets/css/tailwind.css -o src/assets/css/tailwind.output.css",
-    "tailwind:build": "cross-env NODE_ENV=production postcss src/styles/tailwind.css -o src/styles/tailwind.output.css",
+    "tailwind:dev": "tailwindcss build src/assets/styles/tailwind.css -o src/assets/styles/tailwind.output.css",
+    "tailwind:build": "cross-env NODE_ENV=production postcss src/assets/styles/tailwind.css -o src/assets/styles/tailwind.output.css",
     "dev": "export NODE_ENV=development && next dev",
     "build": "export NODE_ENV=production && next build && next export",
     "start": "export NODE_ENV=development && next start",
