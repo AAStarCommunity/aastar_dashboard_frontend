@@ -6,11 +6,9 @@ import { Windmill } from '@windmill/react-ui'
 import UserInfo from '@/components/UserInfo';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { SidebarProvider } from '@/context/SidebarContext';
+import Alert from '@/components/Alert';
 import Layout from './layout';
 import myTheme from '@/utils/myTheme';
-
-
-
 
 export default function App({ Component, pageProps }: AppProps) {
 
@@ -28,11 +26,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <Windmill usePreferences theme={myTheme}>
         <SidebarProvider>
           <ThemeProvider>
-            <UserInfo>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </UserInfo>
+            <Alert>
+              <UserInfo>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </UserInfo>
+            </Alert>
           </ThemeProvider>
         </SidebarProvider>
       </Windmill>

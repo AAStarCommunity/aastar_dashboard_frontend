@@ -3,12 +3,13 @@ import Link from 'next/link'
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import ImageLight from '~/public/img/login-office.jpeg'
-import ImageDark from '~/public/img/login-office-dark.jpeg'
+// import ImageLight from '~/public/img/login-office.jpeg'
+// import ImageDark from '~/public/img/login-office-dark.jpeg'
 import { GithubIcon, GoogleIcon } from '../../public/icons/index'
 import { Label, Button, Input } from '@windmill/react-ui'
-// import IInput from '@/components/Input';
-import { useUserContext } from '@/hooks/userHook';
+
+import { useUserContext } from '@/context/userContext';
+import Message from '@/utils/message';
 interface IValue {
     email: string;
     password: string;
@@ -19,6 +20,11 @@ export default function Login() {
     const loginHandler = async () => {
         setStore({ id: "1212" })
         replace('/')
+        Message({
+            type: "success",
+            message: "登陆成功",
+            show: true,
+        });
 
 
         // const res = await login({
@@ -35,25 +41,15 @@ export default function Login() {
     };
     return (
         <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
-            <div className="flex-1 max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
-                <div className="flex flex-col overflow-y-auto md:flex-row">
-                    <div className="h-32 md:h-auto md:w-1/2">
-                        <Image
-                            aria-hidden="true"
-                            className="object-cover w-full h-full dark:hidden"
-                            src={ImageLight}
-                            alt="Office"
-                        />
-                        <Image
-                            aria-hidden="true"
-                            className="hidden object-cover w-full h-full dark:block"
-                            src={ImageDark}
-                            alt="Office"
-                        />
-                    </div>
-                    <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
+            <div className="flex-1 max-w-xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
+                <div className="flex flex-col overflow-y-auto">
+                    <main className="flex items-center justify-center p-6 sm:p-12 ">
                         <div className="w-full">
-                            <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Login</h1>
+                            <Image src="/img/startlogo.svg" className="mr-1" width={50} height={50} alt="AAStar"></Image>
+                            <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
+                                Sign in
+                            </h1>
+                            <h2 className="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-200">to continue to AAStar</h2>
                             <Label>
                                 <span>Email</span>
                                 <Input className="mt-1" type="email" placeholder="" />
@@ -65,7 +61,7 @@ export default function Login() {
                             </Label>
 
                             <Button className="mt-4" block onClick={loginHandler}>
-                                Log in
+                                Sign in
                             </Button>
 
                             <hr className="my-8" />
@@ -79,22 +75,14 @@ export default function Login() {
                                 google
                             </Button>
 
-                            {/* <p className="mt-4">
+                            <p className="mt-4">
                                 <Link
-                                    className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                                    className="text-sm font-medium text-aastar-600 dark:text-aastar-400 hover:underline"
                                     href="/forgot-password"
                                 >
                                     Forgot your password?
                                 </Link>
                             </p>
-                            <p className="mt-1">
-                                <Link
-                                    className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                                    href="/create-account"
-                                >
-                                    Create account
-                                </Link>
-                            </p> */}
                         </div>
                     </main>
                 </div>

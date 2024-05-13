@@ -12,6 +12,7 @@ export function getCxtProvider<T>(
   key: string,
   defaultValue: T,
   AppContext: React.Context<IStore<T>>,
+  storage: boolean = true
 ) {
 
   return ({ children }: IPropChild) => {
@@ -20,15 +21,16 @@ export function getCxtProvider<T>(
 
     const [storageData, setStorageData] = useState({});
     useEffect(() => {
-      setStorageData(getLocal(key))
+      storage && setStorageData(getLocal(key))
     }, [])
     const value = useMemo(() => {
       return ({
         key,
         store: { ...store, ...storageData },
-        setStore: (payload = {}) => setStore((state) => {
-          const data = { ...state, ...payload }
-          setLocal(key, data as Record<string, unknown> | string)
+        storage,
+        setStore: (payload: any) => setStore((state) => {
+          const data = payload ? { ...state, ...payload } : {}
+          storage && setLocal(key, data as Record<string, unknown> | string)
           return ({
             ...data
           })
@@ -55,14 +57,15 @@ export class Cxt<T = any> {
 
   Provider: ({ children }: IPropChild) => JSX.Element;
 
-  constructor(key: string, defaultValue: T) {
+  constructor(key: string, defaultValue: T, storage?: boolean) {
     this.defaultStore = {
       key,
       store: defaultValue,
+      storage,
       setStore: () => { },
     };
     this.AppContext = createContext(this.defaultStore);
-    this.Provider = getCxtProvider(key, defaultValue, this.AppContext);
+    this.Provider = getCxtProvider(key, defaultValue, this.AppContext, storage);
     cxtCache[key] = this;
   }
 }
@@ -70,15 +73,7 @@ export class Cxt<T = any> {
 export function useAppContext<T>(key: string) {
   const cxt = cxtCache[key] as Cxt<T>;
   const app = useContext(cxt.AppContext);
-  // const { getLocal } = useLocalStorage()
 
-  // let storageData: Record<string, unknown> = {}
-  // useEffect(() => {
-  //   window.onload = () => {
-  //     storageData = getLocal(key)
-  //   }
-  // }, [])
-  // console.log(storageData)
   return {
     store: app.store,
     setStore: app.setStore,
@@ -88,13 +83,14 @@ export function useAppContext<T>(key: string) {
 export function connectFactory<T>(
   key: string,
   defaultValue: T,
+  storage?: boolean
 ) {
   const cxt = cxtCache[key];
   let CurCxt: Cxt<T>;
   if (cxt) {
     CurCxt = cxt;
   } else {
-    CurCxt = new Cxt<T>(key, defaultValue);
+    CurCxt = new Cxt<T>(key, defaultValue, storage);
   }
 
   return (Child: React.FunctionComponent<any>) => (props: any) => (

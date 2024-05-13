@@ -1,6 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { SidebarContext } from '@/context/SidebarContext'
 import { ThemeContext } from '@/context/ThemeContext'
+import API from "@/ajax/api";
+import ajax from "@/ajax"
+import { useRouter } from 'next/router';
 
 import {
     SearchIcon,
@@ -12,8 +15,9 @@ import {
     OutlineCogIcon,
     OutlineLogoutIcon,
 } from '../../../public/icons'
-import { Avatar, Badge, Dropdown, DropdownItem } from '@windmill/react-ui'
-import Input from '@/components/Input';
+import { Avatar, Badge, Dropdown, DropdownItem, Input } from '@windmill/react-ui'
+import { useUserContext } from '@/context/userContext'
+
 interface Iprops {
     style: Record<string, string>
 }
@@ -38,6 +42,15 @@ function Header(props: Iprops) {
             toggleTheme('dark')
         }, 0)
     }, [])
+    const router = useRouter()
+    const { store, setStore } = useUserContext();
+    const signOut = () => {
+
+        // ajax.post(API.GET_HOUSE_SUMMARYDATA_API).then(() => {
+        setStore(null)
+        router.replace('/login')
+        // })
+    }
 
 
 
@@ -133,17 +146,17 @@ function Header(props: Iprops) {
                             isOpen={isProfileMenuOpen}
                             onClose={() => setIsProfileMenuOpen(false)}
                         >
-                            <DropdownItem tag="a" href="#">
+                            {/* <DropdownItem tag="a" href="#">
                                 <OutlinePersonIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                                 <span>Profile</span>
-                            </DropdownItem>
+                            </DropdownItem> */}
                             <DropdownItem tag="a" href="#">
                                 <OutlineCogIcon className="w-4 h-4 mr-3" aria-hidden="true" />
-                                <span>Settings</span>
+                                <span>Docs</span>
                             </DropdownItem>
-                            <DropdownItem onClick={() => alert('Log out!')}>
+                            <DropdownItem onClick={signOut}>
                                 <OutlineLogoutIcon className="w-4 h-4 mr-3" aria-hidden="true" />
-                                <span>Log out</span>
+                                <span>sign out</span>
                             </DropdownItem>
                         </Dropdown>
                     </li>

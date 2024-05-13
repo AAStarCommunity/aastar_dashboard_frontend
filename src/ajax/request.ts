@@ -1,10 +1,11 @@
+import Message from "@/utils/message";
 import axios, {
   AxiosRequestConfig,
   AxiosInstance,
   AxiosResponse,
   AxiosPromise,
 } from "axios";
-// import { message as messageAlert } from "antd";
+import { error } from "console";
 
 export interface ResponseData {
   code: 0 | 1 | -1;
@@ -49,7 +50,7 @@ class HtttpRequest {
     // 拦截请求
     instance.interceptors.request.use(
       (config: AxiosRequestConfig) => {
-        config.baseURL = "http://localhost:3000";
+        config.baseURL = process.env.BASE_URL;
         return config;
       },
       (error) => {
@@ -68,7 +69,11 @@ class HtttpRequest {
         } else {
           // 失败
           //UI提示用户请求失败
-          //   messageAlert.error(message, 0.5);
+          Message({
+            type: "danger",
+            message,
+            show: true,
+          });
         }
         return response;
       },

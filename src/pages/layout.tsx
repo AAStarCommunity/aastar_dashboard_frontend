@@ -9,7 +9,7 @@ import React, {
   useContext, useEffect
 } from 'react';
 
-import { useUserContext } from '@/hooks/userHook';
+import { useUserContext } from '@/context/userContext';
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -28,7 +28,7 @@ export default function RootLayout({
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
   const router = useRouter()
   useEffect(() => {
-    // closeSidebar()
+    closeSidebar()
   }, [closeSidebar, router.pathname])
 
 
@@ -37,11 +37,11 @@ export default function RootLayout({
       className={`flex h-screen bg-gray-50 dark:bg-gray-900 ${isSidebarOpen && 'overflow-hidden'}`}
     >
       {/* <div > */}
-      {store.id && <Sidebar />}
+      {store?.id && <Sidebar />}
       {/* </div> */}
       <div className="flex flex-col flex-1 w-full">
 
-        <Header style={{ display: store.id ? 'block' : 'none' }}></Header>
+        <Header style={{ display: store?.id ? 'block' : 'none' }}></Header>
         {children}
       </div>
     </div>

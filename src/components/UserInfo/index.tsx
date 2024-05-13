@@ -1,5 +1,5 @@
 import { IPropChild } from '@/utils/types';
-import { connect, useGetUser } from '@/hooks/userHook';
+import { connect, useGetUser } from '@/context/userContext';
 import { LoadingIcon } from "~/public/icons";
 
 /**
@@ -8,7 +8,7 @@ import { LoadingIcon } from "~/public/icons";
 const UserInfo = ({ children }: IPropChild) => {
   const { loading } = useGetUser();
   return (
-    <div style={{ height: '100%', position: "relative" }} >
+    <div className='aaaa' style={{ height: '100%', position: "relative" }} >
       {loading && <div style={{
         position: "absolute",
         height: "100%",
