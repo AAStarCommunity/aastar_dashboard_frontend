@@ -16,7 +16,7 @@ export interface IAlertProps {
 }
 export type MessageType = "success" | "danger" | "warning" | "info" | "neutral";
 export interface IMessage extends IAlertProps {
-  show: boolean;
+  show?: boolean;
   delay?: number;
 }
 
@@ -33,4 +33,20 @@ export type setStateType = React.Dispatch<
 
 export interface ObjType {
   [key: string]: any;
+}
+
+export interface IFromItemProps {
+  required?: boolean;
+  defaultValue?: string;
+  setValue?: (value: string) => void;
+  errorTip?: string;
+  placeholder?: string;
+  label?: string;
+  desc?: string;
+  name: string;
+}
+
+export interface IFromItemRefs {
+  getData: () => Record<"value" | "vaild", boolean | string | undefined>;
+  handleVaild: (value: string) => void;
 }

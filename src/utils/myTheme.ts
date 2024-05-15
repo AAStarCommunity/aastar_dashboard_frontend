@@ -1,12 +1,12 @@
 const myTheme = {
   button: {
     primary: {
-      base: "text-white bg-aastar-600 border border-transparent",
+      base: "text-white bg-aastar-600 border border-transparent focus:outline-none hover:bg-white hover-text-aastar-700 foucs:outline-0",
       active: "active:bg-aastar-600 hover:bg-aastar-700 focus:ring",
     },
   },
   input: {
-    base: "block w-full  text-sm focus:outline-none dark:text-gray-300 leading-5 rounded-md form-input",
+    base: "block w-full text-sm focus:outline-none dark:text-gray-300 leading-5 rounded-md form-input",
     // active:
     //   "focus:border-purple-400 border-gray-300 dark:border-gray-600 focus:ring focus:ring-purple-300 dark:focus:border-gray-600 dark:focus:ring-gray-300 dark:bg-gray-700",
     // disabled: "cursor-not-allowed opacity-50 bg-gray-300 dark:bg-gray-800",

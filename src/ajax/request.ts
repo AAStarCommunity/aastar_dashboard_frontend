@@ -5,7 +5,6 @@ import axios, {
   AxiosResponse,
   AxiosPromise,
 } from "axios";
-import { error } from "console";
 
 export interface ResponseData {
   code: 0 | 1 | -1;
@@ -68,11 +67,9 @@ class HtttpRequest {
           //成功
         } else {
           // 失败
-          //UI提示用户请求失败
           Message({
             type: "danger",
             message,
-            show: true,
           });
         }
         return response;

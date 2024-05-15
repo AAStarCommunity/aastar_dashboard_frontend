@@ -29,12 +29,12 @@ export default function RootLayout({
   const router = useRouter()
   useEffect(() => {
     closeSidebar()
-  }, [closeSidebar, router.pathname])
+  }, [])
 
 
   return (
     <div
-      className={`flex h-screen bg-gray-50 dark:bg-gray-900 ${isSidebarOpen && 'overflow-hidden'}`}
+      className={`flex h-screen bg-gray-50 dark:bg-gray-900  ${isSidebarOpen && 'overflow-hidden'}`}
     >
       {/* <div > */}
       {store?.id && <Sidebar />}
@@ -42,7 +42,9 @@ export default function RootLayout({
       <div className="flex flex-col flex-1 w-full">
 
         <Header style={{ display: store?.id ? 'block' : 'none' }}></Header>
-        {children}
+        <main className="h-full overflow-y-auto scroll-smooth">
+          <div className="container grid px-6 mx-auto">{children}</div>
+        </main>
       </div>
     </div>
   );

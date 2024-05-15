@@ -6,6 +6,7 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  overflow: hidden;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,36 +17,8 @@
   }
 }
 
-/* 旋转动画 指定class为trun即可使用*/
-.turn {
-  animation: turn 2s linear infinite;
-}
 
-@keyframes turn {
-  0% {
-    transform: rotate(0deg);
-  }
 
-  20% {
-    transform: rotate(72deg);
-  }
-
-  40% {
-    transform: rotate(144deg);
-  }
-
-  60% {
-    transform: rotate(216deg);
-  }
-
-  80% {
-    transform: rotate(288deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
 
 body {
   color: rgb(var(--foreground-rgb));
@@ -77,6 +50,10 @@ dialog::backdrop {
   --color-primBlue-50: hsl(236deg 84% 7%);
 }
 
+button:focus {
+  outline: none !important;
+}
+
 .active:bg-aastar-600 {
   background-color: var(--color-primBlue-600);
 }
@@ -85,9 +62,15 @@ dialog::backdrop {
   background-color: var(--color-primBlue-700);
 }
 
+.hover-text-aastar-700:hover {
+  color: var(--color-primBlue-700);
+}
+
+
 .bg-aastar-600 {
   background-color: var(--color-primBlue-600);
 }
+
 
 .text-aastar-600 {
   color: var(--color-primBlue-600);

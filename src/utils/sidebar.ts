@@ -21,7 +21,7 @@ const routes: IRoutes = [
     name: "Dashboard", // name that appear in Sidebar
   },
   {
-    path: "/apikeys",
+    path: "/api-keys",
     icon: "FormsIcon",
     name: "APIKey apply",
   },

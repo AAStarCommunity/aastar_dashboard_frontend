@@ -23,7 +23,6 @@ export default function Login() {
         Message({
             type: "success",
             message: "登陆成功",
-            show: true,
         });
 
 

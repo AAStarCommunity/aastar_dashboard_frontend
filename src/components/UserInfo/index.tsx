@@ -1,6 +1,6 @@
 import { IPropChild } from '@/utils/types';
 import { connect, useGetUser } from '@/context/userContext';
-import { LoadingIcon } from "~/public/icons";
+import Spin from '../Spin';
 
 /**
 * 获取用户信息组件
@@ -8,22 +8,12 @@ import { LoadingIcon } from "~/public/icons";
 const UserInfo = ({ children }: IPropChild) => {
   const { loading } = useGetUser();
   return (
-    <div className='aaaa' style={{ height: '100%', position: "relative" }} >
-      {loading && <div style={{
-        position: "absolute",
-        height: "100%",
-        width: "100%",
-        background: "rgba(0, 0, 0, 0.2)"
-      }}><LoadingIcon className="turn" style={{
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        margin: "auto"
-      }} /></div>}
+    < >
+      {loading &&
+        <Spin />
+      }
       {children}
-    </div >
+    </ >
   );
 };
 
