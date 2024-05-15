@@ -7,7 +7,7 @@ import axios, {
 } from "axios";
 
 export interface ResponseData {
-  code: 0 | 1 | -1;
+  code: 200 | 1 | -1;
   message: string;
   data: any;
 }
@@ -34,6 +34,24 @@ class HtttpRequest {
     return this.request(newConfig);
   }
 
+  public put(
+    url: string,
+    data: any = {},
+    config: AxiosRequestConfig = {}
+  ): AxiosPromise {
+    const newConfig = this.mergeConfig(config, { url, method: "PUT" });
+    return this.request(newConfig);
+  }
+
+  public detele(
+    url: string,
+    data: any = {},
+    config: AxiosRequestConfig = {}
+  ): AxiosPromise {
+    const newConfig = this.mergeConfig(config, { url, method: "DETELE" });
+    return this.request(newConfig);
+  }
+
   // 构建请求
   public request(config: AxiosRequestConfig): AxiosPromise {
     // 1.创建请求
@@ -49,7 +67,11 @@ class HtttpRequest {
     // 拦截请求
     instance.interceptors.request.use(
       (config: AxiosRequestConfig) => {
-        config.baseURL = process.env.BASE_URL;
+        console.log(
+          process.env.NEXT_PUBLIC_BASE_URL,
+          "process.env.BASE_URLprocess.env.BASE_URL"
+        );
+        config.baseURL = process.env.NEXT_PUBLIC_BASE_URL;
         return config;
       },
       (error) => {

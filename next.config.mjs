@@ -10,6 +10,15 @@ const nextConfig = {
     config.resolve.alias["@src"] = path.resolve("./src");
     return config;
   },
+  async rewrites() {
+    return [
+      // request proxy
+      {
+        source: "/api-text/:path*",
+        destination: `https://aastar-dashboard-backend-dev.onrender.com/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -30,52 +30,10 @@ const routes: IRoutes = [
     icon: "CardsIcon",
     name: "Regist Project Info",
   },
-  // {
-  //   path: "/charts",
-  //   icon: "ChartsIcon",
-  //   name: "Charts",
-  // },
-  // {
-  //   path: "/buttons",
-  //   icon: "ButtonsIcon",
-  //   name: "Buttons",
-  // },
-  // {
-  //   path: "/modals",
-  //   icon: "ModalsIcon",
-  //   name: "Modals",
-  // },
-  // {
-  //   path: "/tables",
-  //   icon: "TablesIcon",
-  //   name: "Tables",
-  // },
   {
+    path: "/strategy",
     icon: "PagesIcon",
     name: "Strategy Data",
-    routes: [
-      // submenu
-      {
-        path: "/login",
-        name: "Login",
-      },
-      {
-        path: "/create-account",
-        name: "Create account",
-      },
-      {
-        path: "/forgot-password",
-        name: "Forgot password",
-      },
-      {
-        path: "/404",
-        name: "404",
-      },
-      {
-        path: "/blank",
-        name: "Blank",
-      },
-    ],
   },
 ];
 

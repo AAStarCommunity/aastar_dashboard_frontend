@@ -43,9 +43,10 @@ export default function RootLayout({
 
         <Header style={{ display: store?.id ? 'block' : 'none' }}></Header>
         <main className="h-full overflow-y-auto scroll-smooth">
-          <div className="container grid px-6 mx-auto">{children}</div>
+          <div className=" grid p-14 max-md:p-8 py-6 mx-auto">{children}</div>
         </main>
       </div>
     </div>
   );
 }
+
