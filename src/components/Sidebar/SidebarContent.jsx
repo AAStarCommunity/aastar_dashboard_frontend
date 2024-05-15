@@ -42,7 +42,7 @@ function SidebarContent() {
               >
                 {/* <Route path={route.path} exact={route.exact}> */}
                  {activeRouteClass(route.path) && <span
-                    className="absolute inset-y-0 left-0 w-1 bg-aastar-600 rounded-tr-lg rounded-br-lg"
+                    className="absolute inset-y-0 left-0 w-1 bg-aastar-600 rounded-tr-lg rounded-br-lg bg-gradient-to-br from-green-400 to-blue-60"
                     aria-hidden="true"
                   ></span>}
                 {/* </Route> */}

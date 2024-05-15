@@ -51,7 +51,9 @@ dialog::backdrop {
 }
 
 button:focus,
-button:active {
+button:active,
+[type='checkbox']:focus,
+[type='radio']:focus {
   outline: none !important;
   box-shadow: none !important;
 }

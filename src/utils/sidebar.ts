@@ -25,11 +25,11 @@ const routes: IRoutes = [
     icon: "FormsIcon",
     name: "APIKey apply",
   },
-  {
-    path: "/cards",
-    icon: "CardsIcon",
-    name: "Regist Project Info",
-  },
+  // {
+  //   path: "/cards",
+  //   icon: "CardsIcon",
+  //   name: "Regist Project Info",
+  // },
   {
     path: "/strategy",
     icon: "PagesIcon",

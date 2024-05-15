@@ -18,7 +18,6 @@ import VaildInput from '@/components/VaildInput'
 import { useEffect } from 'react'
 import ajax, { API } from '@/ajax'
 import { useRouter } from 'next/router'
-import { useCallback } from 'react'
 
 
 export default function Apikeys() {
@@ -114,7 +113,7 @@ export default function Apikeys() {
 
                 </div>
               </td>
-              <td className="px-6 py-4 text-right">
+              <td className="px-6 py-4 text-left">
                 <button onClick={() => router.push(`/api-keys/edit/${111}`)} type="button" className="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit</button>
               </td>
             </tr>
@@ -147,13 +146,11 @@ export default function Apikeys() {
         isOpen={isOpenProjectInfo}
         onClose={() => setIsOpenProjectInfo(false)}
       >
-        <ModalHeader>Name</ModalHeader>
+        <ModalHeader>Project info </ModalHeader>
         <ModalBody>
-          <VaildInput required={true}
-            defaultValue={newKey}
-            name="key"
-            // getVaild={() => { }}
-            setValue={setNewKey} />
+          <VaildInput label='Access netowrk' name="access_netowrk" defaultValue="sepolia" disabled={true}></VaildInput>
+          <VaildInput label='Project code' name="project_code" defaultValue="1111111111111111" disabled={true}></VaildInput>
+
         </ModalBody>
         <ModalFooter>
           <button onClick={() => setIsOpenCreate(true)} type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Generate API Key</button>
@@ -181,7 +178,6 @@ export default function Apikeys() {
               Continue
             </button>
           </div>
-
 
         </ModalFooter>
       </Modal>

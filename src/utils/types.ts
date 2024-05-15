@@ -44,6 +44,8 @@ export interface IFromItemProps {
   label?: string;
   desc?: string;
   name: string;
+  class?: string;
+  disabled?: boolean;
 }
 
 export interface IFromItemRefs {
