@@ -6,11 +6,15 @@ import { IFromItemProps } from '@/utils/types';
 import Form, { IFormItem, IFormRefs } from '@/components/Form';
 import { useRef } from 'react';
 export default function ApikeysEdit() {
-    // const [apiKey, setApiKey] = useState('')
+    // const [apiKey, setForm] = useState('')
     const formRefs = useRef<IFormRefs>(null)
 
     function getformData() {
-        formRefs.current?.getData()
+        formRefs.current?.getData(({ vailded, values }) => {
+            if (vailded) {
+                console.log(values)
+            }
+        })
     }
 
     const formArr: IFormItem[] = [
@@ -53,9 +57,8 @@ export default function ApikeysEdit() {
             label: "Name (required)",
             desc: "Name of the API key",
             placeholder: 'aas',
-            defaultValue: '',
-            type: "input",
-            required: true
+            defaultValue: true,
+            type: "switch",
         },
         {
             name: 'apikey6',

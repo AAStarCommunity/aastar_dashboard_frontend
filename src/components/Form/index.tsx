@@ -12,13 +12,13 @@ interface IFormArrProps {
     formArr: IFormItem[]
 }
 export interface IFormRefs {
-    getData: () => {}
+    getData: (callback: (arg0: { values: Record<string, unknown>; vailded: boolean; }) => void) => void
 }
 const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
     const refMap = useRef<Array<IFromItemRefs | null>>([])
-    const getData = () => {
+    const getData = (callback: (arg0: { values: Record<string, unknown>; vailded: boolean; }) => void) => {
         let vailded = true
-        const values: unknown[] = []
+        const values: Record<string, unknown> = {}
         let unVaildedIndex = -1
         refMap.current.forEach((item, index) => {
 
@@ -32,14 +32,14 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
                 console.log(formArr[index].name, top)
                 top && document.querySelector('main')?.scrollTo(0, top)
             }
-            values.push(result?.value)
+            values[formArr[index].name] = result?.value
         });
 
 
-        return {
+        callback({
             values,
             vailded
-        }
+        })
 
     }
 
@@ -56,7 +56,10 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
                             ref={f => { refMap.current[index] = f }}
                             {...item} />;
                     case "switch":
-                        return <Switch {...item} />
+                        return <Switch
+                            key={item.name}
+                            ref={f => { refMap.current[index] = f }}
+                            {...item} />
 
                     case "select":
                         return <div>select</div>

@@ -37,7 +37,7 @@ export interface ObjType {
 
 export interface IFromItemProps {
   required?: boolean;
-  defaultValue?: string;
+  defaultValue?: string | boolean;
   setValue?: (value: string) => void;
   errorTip?: string;
   placeholder?: string;
