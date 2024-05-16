@@ -51,12 +51,12 @@ export default function Login() {
                             <h2 className="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-200">to continue to AAStar</h2>
                             <Label>
                                 <span>Email</span>
-                                <Input className="mt-1" type="email" placeholder="" />
+                                <Input className="mt-1" type="email" placeholder="" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} css={undefined} crossOrigin={undefined} />
                             </Label>
 
                             <Label className="mt-4">
                                 <span>Password</span>
-                                <Input className="mt-1" type="password" placeholder="" />
+                                <Input className="mt-1" type="password" placeholder="" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} css={undefined} crossOrigin={undefined} />
                             </Label>
 
                             <Button className="mt-4" block onClick={loginHandler}>

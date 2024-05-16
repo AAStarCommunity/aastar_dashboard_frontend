@@ -39,8 +39,8 @@ const ValidInput = forwardRef<IFromItemRefs, IFromItemProps>((
         <Label className='mb-6'>
             {label && <h4 className="mb-1 text-lg text-gray-700 dark:text-gray-200">{label}</h4>}
             {desc && <span className=" text-gray-500 dark:text-gray-400">{desc}</span>}
-            {valided ? <Input disabled={disabled} role-id={name} className="mt-2" value={value} placeholder={placeholder} onChange={handleChange} onBlur={e => handleVaild(e.target.value)} />
-                : <><Input disabled={disabled} role-id={name} className="mt-2" valid={valided} value={value} placeholder={placeholder} onChange={handleChange} onBlur={e => handleVaild(e.target.value)} />
+            {valided ? <Input disabled={disabled} role-id={name} className="mt-2" value={value as string} placeholder={placeholder} onChange={handleChange} onBlur={e => handleVaild(e.target.value)} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} css={undefined} crossOrigin={undefined} />
+                : <><Input disabled={disabled} role-id={name} className="mt-2" valid={valided} value={value as string} placeholder={placeholder} onChange={handleChange} onBlur={e => handleVaild(e.target.value)} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} css={undefined} crossOrigin={undefined} />
                     <HelperText valid={valided}>{errorTip}</HelperText></>}
 
         </Label>

@@ -52,15 +52,15 @@ export default function ApikeysEdit() {
     useEffect(() => {
         if (router.isReady) {
             strategyCode = router.query.code
-            ajax.get(API.GET_STRATEGY, { strategy_code: strategyCode }).then(({ data, code }) => {
-                if (code === 200) {
-                    setFormArr(prev => {
-                        return mergeLoadedFields(prev, data)
-                    })
-                    setStatus(REQUEST_STATUS.SUCCESS)
-                } else {
-                    setStatus(REQUEST_STATUS.FAIL)
-                }
+            ajax.get(API.GET_STRATEGY, { strategy_code: strategyCode }).then(({ data }) => {
+                // if (code === 200) {
+                setFormArr(prev => {
+                    return mergeLoadedFields(prev, data)
+                })
+                //     setStatus(REQUEST_STATUS.SUCCESS)
+                // } else {
+                //     setStatus(REQUEST_STATUS.FAIL)
+                // }
             })
         }
     }, [router, router.isReady, router.query])

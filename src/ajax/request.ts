@@ -84,7 +84,7 @@ class HtttpRequest {
     // const { getLocal } = useLocalStorage();
     // const userid = cookies().get(KEY);
     instance.interceptors.request.use(
-      (config: AxiosRequestConfig) => {
+      (config) => {
         config.headers.user_id = "dylan";
         config.baseURL =
           process.env.NODE_ENV === "development"

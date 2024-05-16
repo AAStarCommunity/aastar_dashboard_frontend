@@ -31,7 +31,7 @@ export type setStateType = React.Dispatch<
   React.SetStateAction<string | boolean>
 >;
 
-export type ObjType<T = unknown> = Record<string, T>;
+export type ObjType<T = any> = Record<string, T>;
 
 export interface IFromItemProps {
   required?: boolean;

@@ -22,7 +22,7 @@ interface Iprops {
     style: Record<string, string>
 }
 function Header(props: Iprops) {
-    const { theme, toggleTheme, } = useContext(ThemeContext)
+    const { theme, toggleTheme } = useContext(ThemeContext)
     const { toggleSidebar } = useContext(SidebarContext)
 
     const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false)
@@ -74,7 +74,7 @@ function Header(props: Iprops) {
                         <Input
                             className="pl-8 text-gray-700"
                             placeholder="Search for projects"
-                            aria-label="Search" />
+                            aria-label="Search" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} css={undefined} crossOrigin={undefined} />
                     </div>
                 </div>
                 <ul className="flex items-center flex-shrink-0 space-x-6">

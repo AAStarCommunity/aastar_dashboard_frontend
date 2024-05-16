@@ -31,6 +31,19 @@ export default function RootLayout({
     closeSidebar()
   }, [])
 
+  useEffect(() => {
+    if (router.isReady) {
+      if (!store?.id && router.pathname !== '/login') {
+        router.replace('/login')
+      }
+
+      if (store?.id && router.pathname === '/login') {
+        router.push('/')
+      }
+    }
+
+  }, [store, router.isReady])
+
 
   return (
     <div
