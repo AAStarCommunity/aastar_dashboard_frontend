@@ -13,7 +13,7 @@ const ValidInput = forwardRef<IFromItemRefs, IFromItemProps>((
         setValue?.(e.target.value)
     }, [])
 
-    const handleVaild = function (value: string) {
+    const handleVaild = function (value: any) {
         let vaild = valided
         setValided(true)
         if (required && !value) {
@@ -25,6 +25,7 @@ const ValidInput = forwardRef<IFromItemRefs, IFromItemProps>((
     }
 
     function getData() {
+        handleVaild(value)
         return {
             vaild: valided,
             value

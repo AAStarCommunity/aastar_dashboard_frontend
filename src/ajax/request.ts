@@ -1,12 +1,13 @@
 import Message from "@/utils/message";
+// import { cookies } from "next/headers";
 import axios, {
   AxiosRequestConfig,
   AxiosInstance,
   AxiosResponse,
   AxiosPromise,
 } from "axios";
-import { KEY } from "@/context/userContext";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+// import { KEY } from "@/context/userContext";
+// import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export interface ResponseData {
   code: 200 | 1 | -1;
@@ -21,10 +22,15 @@ class HtttpRequest {
   }
 
   // 设置get请求别名
-  public get(url: string, config: AxiosRequestConfig = {}): AxiosPromise {
+  public get(
+    url: string,
+    params: any = {},
+    config: AxiosRequestConfig = {}
+  ): AxiosPromise {
     const newConfig = this.mergeConfig(config, {
       url,
       method: "GET",
+      params,
     });
     return this.request(newConfig);
   }
@@ -35,7 +41,7 @@ class HtttpRequest {
     data: any = {},
     config: AxiosRequestConfig = {}
   ): AxiosPromise {
-    const newConfig = this.mergeConfig(config, { url, method: "POST" });
+    const newConfig = this.mergeConfig(config, { data, url, method: "POST" });
     return this.request(newConfig);
   }
 
@@ -44,16 +50,20 @@ class HtttpRequest {
     data: any = {},
     config: AxiosRequestConfig = {}
   ): AxiosPromise {
-    const newConfig = this.mergeConfig(config, { url, method: "PUT" });
+    const newConfig = this.mergeConfig(config, { url, data, method: "PUT" });
     return this.request(newConfig);
   }
 
   public detele(
     url: string,
-    data: any = {},
+    params: any = {},
     config: AxiosRequestConfig = {}
   ): AxiosPromise {
-    const newConfig = this.mergeConfig(config, { url, method: "DETELE" });
+    const newConfig = this.mergeConfig(config, {
+      url,
+      params,
+      method: "DETELE",
+    });
     return this.request(newConfig);
   }
 
@@ -71,17 +81,15 @@ class HtttpRequest {
   private interceptor(instance: AxiosInstance) {
     // 拦截请求
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { getLocal } = useLocalStorage();
-    const userid = getLocal(KEY)?.id;
+    // const { getLocal } = useLocalStorage();
+    // const userid = cookies().get(KEY);
     instance.interceptors.request.use(
       (config: AxiosRequestConfig) => {
-        const userData = { user_id: userid };
-        if (config.method == "get") {
-          config.params = { ...config.params, ...userData };
-        } else {
-          config.data = { ...config.data, ...userData };
-        }
-        config.baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+        config.headers.user_id = "dylan";
+        config.baseURL =
+          process.env.NODE_ENV === "development"
+            ? location.origin + "/" + process.env.NEXT_PUBLIC_BASE_URL
+            : process.env.NEXT_PUBLIC_BASE_URL;
         return config;
       },
       (error) => {
@@ -93,10 +101,11 @@ class HtttpRequest {
     instance.interceptors.response.use(
       (response: AxiosResponse) => {
         const {
-          data: { code, message },
+          data: { code, message, data },
         } = response;
-        if (code === 0) {
+        if (code === 200) {
           //成功
+          // console.log(data);
         } else {
           // 失败
           Message({
@@ -104,7 +113,7 @@ class HtttpRequest {
             message,
           });
         }
-        return response;
+        return response.data;
       },
       (error) => {
         return Promise.reject(error);

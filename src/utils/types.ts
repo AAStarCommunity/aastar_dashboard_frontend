@@ -31,14 +31,12 @@ export type setStateType = React.Dispatch<
   React.SetStateAction<string | boolean>
 >;
 
-export interface ObjType {
-  [key: string]: any;
-}
+export type ObjType<T = unknown> = Record<string, T>;
 
 export interface IFromItemProps {
   required?: boolean;
   defaultValue?: string | boolean;
-  setValue?: (value: string) => void;
+  setValue?: (value: string | boolean) => void;
   errorTip?: string;
   placeholder?: string;
   label?: string;

@@ -1,59 +1,135 @@
-import { SetStateAction, useState } from 'react'
+import { SetStateAction, useCallback, useRef, useState } from 'react'
 import Copy from '@/components/Copy'
 import {
-  TableContainer,
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableCell,
-  Badge,
-  TableFooter,
-  Pagination,
-  Button,
   Modal, ModalHeader, ModalBody, ModalFooter,
-  Input
+  Button
 } from '@windmill/react-ui'
 import VaildInput from '@/components/VaildInput'
 import { useEffect } from 'react'
 import ajax, { API } from '@/ajax'
 import { useRouter } from 'next/router'
+import { IFromItemRefs, ObjType } from '@/utils/types'
+import StarText from '@/components/StartText'
+import Message from '@/utils/message'
+import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading'
 
+// export async function getStaticProps() {
+//   const data = await ajax.get(API.GET_API_KEY_LIST)
+//   return {
+//     props: {
+//       data
+//     }
+//   }
+// }
 
 export default function Apikeys() {
   const router = useRouter()
   const [isOpenCreate, setIsOpenCreate] = useState(false)
   const [isOpenDetele, setIsOpenDetele] = useState(false)
-  const [newKey, setNewKey] = useState('')
   const [isOpenProjectInfo, setIsOpenProjectInfo] = useState(false)
+  const [currentItem, setCurrentItem] = useState<ObjType<string>>({})
+  const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
 
+  const [formData, setFormData] = useState<ObjType<string>[]>([])
+
+  const keyNameRef = useRef<IFromItemRefs | null>(null)
+
+  // init table data
+  const init = () => {
+    ajax.get(API.GET_API_KEY_LIST).then(({ data }) => {
+      setFormData(data)
+      setStatus(REQUEST_STATUS.SUCCESS)
+    })
+  }
   useEffect(() => {
-    ajax
-      .get(API.GET_API_KEY_LIST)
-      .then(({ data }) => {
-        const newData = data.data;
-
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    init()
   }, [])
 
-  const continueDetele = () => {
-    ajax
-      .detele(API.DETELE_API_KEY, {
-        params: {
-          user_id: '122121'
-        }
-      })
-      .then(({ data }) => {
-        const newData = data.data;
 
+  const projectInfoClick = useCallback((item: ObjType<string>, type: 'info' | 'delete') => {
+    setCurrentItem(item)
+    type == 'info' ? setIsOpenProjectInfo(true) : setIsOpenDetele(true)
+  }, [])
+
+  const handleGenerateKey = () => {
+    setIsOpenCreate(false)
+    const res = keyNameRef.current?.getData()
+    if (res?.vaild) {
+      ajax.post(API.APPLY_API_KEY, { api_key_name: res?.value }).then(({ data }) => {
+        Message({
+          type: "success",
+          message: "success apply!"
+        })
+        init()
       })
-      .catch(error => {
-        console.log(error);
-      });
+
+    }
   }
+
+  const continueDetele = () => {
+    ajax.detele(API.DETELE_API_KEY, {
+      api_key: currentItem.api_key
+    }).then(({ data }) => {
+      Message({
+        type: "success",
+        message: "Success Delete!"
+      })
+
+    })
+  }
+
+
+  const tableDom = (
+    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <tr>
+          <th scope="col" className="px-6 py-3">
+            name
+          </th>
+          <th scope="col" className="px-6 py-3">
+            api key
+          </th>
+          <th scope="col" className="px-6 py-3">
+            <span className="">actions</span>
+          </th>
+          <th scope="col" className="px-6 py-3">
+            <span className="">Edit settings</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {formData.length && formData.map((item, index) => {
+          return (
+            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-600">
+              <th scope="row" className=" cursor-pointer px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                {item.key_name}
+              </th>
+              <td className="px-6 py-4">
+                <div className='flex items-center cursor-pointer'>
+                  <StarText text={item.api_key}></StarText>
+                  <Copy text={item.api_key} /></div>
+              </td>
+              <td className="px-6 py-4 text-right">
+                <div className='flex'>
+                  <button onClick={() => projectInfoClick(item, 'info')} type="button" className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
+                    Project Info</button>
+                  <button onClick={() => projectInfoClick(item, 'delete')} type="button" className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
+                    Detele</button>
+                </div>
+              </td>
+              <td className="px-6 py-4 text-left">
+                <button onClick={() => router.push(`/api-keys/edit/${item.api_key}`)} type="button" className="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit</button>
+              </td>
+            </tr>
+          )
+        })}
+
+
+      </tbody></table>)
+
+  const dataDom = useLoading(status, tableDom)
+
+
 
   return (
     <div>
@@ -64,58 +140,7 @@ export default function Apikeys() {
 
       </div>
       <div className="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg overflow-hidden">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                name
-              </th>
-              <th scope="col" className="px-6 py-3">
-                api key
-              </th>
-              {/* <th scope="col" className="px-6 py-3">
-                access netowrk
-              </th>
-              <th scope="col" className="px-6 py-3">
-                project code
-              </th> */}
-              <th scope="col" className="px-6 py-3">
-                <span className="">actions</span>
-              </th>
-              <th scope="col" className="px-6 py-3">
-                <span className="">Edit settings</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-600">
-              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                Apple MacBook Pro 17
-              </th>
-              <td className="px-6 py-4">
-                Silver
-              </td>
-              {/* <td className="px-6 py-4">
-                Laptop
-              </td>
-              <td className="px-6 py-4">
-                $2999
-              </td> */}
-              <td className="px-6 py-4 text-right">
-                <div className='flex'>
-                  <button onClick={() => setIsOpenProjectInfo(true)} type="button" className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">Project Info</button>
-                  <button onClick={() => setIsOpenDetele(true)} type="button" className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">Detele</button>
-
-
-                </div>
-              </td>
-              <td className="px-6 py-4 text-left">
-                <button onClick={() => router.push(`/api-keys/edit/${111}`)} type="button" className="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit</button>
-              </td>
-            </tr>
-
-          </tbody>
-        </table>
+        {dataDom}
       </div>
 
       <Modal className='w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
@@ -125,13 +150,13 @@ export default function Apikeys() {
         <ModalHeader>Name</ModalHeader>
         <ModalBody>
           <VaildInput required={true}
-            defaultValue={newKey}
             name="key"
-            // getVaild={() => { }}
-            setValue={setNewKey} />
+            ref={keyNameRef}
+          />
         </ModalBody>
         <ModalFooter>
-          <button onClick={() => setIsOpenCreate(true)} type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Generate API Key</button>
+          <button onClick={handleGenerateKey} type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+            Generate API Key</button>
           {/* <Button className="sm:w-auto w-48 mb-6">Generate API Key</Button> */}
         </ModalFooter>
       </Modal>
@@ -142,16 +167,15 @@ export default function Apikeys() {
         isOpen={isOpenProjectInfo}
         onClose={() => setIsOpenProjectInfo(false)}
       >
-        <ModalHeader>Project info </ModalHeader>
+        {/* <ModalHeader>Project info </ModalHeader> */}
         <ModalBody>
-          <VaildInput label='Access netowrk' name="access_netowrk" defaultValue="sepolia" disabled={true}></VaildInput>
-          <VaildInput label='Project code' name="project_code" defaultValue="1111111111111111" disabled={true}></VaildInput>
+          {/* <VaildInput label='Access netowrk' name="access_netowrk" defaultValue="sepolia" disabled={true}></VaildInput> */}
+          <VaildInput label='Project code' name="project_code" defaultValue={currentItem.project_code} disabled={true}></VaildInput>
 
         </ModalBody>
-        <ModalFooter>
-          <button onClick={() => setIsOpenCreate(true)} type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Generate API Key</button>
-          {/* <Button className="sm:w-auto w-48 mb-6">Generate API Key</Button> */}
-        </ModalFooter>
+        {/* <ModalFooter>
+          <Button onClick={() => setIsOpenCreate(true)} className="sm:w-auto w-48 mb-6">Generate API Key</Button>
+        </ModalFooter> */}
       </Modal>
 
       {/* detele confirm */}

@@ -19,6 +19,8 @@ import PagesIcon from "./pages.svg";
 import FormsIcon from "./forms.svg";
 import CardsIcon from "./cards.svg";
 import CopyIcon from "./copy.svg";
+import ViewIcon from "./view.svg";
+import ViewOffIcon from "./view-off.svg";
 export {
   FormsIcon,
   CardsIcon,
@@ -41,4 +43,6 @@ export {
   DropdownIcon,
   PagesIcon,
   CopyIcon,
+  ViewIcon,
+  ViewOffIcon,
 };

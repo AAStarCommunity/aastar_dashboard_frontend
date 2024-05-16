@@ -42,7 +42,7 @@ export default function RootLayout({
       <div className="flex flex-col flex-1 w-full">
 
         <Header style={{ display: store?.id ? 'block' : 'none' }}></Header>
-        <main className="h-full overflow-y-auto scroll-smooth">
+        <main className="h-full overflow-y-auto scroll-smooth relative">
           <div className=" grid p-14 max-md:p-8 py-6 mx-auto">{children}</div>
         </main>
       </div>

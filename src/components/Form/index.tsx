@@ -24,14 +24,17 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
 
             const result = item?.getData()
             const vaild = item?.handleVaild(result?.value as string)
+            if (!vaild) {
+                vailded = false
+                if (unVaildedIndex == -1) {
+                    unVaildedIndex = index
+                    const id = formArr[index].name
+                    const top = document.querySelector(`[role-id=${id}]`)?.getBoundingClientRect().top
 
-            if (!vaild && unVaildedIndex == -1) {
-                unVaildedIndex = index
-                const id = formArr[index].name
-                const top = document.querySelector(`[role-id=${id}]`)?.getBoundingClientRect().top
-                console.log(formArr[index].name, top)
-                top && document.querySelector('main')?.scrollTo(0, top)
+                    top && document.querySelector('main')?.scrollTo(0, top)
+                }
             }
+
             values[formArr[index].name] = result?.value
         });
 

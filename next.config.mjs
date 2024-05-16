@@ -14,7 +14,7 @@ const nextConfig = {
     return [
       // request proxy
       {
-        source: "/api-text/:path*",
+        source: "/text-api/:path*",
         destination: `https://aastar-dashboard-backend-dev.onrender.com/:path*`,
       },
     ];

@@ -70,6 +70,10 @@ button:active,
   color: var(--color-primBlue-700);
 }
 
+.theme-dark .hover-text-aastar-700:hover {
+  color: var(--color-primBlue-700);
+}
+
 
 .bg-aastar-600 {
   background-color: var(--color-primBlue-600);
@@ -86,4 +90,8 @@ button:active,
 
 .focus-within:text-aastar-500 {
   color: var(--color-primBlue-500);
+}
+
+[data-type=loading] {
+  animation: spin 1s linear infinite;
 }
