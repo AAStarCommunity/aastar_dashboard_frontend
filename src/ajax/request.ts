@@ -5,6 +5,8 @@ import axios, {
   AxiosResponse,
   AxiosPromise,
 } from "axios";
+import { KEY } from "@/context/userContext";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export interface ResponseData {
   code: 200 | 1 | -1;
@@ -20,7 +22,10 @@ class HtttpRequest {
 
   // 设置get请求别名
   public get(url: string, config: AxiosRequestConfig = {}): AxiosPromise {
-    const newConfig = this.mergeConfig(config, { url, method: "GET" });
+    const newConfig = this.mergeConfig(config, {
+      url,
+      method: "GET",
+    });
     return this.request(newConfig);
   }
 
@@ -65,12 +70,17 @@ class HtttpRequest {
   // 添加拦截
   private interceptor(instance: AxiosInstance) {
     // 拦截请求
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { getLocal } = useLocalStorage();
+    const userid = getLocal(KEY)?.id;
     instance.interceptors.request.use(
       (config: AxiosRequestConfig) => {
-        console.log(
-          process.env.NEXT_PUBLIC_BASE_URL,
-          "process.env.BASE_URLprocess.env.BASE_URL"
-        );
+        const userData = { user_id: userid };
+        if (config.method == "get") {
+          config.params = { ...config.params, ...userData };
+        } else {
+          config.data = { ...config.data, ...userData };
+        }
         config.baseURL = process.env.NEXT_PUBLIC_BASE_URL;
         return config;
       },

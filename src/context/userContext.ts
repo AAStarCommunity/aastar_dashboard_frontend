@@ -3,7 +3,7 @@ import { useAppContext, connectFactory } from "../utils/contextFactory";
 
 import { IUser } from "../utils/types";
 
-const KEY = "userInfo";
+export const KEY = "userInfo";
 const DEFAULT_VALUE = {};
 
 export const useUserContext = () => useAppContext<IUser>(KEY);

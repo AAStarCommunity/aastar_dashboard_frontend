@@ -19,14 +19,14 @@ export function getCxtProvider<T>(
     const { getLocal, setLocal } = useLocalStorage();
     const [store, setStore] = useState(defaultValue);
 
-    const [storageData, setStorageData] = useState({});
+    // const [storageData, setStorageData] = useState({});
     useEffect(() => {
-      storage && setStorageData(getLocal(key))
+      storage && setStore(getLocal(key))
     }, [])
     const value = useMemo(() => {
       return ({
         key,
-        store: { ...store, ...storageData },
+        store: { ...store },
         storage,
         setStore: (payload: any) => setStore((state) => {
           const data = payload ? { ...state, ...payload } : {}
@@ -38,7 +38,7 @@ export function getCxtProvider<T>(
         ,
       })
     }
-      , [setLocal, store, storageData]);
+      , [setLocal, store]);
 
     return (
       <AppContext.Provider value={value}>

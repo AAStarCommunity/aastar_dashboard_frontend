@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import "~/public/styles/globals.css";
+import "~/public/styles/windmills.css";
 import '~/public/styles/tailwind.output.css'
 import { Windmill } from '@windmill/react-ui'
 import UserInfo from '@/components/UserInfo';
@@ -36,7 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </Alert>
           </ThemeProvider>
         </SidebarProvider>
-      </Windmill>
+      </Windmill >
     </>
   )
 }
