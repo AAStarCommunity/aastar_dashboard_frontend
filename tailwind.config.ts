@@ -5,6 +5,7 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   darkMode: ["class", "theme-dark"],
   content: [
+    "./node_modules/tailwind-datepicker-react/dist/**/*.js",
     "./src/pages/*.{js,ts,jsx,tsx,mdx}",
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/pages/**/**/*.{js,ts,jsx,tsx,mdx}",

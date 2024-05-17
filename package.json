@@ -16,7 +16,9 @@
     "copy-to-clipboard": "^3.3.3",
     "next": "14.1.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sass": "^1.77.2",
+    "tailwind-datepicker-react": "^1.4.3"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

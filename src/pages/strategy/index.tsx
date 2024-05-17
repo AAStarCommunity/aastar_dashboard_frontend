@@ -5,7 +5,7 @@ import PageTitle from "@/components/Typography/PageTitle";
 import { REQUEST_STATUS } from "@/hooks/useLoading";
 import { Button, Badge, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHeader, TableRow } from "@windmill/react-ui";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import useTableLoad from "./components/useTableLoad";
 import { ObjType } from "@/utils/types";
 import Message from "@/utils/message";

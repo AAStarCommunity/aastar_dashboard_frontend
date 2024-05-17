@@ -14,6 +14,11 @@ export interface ResponseData {
   message: string;
   data: any;
 }
+interface ApiResponse<T = any> extends AxiosResponse {
+  code: number;
+  message: string;
+  data: T;
+}
 
 class HtttpRequest {
   // 合并配置项
@@ -26,7 +31,7 @@ class HtttpRequest {
     url: string,
     params: any = {},
     config: AxiosRequestConfig = {}
-  ): AxiosPromise {
+  ): AxiosPromise<ApiResponse> {
     const newConfig = this.mergeConfig(config, {
       url,
       method: "GET",
@@ -40,7 +45,7 @@ class HtttpRequest {
     url: string,
     data: any = {},
     config: AxiosRequestConfig = {}
-  ): AxiosPromise {
+  ): AxiosPromise<ApiResponse> {
     const newConfig = this.mergeConfig(config, { data, url, method: "POST" });
     return this.request(newConfig);
   }
@@ -49,7 +54,7 @@ class HtttpRequest {
     url: string,
     data: any = {},
     config: AxiosRequestConfig = {}
-  ): AxiosPromise {
+  ): AxiosPromise<ApiResponse> {
     const newConfig = this.mergeConfig(config, { url, data, method: "PUT" });
     return this.request(newConfig);
   }
@@ -58,7 +63,7 @@ class HtttpRequest {
     url: string,
     params: any = {},
     config: AxiosRequestConfig = {}
-  ): AxiosPromise {
+  ): AxiosPromise<ApiResponse> {
     const newConfig = this.mergeConfig(config, {
       url,
       params,
@@ -68,7 +73,7 @@ class HtttpRequest {
   }
 
   // 构建请求
-  public request(config: AxiosRequestConfig): AxiosPromise {
+  public request(config: AxiosRequestConfig): AxiosPromise<ApiResponse> {
     // 1.创建请求
     const instance: AxiosInstance = axios.create();
     // 2.添加拦截
@@ -97,23 +102,27 @@ class HtttpRequest {
       }
     );
 
+    // interface IAxiosData {
+    //   data: any;
+    //   message: string;
+    //   code: number;
+    // }
+
     // 拦截响应
     instance.interceptors.response.use(
       (response: AxiosResponse) => {
         const {
           data: { code, message, data },
+          status,
         } = response;
-        if (code === 200) {
-          //成功
-          // console.log(data);
+        if (status === 200 && code === 200) {
         } else {
-          // 失败
           Message({
             type: "danger",
             message,
           });
         }
-        return response.data;
+        return response;
       },
       (error) => {
         return Promise.reject(error);

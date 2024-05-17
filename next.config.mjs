@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const nextConfig = {
   // output: "export",
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
@@ -10,6 +14,9 @@ const nextConfig = {
 
     config.resolve.alias["@src"] = path.resolve("./src");
     return config;
+  },
+  sassOptions: {
+    includePaths: [path.join(__dirname, "src"), path.join(__dirname, "public")],
   },
   async rewrites() {
     return [

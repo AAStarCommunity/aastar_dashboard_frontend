@@ -4,37 +4,24 @@ import { useEffect, useState } from 'react';
 import Form, { IFormItem, IFormRefs } from '@/components/Form';
 import { useRef } from 'react';
 import ajax, { API } from '@/ajax';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading';
 import { LoadingIcon } from '~/public/icons';
 import { mergeLoadedFields } from '@/utils';
+import style from "./edit.module.scss";
+import useFormOptions from '../components/useFormOptions';
+
 
 export default function ApikeysEdit() {
+
+    const { formArr, setFormArr } = useFormOptions(style)
 
     const formRefs = useRef<IFormRefs>(null)
     const router = useRouter()
     let strategyCode = router.query.code
     const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
     const [committed, setommitted] = useState(true)
-    const [formArr, setFormArr] = useState<IFormItem[]>([
-        {
-            name: 'key_name',
-            label: "Name (required)",
-            desc: "Name of the API key",
-            placeholder: '',
-            defaultValue: '',
-            type: "input",
-            required: true
-        },
-        {
-            name: 'project_code',
-            label: "Project Code",
-            // desc: "Name of the API key",
-            placeholder: '',
-            defaultValue: '',
-            type: "input"
-        }
-    ])
+
     function commitChange() {
         formRefs.current?.getData(({ vailded, values }) => {
             if (vailded) {
@@ -53,14 +40,14 @@ export default function ApikeysEdit() {
         if (router.isReady) {
             strategyCode = router.query.code
             ajax.get(API.GET_STRATEGY, { strategy_code: strategyCode }).then(({ data }) => {
-                // if (code === 200) {
-                setFormArr(prev => {
-                    return mergeLoadedFields(prev, data)
-                })
-                //     setStatus(REQUEST_STATUS.SUCCESS)
-                // } else {
-                //     setStatus(REQUEST_STATUS.FAIL)
-                // }
+                if (data.code === 200) {
+                    setFormArr(prev => mergeLoadedFields(prev, { ...data.data, ...data.data.execute_restriction }))
+                    setStatus(REQUEST_STATUS.SUCCESS)
+                } else {
+                    setStatus(REQUEST_STATUS.FAIL)
+                }
+            }).catch(() => {
+                setStatus(REQUEST_STATUS.FAIL)
             })
         }
     }, [router, router.isReady, router.query])
@@ -70,15 +57,15 @@ export default function ApikeysEdit() {
 
     return (
 
-        <>
+        <div className={style.form}>
             < PageTitle > Edit Strategy</ PageTitle>
 
-            <div className='pb-10 relative '>
+            <div className='pb-10 relative md '>
                 {dataDom}
                 <Button onClick={commitChange} iconLeft={committed ? null : LoadingIcon}>Save changes
                 </Button>
                 <div className='text-gray-500 text-sm pt-4 dark:text-gray-400'>The changes will take effect in about a minute.</div>
             </div>
-        </>
+        </div>
     )
 }

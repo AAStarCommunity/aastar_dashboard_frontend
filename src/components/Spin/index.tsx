@@ -15,7 +15,6 @@ export default function Spin({ size, container, tip, insertTo = 'main' }: ISpinP
   const { documentMouned } = useDomAlready()
   const insertDom = useMemo(() => {
     if (documentMouned) {
-      console.log(insertTo === "body" ? document.body : (insertTo === "main" ? document.querySelector('main') : insertTo))
 
       return insertTo === "body" ? document.body : (insertTo === "main" ? document.querySelector('main') : insertTo)
     }

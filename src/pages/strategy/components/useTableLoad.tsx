@@ -17,7 +17,7 @@ export default function useTableLoad({ deleteClick, router }: any) {
 	}, [StrategyStatus])
 
 	useEffect(() => {
-		ajax.get(API.GET_STRATEGY_LIST).then(({ data }) => {
+		ajax.get(API.GET_STRATEGY_LIST).then(({ data: { data } }) => {
 			const stautsList = data.map((item: { status: boolean; }) => !!item.status)
 			setStrategyStatus(stautsList)
 			setTableData(data)

@@ -37,7 +37,7 @@ export default function Apikeys() {
   // init table data
   const init = () => {
     ajax.get(API.GET_API_KEY_LIST).then(({ data }) => {
-      setFormData(data)
+      setFormData(data.data)
       setStatus(REQUEST_STATUS.SUCCESS)
     })
   }

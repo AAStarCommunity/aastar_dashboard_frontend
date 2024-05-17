@@ -33,10 +33,10 @@ export type setStateType = React.Dispatch<
 
 export type ObjType<T = any> = Record<string, T>;
 
-export interface IFromItemProps {
+export interface IFromItemProps<T = any> {
   required?: boolean;
-  defaultValue?: string | boolean;
-  setValue?: (value: string | boolean) => void;
+  defaultValue?: T;
+  setValue?: (value: T) => void;
   errorTip?: string;
   placeholder?: string;
   label?: string;
@@ -44,9 +44,13 @@ export interface IFromItemProps {
   name: string;
   class?: string;
   disabled?: boolean;
+  inputType?: string;
+  group?: string;
+  addlist?: boolean;
+  isControl?: boolean;
 }
 
-export interface IFromItemRefs {
-  getData: () => Record<"value" | "vaild", boolean | string | undefined>;
+export interface IFromItemRefs<T = any> {
+  getData: () => { value: T | undefined; vaild: boolean };
   handleVaild: (value: string) => void;
 }

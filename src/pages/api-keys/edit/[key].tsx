@@ -61,7 +61,7 @@ export default function ApikeysEdit() {
             apiKey = router.query.key
             ajax.get(API.GET_API_KEY, { api_key: apiKey }).then(({ data }) => {
                 setFormArr(prev => {
-                    return mergeLoadedFields(prev, data)
+                    return mergeLoadedFields(prev, data.data)
                 })
                 setStatus(REQUEST_STATUS.SUCCESS)
             })

@@ -21,6 +21,7 @@ import CardsIcon from "./cards.svg";
 import CopyIcon from "./copy.svg";
 import ViewIcon from "./view.svg";
 import ViewOffIcon from "./view-off.svg";
+import CloseIcon from "./close.svg";
 export {
   FormsIcon,
   CardsIcon,
@@ -45,4 +46,5 @@ export {
   CopyIcon,
   ViewIcon,
   ViewOffIcon,
+  CloseIcon,
 };

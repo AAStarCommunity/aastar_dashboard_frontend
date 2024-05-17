@@ -1,6 +1,6 @@
-interface FormItem {
+interface FormItem<T = any> {
   name: string;
-  defaultValue?: any; // 根据实际情况修改类型
+  defaultValue?: T;
 }
 
 export function mergeLoadedFields<T extends FormItem>(
@@ -18,6 +18,8 @@ export function mergeLoadedFields<T extends FormItem>(
       };
     }
   });
+
+  console.log(newArr, "newArrnewArr");
 
   return newArr;
 }
