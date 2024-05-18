@@ -6,9 +6,10 @@ import DatePicker from "../DatePicker";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useImperativeHandle, forwardRef } from "react";
 import { useCallback } from "react";
+import Checkbox from "../Checkbox";
 
 export interface IFormItem extends IFromItemProps {
-  type: "switch" | "input" | "select" | "datepicker",
+  type: "switch" | "input" | "select" | "datepicker" | "checkbox",
   index?: number // save original index
 }
 interface IFormArrProps {
@@ -24,13 +25,21 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
   useEffect(() => {
     formArr.forEach((item, index) => {
       if (item.isControl) {
-        setControlObj({
-          ...controlObj,
+        setControlObj((prev) => ({
+          ...prev,
           [index]: item.defaultValue
-        })
+        }))
       }
     })
   }, [])
+  // useEffect(() => {
+  //   for (const key in controlObj) {
+  //     const val = controlObj[key];
+  //     const switchItem = formArr.find(item => item.index?.toString() === key)
+  //     const grounpItems = formArr.filter(item => (item.group === switchItem?.group) && (item.index !== switchItem?.index))
+  //   }
+  // }, [controlObj])
+
   const getData = (callback: (arg0: { values: Record<string, unknown>; vailded: boolean; }) => void) => {
     let vailded = true
     const values: Record<string, unknown> = {}
@@ -59,10 +68,14 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
     })
 
   }
+  useImperativeHandle(ref, () => ({
+    getData
+  }))
 
   const groupItems = useMemo(() => {
     const newMap = new Map()
     formArr.forEach((item, index) => {
+      console.log(index, 'formArr')
       if (item.group) {
         let arr = []
         if (newMap.has(item.group)) {
@@ -72,7 +85,7 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
         arr.push({ ...item, index })
         newMap.set(item.group, arr)
       } else {
-        newMap.set(item.name, item)
+        newMap.set(item.name, { ...item, index })
       }
     })
     const newValues: IFormItem[] | Array<Array<IFormItem>> = []
@@ -87,9 +100,7 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
     }
   }, [formArr])
 
-  useImperativeHandle(ref, () => ({
-    getData
-  }))
+
 
   const renderFormItem = (item: IFormItem) => {
     const index = item.index as number
@@ -108,6 +119,11 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
           {...item} />
       case "select":
         return <div>select</div>
+      case "checkbox":
+        return <Checkbox key={item.name}
+          ref={f => { refMap.current[index] = f }}
+          {...item}>
+        </Checkbox>
 
       case "datepicker":
         return <DatePicker key={item.name}
@@ -128,7 +144,10 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
               frstItem.isControl ?
                 (<>
                   {renderFormItem(frstItem)}
-                  <div className={`control-list ${frstItem.group} ${controlObj[frstItem.index as number] ? "block" : "hidden"}`}>
+                  <div className={`control-list ${frstItem.group} 
+                  ${(frstItem.controlRevert ?
+                      (!controlObj[frstItem.index as number]) :
+                      controlObj[frstItem.index as number]) ? "block" : "hidden"}`}>
                     {
                       item.map((s, k) => {
                         return k !== 0 ? renderFormItem(s) : ''

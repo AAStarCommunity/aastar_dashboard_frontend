@@ -36,18 +36,20 @@ export type ObjType<T = any> = Record<string, T>;
 export interface IFromItemProps<T = any> {
   required?: boolean;
   defaultValue?: T;
-  setValue?: (value: T) => void;
-  errorTip?: string;
+  setValue?: (value: T) => void; // getValue in component' outside,value in param
+  errorTip?: string; // vaild error can show
   placeholder?: string;
   label?: string;
   desc?: string;
-  name: string;
-  class?: string;
+  name: string; // symble the filed
+  class?: string; // classname
   disabled?: boolean;
-  inputType?: string;
-  group?: string;
-  addlist?: boolean;
-  isControl?: boolean;
+  inputType?: "number" | "possword" | "phone" | "textarea";
+  group?: string; // same content means in on group
+  addlist?: boolean; // if use add button to add lisr in input
+  isControl?: boolean; // control group  show and hide
+  controlRevert?: boolean;
+  list?: string[]; // just use for checkbox and select
 }
 
 export interface IFromItemRefs<T = any> {

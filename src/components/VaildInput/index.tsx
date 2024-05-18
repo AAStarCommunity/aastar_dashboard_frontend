@@ -28,18 +28,19 @@ const ValidInput = forwardRef<IFromItemRefs<string | number | undefined>, IFromI
 
     function getData() {
         handleVaild(value)
+        console.log(listVal)
         return {
             vaild: valided,
             value: addlist ? listVal : value
         }
     }
     const handleAddlist = useCallback(() => {
-        setListVal([
-            ...listVal,
+        setListVal(prev => [
+            ...prev,
             value
         ])
         setValue('')
-    }, [listVal, value])
+    }, [value])
 
     const deleteListVal = useCallback((index: number) => {
 

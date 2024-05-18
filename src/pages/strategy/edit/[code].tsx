@@ -10,6 +10,7 @@ import { LoadingIcon } from '~/public/icons';
 import { mergeLoadedFields } from '@/utils';
 import style from "./edit.module.scss";
 import useFormOptions from '../components/useFormOptions';
+import Message from '@/utils/message';
 
 
 export default function ApikeysEdit() {
@@ -25,13 +26,16 @@ export default function ApikeysEdit() {
     function commitChange() {
         formRefs.current?.getData(({ vailded, values }) => {
             if (vailded) {
+                console.log(values)
                 setommitted(false)
-                ajax.put(API.UPDATE_API_KEY, {
-                    api_key_name: values.key_name,
-                    // project_code: values.project_code,
-                    strategy_code: strategyCode
+                ajax.put(API.UPDATE_STRATEGY, {
+                    ...values
                 }).then(() => {
                     setommitted(true)
+                    Message({
+                        type: "success",
+                        message: "Change Saved!"
+                    })
                 })
             }
         })
@@ -41,7 +45,12 @@ export default function ApikeysEdit() {
             strategyCode = router.query.code
             ajax.get(API.GET_STRATEGY, { strategy_code: strategyCode }).then(({ data }) => {
                 if (data.code === 200) {
-                    setFormArr(prev => mergeLoadedFields(prev, { ...data.data, ...data.data.execute_restriction }))
+                    const exec = data.data.execute_restriction
+                    const addMap = {
+                        allchains: !data.data.execute_restriction?.chain_id_whitelist?.length,
+                        switch: exec.day_max_usd || exec.global_max_usd || exec.per_user_max_usd
+                    }
+                    setFormArr(prev => mergeLoadedFields(prev, { ...data.data, ...exec, ...addMap }))
                     setStatus(REQUEST_STATUS.SUCCESS)
                 } else {
                     setStatus(REQUEST_STATUS.FAIL)

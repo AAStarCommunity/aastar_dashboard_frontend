@@ -1,5 +1,6 @@
 import { IFormItem } from "@/components/Form"
 import { useState } from "react"
+import { NET_LIST } from '@/utils/const';
 const useFormOptions = (style: { readonly [x: string]: any }) => {
     const [formArr, setFormArr] = useState<IFormItem[]>([
         {
@@ -99,7 +100,26 @@ const useFormOptions = (style: { readonly [x: string]: any }) => {
             type: "input",
             addlist: true,
         },
-
+        {
+            name: "allchains",
+            label: "Enabled for all chains",
+            desc: "Enable this strategy for all chains.",
+            placeholder: '',
+            defaultValue: true,
+            type: "switch",
+            isControl: true,
+            controlRevert: true,
+            group: `${style['Chains-group']} Chains-group `
+        },
+        {
+            name: 'chain_id_whitelist',
+            label: "Enabled Chains",
+            desc: "Select the chains you want to enable this policy for.",
+            defaultValue: '',
+            type: "checkbox",
+            list: NET_LIST,
+            group: `${style['Chains-group']} Chains-group `
+        },
 
     ])
 
