@@ -59,7 +59,7 @@ class HtttpRequest {
     return this.request(newConfig);
   }
 
-  public detele(
+  public delete(
     url: string,
     params: any = {},
     config: AxiosRequestConfig = {}
@@ -67,7 +67,7 @@ class HtttpRequest {
     const newConfig = this.mergeConfig(config, {
       url,
       params,
-      method: "DETELE",
+      method: "DELETE",
     });
     return this.request(newConfig);
   }

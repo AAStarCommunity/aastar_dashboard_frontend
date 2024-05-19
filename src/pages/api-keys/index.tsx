@@ -12,6 +12,8 @@ import { IFromItemRefs, ObjType } from '@/utils/types'
 import StarText from '@/components/StartText'
 import Message from '@/utils/message'
 import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading'
+import { LoadingIcon } from '~/public/icons'
+
 
 // export async function getStaticProps() {
 //   const data = await ajax.get(API.GET_API_KEY_LIST)
@@ -29,6 +31,7 @@ export default function Apikeys() {
   const [isOpenProjectInfo, setIsOpenProjectInfo] = useState(false)
   const [currentItem, setCurrentItem] = useState<ObjType<string>>({})
   const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
+  const [deleting, setDeleting] = useState(false)
 
   const [formData, setFormData] = useState<ObjType<string>[]>([])
 
@@ -56,26 +59,33 @@ export default function Apikeys() {
     const res = keyNameRef.current?.getData()
     if (res?.vaild) {
       ajax.post(API.APPLY_API_KEY, { api_key_name: res?.value }).then(({ data }) => {
-        Message({
-          type: "success",
-          message: "success apply!"
-        })
-        init()
+        if (data.code === 200) {
+          Message({
+            type: "success",
+            message: "success apply!"
+          })
+          init()
+        }
+
       })
 
     }
   }
 
   const continueDetele = () => {
-    ajax.detele(API.DETELE_API_KEY, {
+    setDeleting(true)
+    ajax.delete(API.DELETE_API_KEY, {
       api_key: currentItem.api_key
     }).then(({ data }) => {
-      Message({
-        type: "success",
-        message: "Success Delete!"
-      })
-
-    })
+      if (data.code === 200) {
+        Message({
+          type: "success",
+          message: "Success Delete!"
+        })
+        setIsOpenDetele(false)
+        init()
+      }
+    }).finally(() => { setDeleting(true) })
   }
 
 
@@ -178,7 +188,7 @@ export default function Apikeys() {
         </ModalFooter> */}
       </Modal>
 
-      {/* detele confirm */}
+      {/* delete confirm */}
       <Modal className='w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
         isOpen={isOpenDetele}
         onClose={() => setIsOpenDetele(false)}
@@ -194,9 +204,9 @@ export default function Apikeys() {
             <button onClick={() => setIsOpenDetele(false)} type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
               cancel
             </button>
-            <button onClick={continueDetele} type="button" className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
+            <Button iconLeft={deleting ? LoadingIcon : null} type="button" onClick={continueDetele} className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
               Continue
-            </button>
+            </Button>
           </div>
 
         </ModalFooter>

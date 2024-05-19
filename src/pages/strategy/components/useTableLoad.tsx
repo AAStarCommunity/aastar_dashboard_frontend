@@ -16,14 +16,19 @@ export default function useTableLoad({ deleteClick, router }: any) {
 
 	}, [StrategyStatus])
 
-	useEffect(() => {
+	const init = () => {
 		ajax.get(API.GET_STRATEGY_LIST).then(({ data: { data } }) => {
 			const stautsList = data.map((item: { status: boolean; }) => !!item.status)
 			setStrategyStatus(stautsList)
 			setTableData(data)
 			setStatus(REQUEST_STATUS.SUCCESS)
 		})
+	}
+
+	useEffect(() => {
+		init()
 	}, [])
+
 
 	const getChangeStatus = useCallback((value: boolean, index: number) => {
 		console.log(value, index)
@@ -93,5 +98,5 @@ export default function useTableLoad({ deleteClick, router }: any) {
 
 	const dataDom = useLoading(status, tableDom)
 
-	return dataDom
+	return { dataDom, init }
 }
