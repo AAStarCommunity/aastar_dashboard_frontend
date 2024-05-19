@@ -19,6 +19,7 @@ const Switch = forwardRef<IFromItemRefs<boolean>, IFromItemProps<boolean>>((prop
   }
   useImperativeHandle(ref, () => ({
     getData,
+    setValue,
     handleVaild: () => true
   }))
 

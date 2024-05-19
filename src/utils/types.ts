@@ -54,5 +54,7 @@ export interface IFromItemProps<T = any> {
 
 export interface IFromItemRefs<T = any> {
   getData: () => { value: T | undefined; vaild: boolean };
+  setValue?: (arg: T) => void;
+  empty?: () => void;
   handleVaild: (value: string) => void;
 }

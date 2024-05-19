@@ -23,11 +23,13 @@ export default function Strategy() {
     ajax.detele(API.DETELE_STRATEGY, {
       strategy_code: currentItem.strategy_code
     }).then(({ data }) => {
-      Message({
-        type: "success",
-        message: "Success Delete!"
-      })
+      if (data.code === 200) {
+        Message({
+          type: "success",
+          message: "Success Delete!"
+        })
 
+      }
     })
   }
 

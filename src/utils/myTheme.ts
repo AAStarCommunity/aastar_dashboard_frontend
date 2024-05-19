@@ -2,7 +2,7 @@ const myTheme = {
   button: {
     primary: {
       // base: "text-white bg-aastar-600 border border-transparent focus:outline-none hover:bg-white hover-text-aastar-700 foucs:outline-0",
-      base: "text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 transition-all",
+      base: "text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 transition-all",
       active: "active:bg-aastar-600 hover:bg-aastar-700 focus:ring",
     },
   },

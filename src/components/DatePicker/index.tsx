@@ -43,9 +43,10 @@ const DatePicker = forwardRef<IFromItemRefs<number>, IFromItemProps<number>>((pr
     setShow(state)
   }
   function getData() {
+
     return {
       vaild: true,
-      value
+      value: value || 0
     }
   }
   useImperativeHandle(ref, () => ({

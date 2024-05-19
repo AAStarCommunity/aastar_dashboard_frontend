@@ -12,13 +12,8 @@ import style from "./edit.module.scss";
 // import useFormOptions from '../components/useFormOptions';
 import Message from '@/utils/message';
 import { NET_LIST } from '@/utils/const';
-
-
-export default function ApikeysEdit() {
-
-
-    // const formOptions = useFormOptions(style)
-    const [formArr, setFormArr] = useState<IFormItem[]>([
+export const formOptions: IFormItem[] =
+    [
         {
             name: 'strategy_name',
             label: "Name (required)",
@@ -125,19 +120,23 @@ export default function ApikeysEdit() {
             type: "switch",
             isControl: true,
             controlRevert: true,
-            group: `${style['Chains-group']} Chains-group `
+            group: `${style['Chains-group']} Chains-group`
         },
         {
             name: 'chain_id_whitelist',
             label: "Enabled Chains",
             desc: "Select the chains you want to enable this policy for.",
-            defaultValue: '',
+            defaultValue: [],
             type: "checkbox",
             list: NET_LIST,
-            group: `${style['Chains-group']} Chains-group `
+            group: `${style['Chains-group']} Chains-group`
         },
 
-    ])
+    ]
+
+
+export default function ApikeysEdit() {
+    const [formArr, setFormArr] = useState<IFormItem[]>(formOptions)
 
     const formRefs = useRef<IFormRefs>(null)
     const router = useRouter()
@@ -150,8 +149,8 @@ export default function ApikeysEdit() {
             if (vailded) {
                 console.log(values)
                 setommitted(false)
-                if (values.allchains) { values.chain_id_whitelist = [] }
-                if (!values.switch) { values.day_max_usd = ''; values.global_max_usd = ''; values.per_user_max_usd = '' }
+                // if (values.allchains) { values.chain_id_whitelist = [] }
+                // if (!values.switch) { values.day_max_usd = ''; values.global_max_usd = ''; values.per_user_max_usd = '' }
                 ajax.put(API.UPDATE_STRATEGY, {
                     ...values
                 }).then(() => {
@@ -171,6 +170,7 @@ export default function ApikeysEdit() {
                 if (data.code === 200) {
                     const exec = data.data.execute_restriction
                     const addMap = {
+                        // chain_id_whitelist: ['ethereum-mainnet'],
                         allchains: !data.data.execute_restriction?.chain_id_whitelist?.length,
                         switch: exec.day_max_usd || exec.global_max_usd || exec.per_user_max_usd
                     }

@@ -27,11 +27,11 @@ const ValidInput = forwardRef<IFromItemRefs<string | number | undefined>, IFromI
     }
 
     function getData() {
-        handleVaild(value)
-        console.log(listVal)
+        const parseValue = inputType == 'number' ? parseInt(value) : value
+        handleVaild(parseValue)
         return {
             vaild: valided,
-            value: addlist ? listVal : value
+            value: addlist ? listVal : parseValue
         }
     }
     const handleAddlist = useCallback(() => {
@@ -42,6 +42,8 @@ const ValidInput = forwardRef<IFromItemRefs<string | number | undefined>, IFromI
         setValue('')
     }, [value])
 
+
+
     const deleteListVal = useCallback((index: number) => {
 
         listVal.splice(index, 1)
@@ -50,14 +52,20 @@ const ValidInput = forwardRef<IFromItemRefs<string | number | undefined>, IFromI
 
     useEffect(() => {
         if (addlist) {
-            setListVal(defaultValue)
+            setListVal(defaultValue || [])
             setValue('')
+            // addlist ? setListVal([]) : 
         }
     }, [])
 
+    const empty = () => {
+        setValue('')
+    }
+
     useImperativeHandle(ref, () => ({
         getData,
-        handleVaild
+        handleVaild,
+        empty
     }))
 
     const renderComponent = () => {
@@ -89,7 +97,7 @@ const ValidInput = forwardRef<IFromItemRefs<string | number | undefined>, IFromI
         if (inputType === "textarea") {
             return <Textarea {...inputProps} />
         } else {
-            return <Input crossOrigin={undefined} {...inputProps} />
+            return <Input type={inputType} crossOrigin={undefined} {...inputProps} />
         }
     }
     return (

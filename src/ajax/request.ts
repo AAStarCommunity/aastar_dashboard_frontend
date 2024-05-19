@@ -10,7 +10,7 @@ import axios, {
 // import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export interface ResponseData {
-  code: 200 | 1 | -1;
+  code: 200 | 400 | 500;
   message: string;
   data: any;
 }
@@ -91,10 +91,9 @@ class HtttpRequest {
     instance.interceptors.request.use(
       (config) => {
         config.headers.user_id = "dylan";
-        config.baseURL =
-          process.env.NODE_ENV === "development"
-            ? location.origin + "/" + process.env.NEXT_PUBLIC_BASE_URL
-            : process.env.NEXT_PUBLIC_BASE_URL;
+        config.baseURL = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("http")
+          ? process.env.NEXT_PUBLIC_BASE_URL
+          : location.origin + "/" + process.env.NEXT_PUBLIC_BASE_URL;
         return config;
       },
       (error) => {
