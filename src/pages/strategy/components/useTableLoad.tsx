@@ -18,7 +18,7 @@ export default function useTableLoad({ deleteClick, router }: any) {
 
 	const init = () => {
 		ajax.get(API.GET_STRATEGY_LIST).then(({ data: { data } }) => {
-			const stautsList = data.map((item: { status: boolean; }) => !!item.status)
+			const stautsList = data?.map((item: { status: boolean; }) => !!item.status)
 			setStrategyStatus(stautsList)
 			setTableData(data)
 			setStatus(REQUEST_STATUS.SUCCESS)
@@ -59,7 +59,7 @@ export default function useTableLoad({ deleteClick, router }: any) {
 			</tr>
 		</thead>
 		<tbody>
-			{tabelData.map((item, index) => {
+			{tabelData?.map((item, index) => {
 				return (
 					<tr key={item.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-600">
 						<th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
