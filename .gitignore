@@ -38,6 +38,8 @@ next-env.d.ts
 # ideal
 .idea
 
+
+/etc
 .env.production
 .env.development
 .env.test
