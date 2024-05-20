@@ -604,6 +604,10 @@ video {
   pointer-events: none;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .fixed {
   position: fixed;
 }
@@ -771,10 +775,6 @@ video {
 
 .ms-6 {
   margin-inline-start: 1.5rem;
-}
-
-.mt-1 {
-  margin-top: 0.25rem;
 }
 
 .mt-10 {

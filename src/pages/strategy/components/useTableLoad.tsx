@@ -98,5 +98,5 @@ export default function useTableLoad({ deleteClick, router }: any) {
 
 	const dataDom = useLoading(status, tableDom)
 
-	return { dataDom, init }
+	return [dataDom, init]
 }

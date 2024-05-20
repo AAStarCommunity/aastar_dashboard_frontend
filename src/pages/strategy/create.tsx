@@ -17,7 +17,7 @@ export default function ApikeysEdit() {
 
     function commitChange() {
         formRefs.current?.getData(({ vailded, values }) => {
-            console.log(values, vailded, 'vaildedvailded')
+
             if (vailded) {
 
                 setommitted(false)

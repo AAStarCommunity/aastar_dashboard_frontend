@@ -5,7 +5,7 @@ import PageTitle from "@/components/Typography/PageTitle";
 import { REQUEST_STATUS } from "@/hooks/useLoading";
 import { Button, Badge, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHeader, TableRow } from "@windmill/react-ui";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import useTableLoad from "./components/useTableLoad";
 import { ObjType } from "@/utils/types";
 import Message from "@/utils/message";
@@ -20,7 +20,7 @@ export default function Strategy() {
     setCurrentItem(item)
     setIsOpenDetele(true)
   }, [])
-  const { dataDom, init } = useTableLoad({ deleteClick, router })
+  const [dataDom, init] = useTableLoad({ deleteClick, router })
 
   const continueDetele = () => {
     setDeleting(true)
@@ -33,8 +33,8 @@ export default function Strategy() {
           type: "success",
           message: "Success Delete!"
         })
-        setIsOpenDetele(false)
-        init()
+        setIsOpenDetele(false);
+        (init as () => void)()
       }
     }).finally(() => { setDeleting(true) })
   }
@@ -52,7 +52,7 @@ export default function Strategy() {
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
 
 
-        {dataDom}
+        {dataDom as ReactNode}
         {/* delete confirm */}
         <Modal className='w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
           isOpen={isOpenDetele}

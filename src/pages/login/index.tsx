@@ -24,12 +24,12 @@ export default function Login() {
   const [butloading, setButLoading] = useState(false)
   const formRefs = useRef<IFormRefs>(null)
   const githubLogin = () => {
-    location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_GITHUB_CLIENT_ID}&return_to=login/oauth/authorize`
+    location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&return_to=login/oauth/authorize`
   }
 
 
 
-  const [formArr, setFormArr] = useState<IFormItem[]>([
+  const formArr: IFormItem[] = ([
     {
       name: 'email',
       label: "Email",
@@ -50,13 +50,36 @@ export default function Login() {
     }
   ])
 
+  const getUserInfo = (token: string | undefined) => {
+    return new Promise<Record<string, any>>((resolve, reject) => {
+      ajax.get(API.GET_USER_INFO).then(({ data }) => {
+        if (data.code === 200) {
+          setStore({
+            token,
+            avatar: data.data.github_avatar_url,
+            name: data.data.github_login
+
+          })
+          resolve(data.data)
+        } else {
+          reject(data)
+        }
+      })
+    })
+  }
+
   useEffect(() => {
     if (router.isReady) {
       if (router.query.code) {
         setLoading(true)
-        ajax.get(API.OAUTH_GITHUB, { code: router.query.code }).then(({ data }) => {
+        ajax.get(API.OAUTH_GITHUB, { code: router.query.code }).then(async ({ data }) => {
           if (data.code === 200) {
 
+            setStore({
+              token: data.token
+            })
+            await getUserInfo(data.token)
+            router.replace('/')
           }
         }).finally(() => {
           setLoading(false)
@@ -70,11 +93,12 @@ export default function Login() {
     formRefs.current?.getData(({ vailded, values }) => {
       if (vailded) {
         setButLoading(true)
-        ajax.post(API.OAUTH_PASSWORD, values).then(({ data }) => {
+        ajax.post(API.OAUTH_PASSWORD, values).then(async ({ data }) => {
           if (data.code === 200) {
             setStore({
               token: data.token
             })
+            await getUserInfo(data.token)
             router.replace('/')
           }
         }).finally(() => {

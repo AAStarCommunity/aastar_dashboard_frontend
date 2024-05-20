@@ -83,14 +83,8 @@ class HtttpRequest {
     // Intercept request
     instance.interceptors.request.use(
       (config) => {
-        // 拦截请求
-        // const token = cookies().get("token");
-        // console.log(token);
-        // 拦截请求
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         const { getLocal } = useLocalStorage();
         const userInfo = getLocal(KEY);
-        console.log(userInfo);
 
         config.headers.Authorization = `Bearer ${userInfo.token}`;
         config.baseURL = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("http")
