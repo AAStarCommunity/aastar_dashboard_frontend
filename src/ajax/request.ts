@@ -1,13 +1,12 @@
 import Message from "@/utils/message";
-// import { cookies } from "next/headers";
 import axios, {
   AxiosRequestConfig,
   AxiosInstance,
   AxiosResponse,
   AxiosPromise,
 } from "axios";
-// import { KEY } from "@/context/userContext";
-// import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { KEY } from "@/context/userContext";
 
 export interface ResponseData {
   code: 200 | 400 | 500;
@@ -15,6 +14,7 @@ export interface ResponseData {
   data: any;
 }
 interface ApiResponse<T = any> extends AxiosResponse {
+  token: string | undefined;
   code: number;
   message: string;
   data: T;
@@ -72,25 +72,27 @@ class HtttpRequest {
     return this.request(newConfig);
   }
 
-  // 构建请求
   public request(config: AxiosRequestConfig): AxiosPromise<ApiResponse> {
-    // 1.创建请求
     const instance: AxiosInstance = axios.create();
-    // 2.添加拦截
     this.interceptor(instance);
-    // 3.发送请求
     return instance(config);
   }
 
-  // 添加拦截
+  // Add intercept
   private interceptor(instance: AxiosInstance) {
-    // 拦截请求
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    // const { getLocal } = useLocalStorage();
-    // const userid = cookies().get(KEY);
+    // Intercept request
     instance.interceptors.request.use(
       (config) => {
-        config.headers.user_id = "dylan";
+        // 拦截请求
+        // const token = cookies().get("token");
+        // console.log(token);
+        // 拦截请求
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const { getLocal } = useLocalStorage();
+        const userInfo = getLocal(KEY);
+        console.log(userInfo);
+
+        config.headers.Authorization = `Bearer ${userInfo.token}`;
         config.baseURL = process.env.NEXT_PUBLIC_BASE_URL?.startsWith("http")
           ? process.env.NEXT_PUBLIC_BASE_URL
           : location.origin + "/" + process.env.NEXT_PUBLIC_BASE_URL;
@@ -100,12 +102,6 @@ class HtttpRequest {
         return Promise.reject(error);
       }
     );
-
-    // interface IAxiosData {
-    //   data: any;
-    //   message: string;
-    //   code: number;
-    // }
 
     // 拦截响应
     instance.interceptors.response.use(
@@ -124,6 +120,13 @@ class HtttpRequest {
         return response;
       },
       (error) => {
+        Message({
+          type: "danger",
+          message: error.message,
+        });
+        if (error.response.status === 401) {
+          location.href = "/login";
+        }
         return Promise.reject(error);
       }
     );

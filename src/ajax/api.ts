@@ -10,5 +10,7 @@ enum API {
   UPDATE_STRATEGY = "/api/v1/paymaster_strategy",
   ADD_STRATEGY = "/api/v1/paymaster_strategy",
   DELETE_STRATEGY = "/api/v1/paymaster_strategy",
+  OAUTH_GITHUB = "/oauth/github",
+  OAUTH_PASSWORD = "/oauth/password",
 }
 export default API;

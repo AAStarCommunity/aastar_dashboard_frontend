@@ -37,3 +37,6 @@ next-env.d.ts
 
 # ideal
 .idea
+
+.env.production
+.env.development

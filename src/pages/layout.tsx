@@ -4,12 +4,15 @@ import { useRouter } from "next/router"
 import { Inter } from "next/font/google";
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar'
+
 import { SidebarContext } from '@/context/SidebarContext'
 import React, {
-  useContext, useEffect
+  useContext, useEffect,
+  useMemo
 } from 'react';
 
 import { useUserContext } from '@/context/userContext';
+import { AUTH_WHITE_LIST } from "@/utils/const";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -31,17 +34,20 @@ export default function RootLayout({
     closeSidebar()
   }, [])
 
+  const isCurAuthwhiteRoute = useMemo(() => {
+    return AUTH_WHITE_LIST.includes(router.pathname)
+  }, [router])
+
   useEffect(() => {
     if (router.isReady) {
-      if (!store?.id && router.pathname !== '/login') {
+      if (!store?.token && !isCurAuthwhiteRoute) {
         router.replace('/login')
       }
 
-      if (store?.id && router.pathname === '/login') {
+      if (store?.token && isCurAuthwhiteRoute) {
         router.push('/')
       }
     }
-
   }, [store, router.isReady])
 
 
@@ -50,11 +56,11 @@ export default function RootLayout({
       className={`flex h-screen bg-gray-50 dark:bg-gray-900  ${isSidebarOpen && 'overflow-hidden'}`}
     >
       {/* <div > */}
-      {store?.id && <Sidebar />}
+      {!isCurAuthwhiteRoute && <Sidebar />}
       {/* </div> */}
       <div className="flex flex-col flex-1 w-full">
 
-        <Header style={{ display: store?.id ? 'block' : 'none' }}></Header>
+        <Header style={{ display: !isCurAuthwhiteRoute ? 'block' : 'none' }}></Header>
         <main className="h-full overflow-y-auto scroll-smooth relative">
           <div className=" grid p-14 max-md:p-8 py-6 mx-auto">{children}</div>
         </main>

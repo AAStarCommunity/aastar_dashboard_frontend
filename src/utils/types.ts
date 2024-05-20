@@ -6,6 +6,7 @@ export interface IUsers {
   name: string;
   desc: string;
   avatar: string;
+  token: string;
   refetchHandler?: () => void;
 }
 export type IUser = IUsers | null;
@@ -44,7 +45,7 @@ export interface IFromItemProps<T = any> {
   name: string; // symble the filed
   class?: string; // classname
   disabled?: boolean;
-  inputType?: "number" | "possword" | "phone" | "textarea";
+  inputType?: "number" | "possword" | "phone" | "textarea" | "email";
   group?: string; // same content means in on group
   addlist?: boolean; // if use add button to add lisr in input
   isControl?: boolean; // control group  show and hide

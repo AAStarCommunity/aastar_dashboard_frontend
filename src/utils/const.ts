@@ -11,3 +11,5 @@ export const NET_LIST = [
   "base-mainnet",
   "base-sepolia",
 ];
+
+export const AUTH_WHITE_LIST = ["/login", "/oauth/github"];
