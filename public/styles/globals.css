@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+
+
+
+body {
+  color: rgb(var(--foreground-rgb));
+  /* background: linear-gradient(to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb)); */
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* mytheme */
+:root,
+dialog::backdrop {
+  --color-primBlue-1050: #e5f2ff;
+  --color-primBlue-1000: hsl(216deg 100% 93%);
+  --color-primBlue-900: hsl(216deg 100% 85%);
+  --color-primBlue-800: hsl(219deg 95% 76%);
+  --color-primBlue-700: hsl(222deg 81% 65%);
+  --color-primBlue-600: hsl(224deg 69% 54%);
+  --color-primBlue-500: hsl(223deg 71% 47%);
+  --color-primBlue-400: hsl(228deg 74% 43%);
+  --color-primBlue-300: hsl(230deg 80% 38%);
+  --color-primBlue-200: hsl(232deg 86% 32%);
+  --color-primBlue-100: hsl(234deg 90% 25%);
+  --color-primBlue-50: hsl(236deg 84% 7%);
+}
+
+button:focus,
+button:active,
+[type='checkbox']:focus,
+[type='radio']:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.active:bg-aastar-600 {
+  background-color: var(--color-primBlue-600);
+}
+
+.hover:bg-aastar-700 {
+  background-color: var(--color-primBlue-700);
+}
+
+.hover-text-aastar-700:hover {
+  color: var(--color-primBlue-700);
+}
+
+.theme-dark .hover-text-aastar-700:hover {
+  color: var(--color-primBlue-700);
+}
+
+
+.bg-aastar-600 {
+  background-color: var(--color-primBlue-600);
+}
+
+
+.text-aastar-600 {
+  color: var(--color-primBlue-600);
+}
+
+.dark:text-aastar-300 {
+  color: var(--color-primBlue-300);
+}
+
+.focus-within:text-aastar-500 {
+  color: var(--color-primBlue-500);
+}
+
+[data-type=loading] {
+  animation: spin 1s linear infinite;
+}

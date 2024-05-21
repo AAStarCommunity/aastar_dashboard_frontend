@@ -3,25 +3,38 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "tailwind:dev": "tailwindcss build public/styles/tailwind.css -o public/styles/tailwind.output.css",
+    "tailwind:build": "cross-env NODE_ENV=production postcss public/styles/tailwind.css -o public/styles/tailwind.output.css",
+    "dev": "cross-env NODE_ENV=development dotenv -e  etc/secrets/.env.local -- next dev",
+    "build:dev": "cross-env NODE_ENV=production dotenv -e  etc/secrets/.env.development -- next build",
+    "start:dev": "cross-env NODE_ENV=production dotenv -e  etc/secrets/.env.development -- next start",
+    "build": "cross-env NODE_ENV=production dotenv -e  etc/secrets/.env.production -- next build",
+    "start": "cross-env NODE_ENV=production dotenv -e  etc/secrets/.env.production -- next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@windmill/react-ui": "^0.6.0",
+    "axios": "^1.6.8",
+    "copy-to-clipboard": "^3.3.3",
+    "dotenv-cli": "^7.4.2",
+    "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.1.4"
+    "sass": "^1.77.2",
+    "tailwind-datepicker-react": "^1.4.3"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@svgr/webpack": "^8.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.4",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "eslint": "^8",
-    "eslint-config-next": "14.1.4"
+    "typescript": "^5"
   }
 }

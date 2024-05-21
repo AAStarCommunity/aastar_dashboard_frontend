@@ -37,3 +37,9 @@ next-env.d.ts
 
 # ideal
 .idea
+
+
+
+/etc/secrets/.env.production
+/etc/secrets/.env.development
+/etc/secrets/.env.test
