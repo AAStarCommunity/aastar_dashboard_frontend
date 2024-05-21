@@ -39,7 +39,7 @@ next-env.d.ts
 .idea
 
 
-/etc
-.env.production
-.env.development
-.env.test
+
+/etc/secrets/.env.production
+/etc/secrets/.env.development
+/etc/secrets/.env.test

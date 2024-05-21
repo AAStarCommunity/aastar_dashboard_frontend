@@ -4,16 +4,23 @@ EthPaymasterDashBoard
 
 ## Getting Started
 
-First, run the development server:
+First, add EnvConfig in etc/secrets
+If In Dev Env Edit /etc/secrets/.env.development
+If In Product Env Edit  /etc/secrets/.env.production
+
+second, run the development server:
+In Dev
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run build:dev 
+npm run start:dev
+```
+In Prod
+```bash
+npm install
+npm run build 
+npm run start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
