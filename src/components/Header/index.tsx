@@ -11,7 +11,6 @@ import {
     SunIcon,
     BellIcon,
     MenuIcon,
-    OutlinePersonIcon,
     OutlineCogIcon,
     OutlineLogoutIcon,
 } from '../../../public/icons'
@@ -71,10 +70,10 @@ function Header(props: Iprops) {
                         <div className="absolute inset-y-0 flex items-center pl-2">
                             <SearchIcon className="w-4 h-4" aria-hidden="true" />
                         </div>
-                        <Input
+                        {/* <Input
                             className="pl-8 text-gray-700"
                             placeholder="Search for projects"
-                            aria-label="Search" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} css={undefined} crossOrigin={undefined} />
+                            aria-label="Search" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} css={undefined} crossOrigin={undefined} /> */}
                     </div>
                 </div>
                 <ul className="flex items-center flex-shrink-0 space-x-6">

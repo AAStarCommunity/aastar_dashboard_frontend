@@ -21,12 +21,12 @@ interface ApiResponse<T = any> extends AxiosResponse {
 }
 
 class HtttpRequest {
-  // 合并配置项
+  // Merge configuration items
   private mergeConfig(...configs: AxiosRequestConfig[]): AxiosRequestConfig {
     return Object.assign({}, ...configs);
   }
 
-  // 设置get请求别名
+  // Set the get request alias
   public get(
     url: string,
     params: any = {},
@@ -40,7 +40,7 @@ class HtttpRequest {
     return this.request(newConfig);
   }
 
-  // 设置post请求别名
+  // Set the post request alias
   public post(
     url: string,
     data: any = {},
@@ -97,7 +97,7 @@ class HtttpRequest {
       }
     );
 
-    // 拦截响应
+    //Intercept response
     instance.interceptors.response.use(
       (response: AxiosResponse) => {
         const {

@@ -19,7 +19,5 @@ export function mergeLoadedFields<T extends FormItem>(
     }
   });
 
-  console.log(newArr, "newArrnewArr");
-
   return newArr;
 }

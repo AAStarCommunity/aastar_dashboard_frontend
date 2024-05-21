@@ -36,7 +36,6 @@ const Checkbox = forwardRef<IFromItemRefs<string[]>, IFromItemProps<string[]>>((
   }
   const empty = () => {
     setValue([])
-    console.log(value)
   }
   useImperativeHandle(ref, () => ({
     getData,

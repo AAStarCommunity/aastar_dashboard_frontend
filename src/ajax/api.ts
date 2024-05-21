@@ -1,4 +1,3 @@
-// 管理接口
 enum API {
   GET_API_KEY_LIST = "/api/v1/api_key/list",
   GET_API_KEY = "/api/v1/api_key",

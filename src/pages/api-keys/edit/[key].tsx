@@ -38,10 +38,8 @@ export default function ApikeysEdit() {
     ])
     function commitChange() {
         formRefs.current?.getData(({ vailded, values }) => {
-            console.log(apiKey)
             if (vailded) {
                 setommitted(false)
-                console.log(values)
                 ajax.put(API.UPDATE_API_KEY, {
                     api_key_name: values.key_name,
                     // project_code: values.project_code,
@@ -78,7 +76,7 @@ export default function ApikeysEdit() {
 
             <div className='pb-10 relative '>
                 {dataDom}
-                <Button onClick={commitChange} iconLeft={committed ? null : LoadingIcon}>Save changes
+                <Button onClick={commitChange} disabled={!committed} iconLeft={committed ? null : LoadingIcon}>Save changes
                 </Button>
                 <div className='text-gray-500 text-sm pt-4 dark:text-gray-400'>The changes will take effect in about a minute.</div>
             </div>

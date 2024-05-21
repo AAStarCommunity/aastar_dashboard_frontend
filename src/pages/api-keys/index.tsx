@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 import ajax, { API } from '@/ajax'
 import { useRouter } from 'next/router'
 import { IFromItemRefs, ObjType } from '@/utils/types'
-import StarText from '@/components/StartText'
+import StarText from '@/components/StarText'
 import Message from '@/utils/message'
 import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading'
 import { LoadingIcon } from '~/public/icons'
@@ -55,9 +55,9 @@ export default function Apikeys() {
   }, [])
 
   const handleGenerateKey = () => {
-    setIsOpenCreate(false)
     const res = keyNameRef.current?.getData()
     if (res?.vaild) {
+      setIsOpenCreate(false)
       ajax.post(API.APPLY_API_KEY, { api_key_name: res?.value }).then(({ data }) => {
         if (data.code === 200) {
           Message({
@@ -66,7 +66,6 @@ export default function Apikeys() {
           })
           init()
         }
-
       })
 
     }
@@ -146,7 +145,6 @@ export default function Apikeys() {
       <div className='flex items-center justify-between'>
         <h1 className='dark:text-white font-bold text-2xl text-gray-900'>API Keys</h1>
         <button onClick={() => setIsOpenCreate(true)} type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">API keys apply</button>
-        {/* <Button ></Button> */}
 
       </div>
       <div className="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg overflow-hidden">

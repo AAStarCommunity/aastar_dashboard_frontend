@@ -107,15 +107,6 @@ export default function Login() {
       }
 
     })
-
-    // if (res.data.login.code === 200) {
-    //     store.refetchHandler();
-
-    //     message.success(res.data.login.message);
-    //     nav(params.get('orgUrl') || '/');
-    //     return;
-    // }
-    // message.error(res.data.login.message);
   };
   return (
     <>
@@ -132,7 +123,7 @@ export default function Login() {
                 <h2 className="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-200">to continue to AAStar</h2>
                 <Form formArr={formArr} ref={formRefs}></Form>
 
-                <Button className="mt-4" iconLeft={butloading ? LoadingIcon : null} block onClick={loginHandler}>
+                <Button className="mt-4" iconLeft={butloading ? LoadingIcon : null} disabled={butloading} block onClick={loginHandler}>
                   Sign in
                 </Button>
 

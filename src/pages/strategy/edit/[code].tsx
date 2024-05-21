@@ -147,10 +147,7 @@ export default function ApikeysEdit() {
     function commitChange() {
         formRefs.current?.getData(({ vailded, values }) => {
             if (vailded) {
-                console.log(values)
                 setommitted(false)
-                // if (values.allchains) { values.chain_id_whitelist = [] }
-                // if (!values.switch) { values.day_max_usd = ''; values.global_max_usd = ''; values.per_user_max_usd = '' }
                 ajax.put(API.UPDATE_STRATEGY, {
                     ...values
                 }).then(() => {
@@ -195,7 +192,7 @@ export default function ApikeysEdit() {
 
             <div className='pb-10 relative md '>
                 {dataDom}
-                <Button onClick={commitChange} iconLeft={committed ? null : LoadingIcon}>Save changes
+                <Button onClick={commitChange} disabled={!committed} iconLeft={committed ? null : LoadingIcon}>Save changes
                 </Button>
                 <div className='text-gray-500 text-sm pt-4 dark:text-gray-400'>The changes will take effect in about a minute.</div>
             </div>

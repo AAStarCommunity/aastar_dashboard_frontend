@@ -7,7 +7,6 @@ const Switch = forwardRef<IFromItemRefs<boolean>, IFromItemProps<boolean>>((prop
   const handleChange = useCallback((e: any) => {
     setValue(e.target.checked)
     props.setValue?.(e.target.checked)
-    // console.log(e.target.checked)
   }, [])
 
 

@@ -5,7 +5,6 @@ import React, {
 } from 'react';
 import { IPropChild, IStore } from './types';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-// import { cookies } from 'next/headers';
 
 
 
@@ -20,7 +19,6 @@ export function getCxtProvider<T>(
     const { getLocal, setLocal } = useLocalStorage();
     const [store, setStore] = useState(defaultValue);
 
-    // const [storageData, setStorageData] = useState({});
     useEffect(() => {
       storage && setStore(getLocal(key))
     }, [])
@@ -31,7 +29,6 @@ export function getCxtProvider<T>(
         storage,
         setStore: (payload: any) => setStore((state) => {
           const data = payload ? { ...state, ...payload } : {}
-          // key === 'userinfo' && cookies().set('token', data.token)
           storage && setLocal(key, data as Record<string, unknown> | string)
           return ({
             ...data

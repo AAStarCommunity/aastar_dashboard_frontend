@@ -7,10 +7,9 @@ const DatePicker = forwardRef<IFromItemRefs<number>, IFromItemProps<number>>((pr
   const [value, setValue] = useState<number | undefined>(props.defaultValue)
   const handleChange = useCallback((selectedDate: Date) => {
     const timestamp = new Date(selectedDate).getTime()
-    console.log(timestamp)
+
     setValue(timestamp)
     props.setValue?.(timestamp)
-    // console.log(e.target.checked)
   }, [])
 
   const options = {
@@ -60,7 +59,6 @@ const DatePicker = forwardRef<IFromItemRefs<number>, IFromItemProps<number>>((pr
       {props.label && <h4 className="shrink-0 text-lg text-gray-700 dark:text-gray-200 mr-6">{props.label}</h4>}
       {props.desc && <div className="text-gray-500 dark:text-gray-400 my-2">{props.desc}</div>}
       <Datepicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
-      {/* </div> */}
 
     </Label>
 

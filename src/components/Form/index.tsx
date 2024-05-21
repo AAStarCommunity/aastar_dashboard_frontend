@@ -34,29 +34,24 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
   }, [])
 
   useEffect(() => {
-    console.log(controlObj)
+
     for (const key in controlObj) {
       const val = controlObj[key];
       let switchItem: IFormItem
       formArr.forEach((item, index) => {
-        // console.log(key, index, 'switchItem')
         if (index.toString() === key) {
           switchItem = item
 
         } else if (item.group && item.group === switchItem?.group) {
-          // console.log(item.group, switchItem?.group, 'switchItem?.group')
           // if the switch control the group items hide, when condition is hide, group items empty.
           const emptyCondition = item.controlRevert ? !val : val
 
           if (!emptyCondition) {
-            // console.log(!emptyCondition, index, item.group)
             refMap.current[index]?.empty?.()
           }
         }
 
       })
-      // const switchItem = formArr.find(item => item.index?.toString() === key)
-      // const grounpItems = formArr.filter(item => (item.group === switchItem?.group) && (item.index !== switchItem?.index))
     }
   }, [controlObj, formArr])
 
@@ -68,7 +63,6 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
 
       const result = item?.getData()
       const vaild = item?.handleVaild(result?.value as string)
-      console.log(vaild, index)
       if (!vaild) {
         vailded = false
         if (unVaildedIndex == -1) {

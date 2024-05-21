@@ -28,9 +28,9 @@ const ValidInput = forwardRef<IFromItemRefs<string | number | undefined>, IFromI
 
     function getData() {
         const parseValue = inputType == 'number' ? parseInt(value) : value
-        handleVaild(parseValue)
+        const vaild = handleVaild(parseValue)
         return {
-            vaild: valided,
+            vaild,
             value: addlist ? listVal : parseValue
         }
     }

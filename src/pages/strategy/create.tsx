@@ -12,41 +12,41 @@ import { formOptions } from './edit/[code]';
 
 export default function ApikeysEdit() {
 
-    const formRefs = useRef<IFormRefs>(null)
-    const [committed, setommitted] = useState(true)
+  const formRefs = useRef<IFormRefs>(null)
+  const [committed, setommitted] = useState(true)
 
-    function commitChange() {
-        formRefs.current?.getData(({ vailded, values }) => {
+  function commitChange() {
+    formRefs.current?.getData(({ vailded, values }) => {
 
-            if (vailded) {
+      if (vailded) {
 
-                setommitted(false)
-                ajax.post(API.ADD_STRATEGY, {
-                    ...values
-                }).then(({ data }) => {
-                    setommitted(true)
-                    if (data.code === 200) {
-                        Message({
-                            type: "success",
-                            message: "Create Successful!"
-                        })
-                    }
-                })
-            }
+        setommitted(false)
+        ajax.post(API.ADD_STRATEGY, {
+          ...values
+        }).then(({ data }) => {
+          setommitted(true)
+          if (data.code === 200) {
+            Message({
+              type: "success",
+              message: "Create Successful!"
+            })
+          }
         })
-    }
+      }
+    })
+  }
 
-    return (
+  return (
 
-        <div className={style.form}>
-            < PageTitle > Create Strategy</ PageTitle>
+    <div className={style.form}>
+      < PageTitle > Create Strategy</ PageTitle>
 
-            <div className='pb-10 relative md '>
-                <Form formArr={formOptions} ref={formRefs} />
-                <Button onClick={commitChange} iconLeft={committed ? null : LoadingIcon}>Create Now
-                </Button>
-                <div className='text-gray-500 text-sm pt-4 dark:text-gray-400'>The changes will take effect in about a minute.</div>
-            </div>
-        </div>
-    )
+      <div className='pb-10 relative md '>
+        <Form formArr={formOptions} ref={formRefs} />
+        <Button onClick={commitChange} disabled={!committed} iconLeft={committed ? null : LoadingIcon}>Create Now
+        </Button>
+        <div className='text-gray-500 text-sm pt-4 dark:text-gray-400'>The changes will take effect in about a minute.</div>
+      </div>
+    </div>
+  )
 }

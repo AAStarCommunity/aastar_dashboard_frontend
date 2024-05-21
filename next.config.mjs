@@ -37,7 +37,7 @@ const nextConfig = {
       // request proxy
       {
         source: "/text-api/:path*",
-        destination: `https://aastar-dashboard-backend-dev.onrender.com/:path*`,
+        destination: `${process.env.DESTINATION_URL}:path*`,
       },
     ];
   },

@@ -47,7 +47,7 @@ function Alert({ children }: IPropChild) {
     }
   }, [setStore, store.delay, store.show])
 
-  // 将事件绑定为全局方法
+  // Bind events as global methods
   function messgaeFunction(e: CustomEventInit) {
     setStore(e.detail)
   }
