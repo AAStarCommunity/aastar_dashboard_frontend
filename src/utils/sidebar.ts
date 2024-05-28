@@ -15,17 +15,17 @@ const routes: IRoutes = [
   {
     path: "/", // the url
     icon: "HomeIcon", // the component being exported from icons/index.js
-    name: "Dashboard", // name that appear in Sidebar
+    name: "Home", // name that appear in Sidebar
   },
   {
     path: "/api-keys",
     icon: "FormsIcon",
-    name: "APIKey apply",
+    name: "API Keys",
   },
   {
     path: "/strategy",
     icon: "PagesIcon",
-    name: "Strategy Data",
+    name: "Sponsor Strategies",
   },
 ];
 

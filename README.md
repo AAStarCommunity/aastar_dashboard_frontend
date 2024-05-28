@@ -9,6 +9,12 @@ If In Dev Env Edit /etc/secrets/.env.development
 If In Product Env Edit  /etc/secrets/.env.production
 
 second, run the development server:
+In Local 
+
+```bash
+npm install
+npm run dev
+```
 In Dev
 
 ```bash

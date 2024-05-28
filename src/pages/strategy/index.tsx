@@ -16,11 +16,13 @@ export default function Strategy() {
   const [currentItem, setCurrentItem] = useState<ObjType<string>>({})
   const [isOpenDetele, setIsOpenDetele] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [disable, setDisable] = useState(false)
   const deleteClick = useCallback((item: ObjType<string>) => {
     setCurrentItem(item)
     setIsOpenDetele(true)
   }, [])
-  const [dataDom, init] = useTableLoad({ deleteClick, router })
+
+  const [dataDom, init] = useTableLoad({ deleteClick,router })
 
   const continueDetele = () => {
     setDeleting(true)
@@ -42,7 +44,7 @@ export default function Strategy() {
   return (
     <>
       <div className='flex items-center justify-between'>
-        <PageTitle>Strategy Data</PageTitle>
+        <PageTitle>Sponsor Strategies</PageTitle>
 
         <Button onClick={() => router.push(`/strategy/create`)} >Create Strategy</Button>
 
@@ -50,8 +52,6 @@ export default function Strategy() {
 
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-
-
         {dataDom as ReactNode}
         {/* delete confirm */}
         <Modal className='w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
