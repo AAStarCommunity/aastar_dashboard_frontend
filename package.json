@@ -20,6 +20,8 @@
     "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-is": "^18.3.1",
+    "recharts": "^2.12.7",
     "sass": "^1.77.2",
     "tailwind-datepicker-react": "^1.4.3"
   },

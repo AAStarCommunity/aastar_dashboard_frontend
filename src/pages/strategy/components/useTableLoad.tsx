@@ -4,7 +4,15 @@ import useLoading, {REQUEST_STATUS} from "@/hooks/useLoading";
 import {IPropChild, ObjType} from "@/utils/types";
 import {useCallback, useEffect, useState} from "react";
 
-
+const Enable = () => <span style={{color: "green"}}>Enabled</span>;
+const Disable = () => <span style={{color: "red"}}>Disabled</span>;
+const StatusCell = (status: boolean) => {
+    return (
+        <td className="px-6 py-5">
+            {status ? <Enable/> : <Disable/>}
+        </td>
+    );
+};
 export default function useTableLoad({deleteClick, router}: any) {
     const [tableData, setTableData] = useState<ObjType<any>[]>([])
     const [status, setStatus] = useState(REQUEST_STATUS.LOADING)
@@ -18,7 +26,7 @@ export default function useTableLoad({deleteClick, router}: any) {
 
     const init = () => {
         ajax.get(API.GET_STRATEGY_LIST).then(({data: {data}}) => {
-            const statusList = data?.map((item: { status: string; }) =>item.status === "enable");
+            const statusList = data?.map((item: { status: string; }) => item.status === "enable");
 
             setStrategyStatus(statusList)
             setTableData(data)
@@ -51,14 +59,15 @@ export default function useTableLoad({deleteClick, router}: any) {
         // ajax.put(API.UPDATE_STRATEGY, {strategy_code: strategy.strategy_code, status})
     }, [])
 
+
     const tableDom = (<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
             <th scope="col" className="px-6 py-3">
-                Strategy name
+                StrategyName
             </th>
             <th scope="col" className="px-6 py-3">
-                Strategy ID
+                StrategyCode
             </th>
             <th scope="col" className="px-6 py-3">
                 Chains
@@ -73,6 +82,7 @@ export default function useTableLoad({deleteClick, router}: any) {
         </thead>
         <tbody>
         {tableData?.map((item, index) => {
+
             return (
                 <tr key={item.id}
                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-600">
@@ -89,12 +99,7 @@ export default function useTableLoad({deleteClick, router}: any) {
                             : "ALL"
                         }
                     </td>
-                    <td className="px-6 py-5" style={{color: item.status === "disable" ? "red" : "green"}}>
-                        { StrategyStatus[index] ? "enable" : "disable"}
-                        {/*<Switch defaultValue={item.status !== "disable"}*/}
-                        {/*        setValue={(value) => getChangeStatus(!!value, index)}*/}
-                        {/*        name="status" class="mb-0" ></Switch>*/}
-                    </td>
+                    {StatusCell(StrategyStatus[index])}
                     <td className="px-6 py-4 text-left">
                         <button onClick={() => router.push(`/strategy/edit/${item.strategy_code}`)} type="button"
                                 className="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
@@ -103,12 +108,12 @@ export default function useTableLoad({deleteClick, router}: any) {
                         <button
                             onClick={() => changeStrategyStatus(!StrategyStatus[index], index)}
                             type="button"
-                            className={`text-blue-900 ${
+                            className={` ${
                                 StrategyStatus[index]
-                                    ? 'text-white bg-gradient-to-br from-pink-500 to-blue-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-blue-600 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2'
-                                    : 'text-black bg-gradient-to-br from-pink-500 to-blue-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2'
+                                    ? 'text-yellow-700 bg-gradient-to-br from-green-400 to-green-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-blue-600 '
+                                    : 'text-black bg-gradient-to-br from-green-400 to-green-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-blue-600 '
                             } font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2`}>
-                            {StrategyStatus[index] ? "disable" : "enable"}
+                            {StrategyStatus[index] ? "Disable" : "Enable"}
                         </button>
                         {/* <button onClick={() => setIsOpenProjectInfo(true)} type="button" className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
             Project Info

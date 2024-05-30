@@ -27,6 +27,11 @@ const routes: IRoutes = [
     icon: "PagesIcon",
     name: "Sponsor Strategies",
   },
+  {
+    path: "/gas-tank",
+    icon: "GasTank",
+    name: "Gas Tank",
+  },
 ];
 
 export default routes;

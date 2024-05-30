@@ -1,57 +1,25 @@
+import React, {useState, useEffect} from 'react';
+import {SuccessRatePieChar} from "@/components/chart";
 
+const data = [
+    { name: 'Successful', value: 23, color: '#8884d8' }, // Blue color for successful
+    { name: 'Failed', value: 3, color: '#ff4848' }, // Red color for failed
+];
 export default function Home() {
-  return (
-    <>
 
-      <div role="status" className="space-y-2.5 animate-pulse max-w-lg">
-        <div className="flex items-center w-full">
-          <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-32"></div>
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-24"></div>
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
-        </div>
-        <div className="flex items-center w-full max-w-[480px]">
-          <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-24"></div>
-        </div>
-        <div className="flex items-center w-full max-w-[400px]">
-          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
-          <div className="h-2.5 ms-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80"></div>
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
-        </div>
-        <div className="flex items-center w-full max-w-[480px]">
-          <div className="h-2.5 ms-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-24"></div>
-        </div>
-        <div className="flex items-center w-full max-w-[440px]">
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-32"></div>
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-24"></div>
-          <div className="h-2.5 ms-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full"></div>
-        </div>
-        <div className="flex items-center w-full max-w-[360px]">
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
-          <div className="h-2.5 ms-2 bg-gray-200 rounded-full dark:bg-gray-700 w-80"></div>
-          <div className="h-2.5 ms-2 bg-gray-300 rounded-full dark:bg-gray-600 w-full"></div>
-        </div>
-        <span className="sr-only">Loading...</span>
-      </div>
 
-      <div role="status" className="mt-20 max-w-sm p-4 border border-gray-200 rounded shadow animate-pulse md:p-6 dark:border-gray-700">
-        <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-32 mb-2.5"></div>
-        <div className="w-48 h-2 mb-10 bg-gray-200 rounded-full dark:bg-gray-700"></div>
-        <div className="flex items-baseline mt-4">
-          <div className="w-full bg-gray-200 rounded-t-lg h-72 dark:bg-gray-700"></div>
-          <div className="w-full h-56 ms-6 bg-gray-200 rounded-t-lg dark:bg-gray-700"></div>
-          <div className="w-full bg-gray-200 rounded-t-lg h-72 ms-6 dark:bg-gray-700"></div>
-          <div className="w-full h-64 ms-6 bg-gray-200 rounded-t-lg dark:bg-gray-700"></div>
-          <div className="w-full bg-gray-200 rounded-t-lg h-80 ms-6 dark:bg-gray-700"></div>
-          <div className="w-full bg-gray-200 rounded-t-lg h-72 ms-6 dark:bg-gray-700"></div>
-          <div className="w-full bg-gray-200 rounded-t-lg h-80 ms-6 dark:bg-gray-700"></div>
-        </div>
-        <span className="sr-only">Loading...</span>
-      </div>
+    return (
+        <main>
+            <h1>Home</h1>
 
-    </>
-  );
+            <div className="flex  gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <SuccessRatePieChar/>
+                <SuccessRatePieChar/>
+
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8"></div>
+        </main>
+);
 }
+
