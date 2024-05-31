@@ -1,4 +1,4 @@
-import {Cell, Pie, PieChart, Tooltip} from "recharts";
+import {Cell, Line, Pie, PieChart, Tooltip} from "recharts";
 import React from "react";
 
 
@@ -34,4 +34,10 @@ export function SuccessRatePieChar() {
         </div>
     )
 }
-
+export  function DataOverviewCard() {
+    return (
+        <div>
+            <Line data={data} />
+        </div>
+    );
+}
