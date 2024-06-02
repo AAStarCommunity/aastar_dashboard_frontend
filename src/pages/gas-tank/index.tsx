@@ -1,22 +1,17 @@
 import PageTitle from "@/components/Typography/PageTitle";
-import {Button, Table} from "@windmill/react-ui";
+import {Button} from "@windmill/react-ui";
 import {useRouter} from "next/router";
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Inter} from "next/font/google";
-import { useReactTable } from '@tanstack/react-table'
-import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
-} from 'recharts';
-import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
+import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
+import {AgGridReact} from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
+import ajax, {API} from "@/ajax";
 
-import { ColDef } from 'ag-grid-community';
 const inter = Inter({
     subsets: ["latin"]
 });
-
-
 
 
 export default function GasTank() {
@@ -51,24 +46,39 @@ export default function GasTank() {
 
             <div className={subLine}>
                 <h2 className="text-9xl md:text-2xl">APi Tank consume View</h2>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 ">
-                    <div className="col-span-1 bg-blue-500 p-4">Header</div>
-                    <div className="col-span-1 bg-yellow-50 p-4">Sidebar</div>
-                    <div className="col-span-1 bg-yellow-500 p-4">Main Content</div>
-                    <div className="col-span-1 bg-red-500 p-4">Footer</div>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4  grid-cols-4">
+                    <div className="col-span-1  p-4 ">
+                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                    </div>
+                    <div className="col-span-1  p-4">
+                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                    </div>
+                    <div className="col-span-1  p-4">
+                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                    </div>
+                    <div className="col-span-1  p-4">
+                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                    </div>
 
                 </div>
             </div>
 
             <div className={subLine}>
                 <h2 className="text-9xl md:text-2xl"> Strategy View</h2>
-                <div className="flex">
-                    <div className="flex-auto">
-                        <h2 className="text-9xl w-64"> Strategy A</h2>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4  grid-cols-4">
+                    <div className="col-span-1  p-4 ">
+                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
                     </div>
-                    <div className="flex-auto">
-                        <h2 className="text-9xl md:text-2xl"> Strategy B</h2>
+                    <div className="col-span-1  p-4">
+                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
                     </div>
+                    <div className="col-span-1  p-4">
+                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                    </div>
+                    <div className="col-span-1  p-4">
+                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                    </div>
+
                 </div>
 
             </div>
@@ -134,25 +144,31 @@ export function ComsumeTankChartInDay() {
 }
 
 
-
 function TransHisToryTable() {
-    const [rowData, setRowData] = useState([
-        { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-        { make: "Ford", model: "F-Series", price: 33850, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-        { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-    ]);
+    const [rowData, setRowData] = useState([]);
 
-    const columnDefs: ColDef<{ make: string; model: string; price: number; electric: boolean; }>[] = [
-        { headerName: 'Make', field: 'make' , flex: 1 },
-        { headerName: 'Model', field: 'model', flex: 1 },
-        { headerName: 'Price', field: 'price', flex: 1 },
-        { headerName: 'Electric', field: 'electric', flex: 1 },
+    const tableInit = () => {
+        ajax.get(API.GET_SPONSOR_TRANSACTION_LIST,{
+            is_test_net : true
+        }).then(({data: {data}}) => {
+            setRowData(data)
+        })
+
+    }
+    useEffect(() => {
+        tableInit();
+
+    }, []);
+    const columnDefs: any = [
+        {headerName: 'UpdateType', field: 'update_type', flex: 1},
+        {headerName: 'Amount', field: 'amount', flex: 1},
+        {headerName: 'TxHash', field: 'tx_hash', flex: 1},
+        {headerName: 'Time', field: 'time', flex: 1},
     ];
     return (
         <div
             className="ag-theme-quartz w-full min-w-full" // applying the grid theme
-            style={{height: 500 }}
+            style={{height: 500}}
         >
             <AgGridReact
                 className="min-w-full"
@@ -163,3 +179,4 @@ function TransHisToryTable() {
     )
 
 }
+

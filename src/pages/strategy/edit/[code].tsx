@@ -157,6 +157,11 @@ export default function ApikeysEdit() {
                         message: "Change Saved!"
                     })
                 })
+
+                router.push('/strategy').then(() => {
+                    window.scrollTo(0, 0)
+                })
+
             }
         })
     }

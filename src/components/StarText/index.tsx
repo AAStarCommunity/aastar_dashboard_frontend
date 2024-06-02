@@ -11,7 +11,10 @@ const StarText = ({ text }: { text: string }) => {
   return (
     <div className='flex flex-row items-center gap-4 '>
       <span className={isHidden ? 'text-lg' : ''}> {isHidden ? '*'.repeat(text.length) : text}</span>
-      <span onClick={toggleVisibility} className='dark:text-white transition-all text-slate-900 hover-text-aastar-700 hover:cursor-pointer size-4 ml-2'>
+      <span onClick={(e)=>{
+          e.stopPropagation()
+          toggleVisibility()
+      }} className='dark:text-white transition-all text-slate-900 hover-text-aastar-700 hover:cursor-pointer size-4 ml-2'>
         {isHidden ?
           <ViewIcon /> : <ViewOffIcon />}
       </span>

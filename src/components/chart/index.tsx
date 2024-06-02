@@ -1,4 +1,15 @@
-import {Cell, Line, Pie, PieChart, Tooltip} from "recharts";
+import {
+    CartesianGrid,
+    Cell, Legend,
+    Line,
+    LineChart,
+    Pie,
+    PieChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis
+} from "recharts";
 import React from "react";
 
 
@@ -34,6 +45,31 @@ export function SuccessRatePieChar() {
         </div>
     )
 }
+export function RequestHealthChart(
+    {requestHealthData}: {
+        requestHealthData?: { date: string, successful: number, failed: number }[]
+    }
+) {
+    return (
+        <div className="container mx-auto my-1 mt-4">
+            <ResponsiveContainer width="100%" height={400}>
+                <LineChart
+                    data={requestHealthData}
+                    margin={{top: 5, right: 30, left: 20, bottom: 5}}
+                >
+                    <CartesianGrid strokeDasharray="3 3"/>
+                    <XAxis dataKey="date"/>
+                    <YAxis/>
+                    <Tooltip/>
+                    <Legend/>
+                    <Line type="monotone" dataKey="successful" stroke="#0000ff"/>
+                    <Line type="monotone" dataKey="failed" stroke="#ff0000"/>
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+    )
+}
+
 export  function DataOverviewCard() {
     return (
         <div>

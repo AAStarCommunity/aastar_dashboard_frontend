@@ -9,6 +9,8 @@ enum API {
   UPDATE_STRATEGY = "/api/v1/paymaster_strategy",
   ADD_STRATEGY = "/api/v1/paymaster_strategy",
   DELETE_STRATEGY = "/api/v1/paymaster_strategy",
+  GET_SPONSOR_TRANSACTION_LIST = "/api/v1/data/sponsor_transactions",
+  GET_PAYMASTER_REQUEST_LIST = "/api/v1/data/paymaster_requests",
   GET_USER_INFO = "/api/v1/user",
   OAUTH_GITHUB = "/oauth/github",
   OAUTH_PASSWORD = "/oauth/password",
