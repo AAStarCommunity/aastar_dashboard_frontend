@@ -5,7 +5,19 @@ import {AgGridReact} from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import ajax, {API} from "@/ajax"; // Optional Theme applied to the grid
+const requestHealthChartData = [
 
+    {date: '05/07', successful: 3600, failed: 123},
+    {date: '05/08', successful: 1800, failed: 0},
+    {date: '05/09', successful: 2323, failed: 123},
+    {date: '05/10', successful: 123, failed: 0},
+    {date: '05/11', successful: 123, failed: 0},
+    {date: '05/12', successful: 23, failed: 0},
+    {date: '05/13', successful: 2442, failed: 0},
+    {date: '05/14', successful: 200, failed: 100},
+    {date: '05/15', successful: 200, failed: 0},
+
+];
 export default function ApiKeyDetail() {
     const router = useRouter()
     const apiKey = router.query.key?.toString()
@@ -32,7 +44,7 @@ export default function ApiKeyDetail() {
 
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
                 <div className="mt-10 bg-white grid col-span-2">
-                    <RequestHealthChart/>
+                    <APIKeyRequestHealthChart/>
                 </div>
                 <div className="mt-10 bg-white grid col-span-2">
                     <RequestHealthChart/>
@@ -44,6 +56,36 @@ export default function ApiKeyDetail() {
             </div>
         </div>
     );
+}
+
+export function APIKeyRequestHealthChart() {
+    return (
+        <div>
+            <div>
+                <h3>request Health</h3>
+                <div>
+                    <label htmlFor="timeRange">Time Range: </label>
+                    {/*<select id="timeRange" value={timeRange} onChange={handleTimeRangeChange}>*/}
+                    <select id="timeRange">
+                        <option value="1d">1 Day</option>
+                        <option value="1w">1 Week</option>
+                        <option value="1m">1 Month</option>
+                        <option value="1y">1 Year</option>
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="network">Network: </label>
+                    {/*<select id="network" value={network} onChange={handleNetworkChange}>*/}
+                    <select id="network" >
+                        <option value="op">Optimism</option>
+                        <option value="ethereum">Ethereum</option>
+                    </select>
+                </div>
+            </div>
+            <RequestHealthChart requestHealthData={requestHealthChartData}/>
+        </div>
+    )
+
 }
 
 export function RequestHisToryTable(
@@ -88,7 +130,7 @@ export function RequestHisToryTable(
 }
 
 export function DataShowCard(
-    {dataNum,dataName}:{
+    {dataNum, dataName}: {
         dataNum?: string,
         dataName: string
 
