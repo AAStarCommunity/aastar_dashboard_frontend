@@ -150,7 +150,8 @@ export default function StrategyEdit() {
             if (vailded) {
                 setommitted(false)
                 ajax.put(API.UPDATE_STRATEGY, {
-                    ...values
+                    ...values,
+                    strategy_code: strategyCode
                 }).then(() => {
                     setommitted(true)
                     Message({
@@ -200,7 +201,7 @@ export default function StrategyEdit() {
                 {dataDom}
                 <Button onClick={commitChange} disabled={!committed} iconLeft={committed ? null : LoadingIcon}>Save changes
                 </Button>
-                <div className='text-gray-500 text-sm pt-4 dark:text-gray-400'>The changes will take effect in about a minute.</div>
+                <div className='text-gray-500 text-sm pt-4 dark:text-gray-400'>The changes will take effect immediately</div>
             </div>
         </div>
     )

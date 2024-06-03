@@ -1,7 +1,8 @@
 import {useRouter} from "next/router";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {RequestHealthChart, SuccessRateChart} from "@/components/chart";
 import {AgGridReact} from "ag-grid-react";
+import { ColDef } from 'ag-grid-community';
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import ajax, {API} from "@/ajax"; // Optional Theme applied to the grid
@@ -119,6 +120,20 @@ export function APIKeyRequestHealthChart() {
     )
 
 }
+// JSON Cell Renderer
+const JsonCellRenderer = (params: { value: string }) => {
+    let formattedJson;
+    try {
+        formattedJson = JSON.stringify(JSON.parse(params.value), null, 2);
+    } catch (e) {
+        formattedJson = params.value; // If parsing fails, show the raw value
+    }
+    return (
+        <pre style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
+            {formattedJson}
+        </pre>
+    );
+};
 
 export function RequestHisToryTable(
     {
@@ -127,14 +142,25 @@ export function RequestHisToryTable(
         ApiKey?: string
     }
 ) {
-    const columnDefs: any = [
+
+    const columnDefs:ColDef[] = useMemo(()=> [
         {headerName: "network", field: "network", flex: 1},
         {headerName: "method", field: "paymaster_method", flex: 1},
-        {headerName: "state", field: "status", flex: 1},
-        {headerName: "latency", field: "latency", flex: 1},
+        {
+            headerName: "state", field: "status", flex: 1, cellStyle:
+                function (params: { value: number; }) {
+                    if (params.value === 200) {
+                        return {color: 'green'};
+                    } else {
+                        return {color: 'red'};
+                    }
+
+                }
+        },
+        {headerName: "latency(ms)", field: "latency", flex: 1},
         {headerName: "request", field: "request_body", flex: 1},
         {headerName: "response", field: "response_body", flex: 1},
-    ]
+    ],[]);
     const [rowData, setRowData] = useState([]);
 
     const tableInit = () => {
@@ -144,18 +170,35 @@ export function RequestHisToryTable(
             setRowData(data.data)
         })
     }
+    const pagination = true;
+    const paginationPageSize = 10;
+    const paginationPageSizeSelector = [10];
     useEffect(() => {
         tableInit()
-    }, []);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const defaultColDef = useMemo(() => ({
+        filter: true,
+        enableCellTextSelection: true,
+        ensureDomOrder: true,
+    }), []);
+
     return (
         <div
-            className="ag-theme-quartz w-full min-w-full" // applying the grid theme
+            className="ag-theme-quartz" // applying the grid theme
             style={{height: 500}}
         >
             <AgGridReact
+                defaultColDef={defaultColDef}
+
                 className="min-w-full"
                 rowData={rowData}
                 columnDefs={columnDefs}
+                pagination={pagination}
+                paginationPageSize={paginationPageSize}
+                paginationPageSizeSelector={paginationPageSizeSelector}
+                components={{jsonCellRenderer: JsonCellRenderer}}
+
             />
         </div>
     )
