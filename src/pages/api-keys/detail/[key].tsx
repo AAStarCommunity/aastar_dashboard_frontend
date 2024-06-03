@@ -175,7 +175,7 @@ export function RequestHisToryTable(
     const paginationPageSizeSelector = [10];
     useEffect(() => {
         tableInit()
-    });
+    },[ApiKey]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const defaultColDef = useMemo(() => ({
         filter: true,
