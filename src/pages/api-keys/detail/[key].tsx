@@ -21,6 +21,7 @@ const requestHealthChartData = [
 export default function ApiKeyDetail() {
     const router = useRouter()
     const apiKey = router.query.key?.toString()
+
     return (
         <div>
             <div className='flex justify-between items-center'>
@@ -29,10 +30,18 @@ export default function ApiKeyDetail() {
                          className="w-6 h-6 mr-2 mt-1"/>
                     <h1 className='dark:text-white font-bold text-2xl text-gray-900'>AAStarAPi</h1>
                 </div>
-                <button type="button"
-                        className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">API
-                    API key
-                </button>
+                <div>
+                    <button type="button"
+                            className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                            onClick={() => router.push(`/api-keys/edit/${apiKey}`)}>
+                        API Key Info
+                    </button>
+                    <button type="button"
+                            className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                        Connect APIKey
+                    </button>
+                </div>
+
             </div>
 
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
@@ -57,8 +66,9 @@ export default function ApiKeyDetail() {
         </div>
     );
 }
+
 export function APIKeyRequestSuccessChart() {
-    let   rateData = [
+    let rateData = [
         {time: '05/07', successRate: 99.0},
         {time: '05/08', successRate: 99.0},
         {time: '05/09', successRate: 99.0},
@@ -79,6 +89,7 @@ export function APIKeyRequestSuccessChart() {
         </div>
     )
 }
+
 export function APIKeyRequestHealthChart() {
     return (
         <div>
