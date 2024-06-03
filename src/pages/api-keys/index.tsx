@@ -14,20 +14,10 @@ import Message from '@/utils/message'
 import useLoading, {REQUEST_STATUS} from '@/hooks/useLoading'
 import {LoadingIcon} from '~/public/icons'
 
-
-// export async function getStaticProps() {
-//   const data = await ajax.get(API.GET_API_KEY_LIST)
-//   return {
-//     props: {
-//       data
-//     }
-//   }
-// }
-
 export default function Apikeys() {
     const router = useRouter()
     const [isOpenCreate, setIsOpenCreate] = useState(false)
-    const [isOpenDetele, setIsOpenDetele] = useState(false)
+    const [isOpenDelete, setIsOpenDelete] = useState(false)
     const [isOpenProjectInfo, setIsOpenProjectInfo] = useState(false)
     const [currentItem, setCurrentItem] = useState<ObjType<string>>({})
     const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
@@ -51,7 +41,7 @@ export default function Apikeys() {
 
     const projectInfoClick = useCallback((item: ObjType<string>, type: 'info' | 'delete') => {
         setCurrentItem(item)
-        type == 'info' ? setIsOpenProjectInfo(true) : setIsOpenDetele(true)
+        type == 'info' ? setIsOpenProjectInfo(true) : setIsOpenDelete(true)
     }, [])
 
     const handleGenerateKey = () => {
@@ -71,7 +61,7 @@ export default function Apikeys() {
         }
     }
 
-    const continueDetele = () => {
+    const continueDelete = () => {
         setDeleting(true)
         ajax.delete(API.DELETE_API_KEY, {
             api_key: currentItem.api_key
@@ -81,7 +71,7 @@ export default function Apikeys() {
                     type: "success",
                     message: "Success Delete!"
                 })
-                setIsOpenDetele(false)
+                setIsOpenDelete(false)
                 init()
             }
         }).finally(() => {
@@ -102,9 +92,6 @@ export default function Apikeys() {
                 </th>
                 <th scope="col" className="px-6 py-3">
                     <span className="">actions</span>
-                </th>
-                <th scope="col" className="px-6 py-3">
-                    <span className="">Edit settings</span>
                 </th>
             </tr>
             </thead>
@@ -133,21 +120,19 @@ export default function Apikeys() {
                                     Project Info
                                 </button>
                                 <button onClick={(e) => {
-                                  e.stopPropagation();
-                                  projectInfoClick(item, 'delete')
+                                    e.stopPropagation();
+                                    projectInfoClick(item, 'delete')
                                 }} type="button"
                                         className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
                                     Delete
                                 </button>
+                                <button onClick={(e) => {
+                                    e.stopPropagation();
+                                    router.push(`/api-keys/edit/${item.api_key}`)
+                                }} type="button"
+                                        className="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit
+                                </button>
                             </div>
-                        </td>
-                        <td className="px-6 py-4 text-left">
-                            <button onClick={(e) => {
-                              e.stopPropagation();
-                              router.push(`/api-keys/edit/${item.api_key}`)
-                            }} type="button"
-                                    className="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit
-                            </button>
                         </td>
                     </tr>
                 )
@@ -217,8 +202,8 @@ export default function Apikeys() {
             {/* delete confirm */}
             <Modal
                 className='w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
-                isOpen={isOpenDetele}
-                onClose={() => setIsOpenDetele(false)}
+                isOpen={isOpenDelete}
+                onClose={() => setIsOpenDelete(false)}
             >
                 <ModalHeader>Are you absolutely sure?</ModalHeader>
                 <ModalBody>
@@ -228,11 +213,11 @@ export default function Apikeys() {
                 <ModalFooter>
                     {/* <Button onClick={} className="sm:w-auto w-48 mb-6">cancel</Button> */}
                     <div className='flex items-center justify-end w-full '>
-                        <button onClick={() => setIsOpenDetele(false)} type="button"
+                        <button onClick={() => setIsOpenDelete(false)} type="button"
                                 className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                             cancel
                         </button>
-                        <Button iconLeft={deleting ? LoadingIcon : null} type="button" onClick={continueDetele}
+                        <Button iconLeft={deleting ? LoadingIcon : null} type="button" onClick={continueDelete}
                                 className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
                             Continue
                         </Button>

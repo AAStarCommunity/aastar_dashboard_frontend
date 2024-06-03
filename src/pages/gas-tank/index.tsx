@@ -29,8 +29,8 @@ export default function GasTank() {
                 <h2 className="text-9xl md:text-2xl">Balance Detail</h2>
                 <div className="grid gap-6 sm:grid-cols-5 lg:grid-cols-5 grid-cols-5">
                     <div className="col-span-1">
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                        <BalanceDetailCard title={"Total consume Balance "} balanceValue={32}/>
+                        <BalanceDetailCard title={"Gas Tank Quota Balance"} balanceValue={12.2}/>
                     </div>
                     <ComsumeTankChartInDay/>
                     <ComsumeTankChartInDay/>
@@ -67,16 +67,16 @@ export default function GasTank() {
                 <h2 className="text-9xl md:text-2xl"> Strategy View</h2>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4  grid-cols-4">
                     <div className="col-span-1  p-4 ">
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                        <BalanceDetailCard title={"StrategyA - consume balance"} balanceValue={12}/>
                     </div>
                     <div className="col-span-1  p-4">
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                        <BalanceDetailCard title={"StrategyB - consume balance"} balanceValue={12}/>
                     </div>
                     <div className="col-span-1  p-4">
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                        <BalanceDetailCard title={"StrategyC - consume balance"} balanceValue={12}/>
                     </div>
                     <div className="col-span-1  p-4">
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
+                        <BalanceDetailCard title={"StrategyD - consume balance"} balanceValue={12}/>
                     </div>
 
                 </div>
@@ -102,7 +102,7 @@ export function BalanceDetailCard(
             <div className="p-2">
                 <div className="bg-gray-50 p-1 ">{title}</div>
                 <div
-                    className={`${inter.className}sub rounded-xl bg-white px-4 py-8 text-center text-2xl`}>${balanceValue}</div>
+                    className={`${inter.className}sub rounded-xl bg-white px-4 py-8 text-center text-4xl`}>${balanceValue}</div>
                 <div>{subInfo}</div>
             </div>
 
@@ -124,7 +124,7 @@ const chartData = [
 export function ComsumeTankChartInDay() {
     return (
         <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
-            <h3 className="text-5xl md:text-2xl">Comsume Tank Chart EveryDay</h3>
+            <h3 className="text-5xl md:text-2xl">Comsume Tank Chart EveryDay(TODO)</h3>
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                     data={chartData}

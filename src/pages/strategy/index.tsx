@@ -1,8 +1,5 @@
 import ajax, { API } from "@/ajax";
-import Copy from "@/components/Copy";
-import Switch from "@/components/Switch";
 import PageTitle from "@/components/Typography/PageTitle";
-import { REQUEST_STATUS } from "@/hooks/useLoading";
 import { Button, Badge, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHeader, TableRow } from "@windmill/react-ui";
 import { useRouter } from "next/router";
 import { ReactNode, useCallback, useState } from "react";

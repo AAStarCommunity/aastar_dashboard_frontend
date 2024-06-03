@@ -129,13 +129,14 @@ export const formOptions: IFormItem[] =
             defaultValue: [],
             type: "checkbox",
             list: NET_LIST,
+            list_logo_enable: true,
             group: `${style['Chains-group']} Chains-group`
         },
 
     ]
 
 
-export default function ApikeysEdit() {
+export default function StrategyEdit() {
     const [formArr, setFormArr] = useState<IFormItem[]>(formOptions)
 
     const formRefs = useRef<IFormRefs>(null)

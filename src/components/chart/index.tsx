@@ -69,20 +69,24 @@ export function RequestHealthChart(
         </div>
     )
 }
-export function SuccessRateChart() {
+export function SuccessRateChart(
+    {successRateData}:{
+        successRateData?: {time: string, successRate: number}[]
+    }
+) {
     return (
         <div className="container mx-auto my-1 mt-4">
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
-                    data={data}
+                    data={successRateData}
                     margin={{top: 5, right: 30, left: 20, bottom: 5}}
                 >
                     <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="name"/>
+                    <XAxis dataKey="time"/>
                     <YAxis/>
                     <Tooltip/>
                     <Legend/>
-                    <Line type="monotone" dataKey="value" stroke="#8884d8"/>
+                    <Line type="monotone" dataKey="successRate" stroke="#8884d8"/>
                 </LineChart>
             </ResponsiveContainer>
         </div>

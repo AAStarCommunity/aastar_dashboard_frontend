@@ -1,6 +1,6 @@
 import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
-import {RequestHealthChart} from "@/components/chart";
+import {RequestHealthChart, SuccessRateChart} from "@/components/chart";
 import {AgGridReact} from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -25,7 +25,7 @@ export default function ApiKeyDetail() {
         <div>
             <div className='flex justify-between items-center'>
                 <div className="flex item-center">
-                    <img src="/img/ethereum-icon.png" alt="Ethereum Sepolia"
+                    <img src="/icons/apikey.svg" alt="Ethereum Sepolia"
                          className="w-6 h-6 mr-2 mt-1"/>
                     <h1 className='dark:text-white font-bold text-2xl text-gray-900'>AAStarAPi</h1>
                 </div>
@@ -47,7 +47,7 @@ export default function ApiKeyDetail() {
                     <APIKeyRequestHealthChart/>
                 </div>
                 <div className="mt-10 bg-white grid col-span-2">
-                    <RequestHealthChart/>
+                    <APIKeyRequestSuccessChart/>
                 </div>
             </div>
             <div className="bg-white mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md">
@@ -57,30 +57,51 @@ export default function ApiKeyDetail() {
         </div>
     );
 }
+export function APIKeyRequestSuccessChart() {
+    let   rateData = [
+        {time: '05/07', successRate: 99.0},
+        {time: '05/08', successRate: 99.0},
+        {time: '05/09', successRate: 99.0},
+        {time: '05/10', successRate: 80.0},
+        {time: '05/11', successRate: 99.0},
+        {time: '05/12', successRate: 99.0},
+        {time: '05/13', successRate: 99.0},
+        {time: '05/14', successRate: 99.0},
+        {time: '05/15', successRate: 98.0},
+    ]
 
+    return (
+        <div>
+            <div>
+                <h3>Paymaster Success Rate</h3>
+            </div>
+            <SuccessRateChart successRateData={rateData}/>
+        </div>
+    )
+}
 export function APIKeyRequestHealthChart() {
     return (
         <div>
             <div>
-                <h3>request Health</h3>
-                <div>
-                    <label htmlFor="timeRange">Time Range: </label>
-                    {/*<select id="timeRange" value={timeRange} onChange={handleTimeRangeChange}>*/}
-                    <select id="timeRange">
-                        <option value="1d">1 Day</option>
-                        <option value="1w">1 Week</option>
-                        <option value="1m">1 Month</option>
-                        <option value="1y">1 Year</option>
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="network">Network: </label>
-                    {/*<select id="network" value={network} onChange={handleNetworkChange}>*/}
-                    <select id="network" >
-                        <option value="op">Optimism</option>
-                        <option value="ethereum">Ethereum</option>
-                    </select>
-                </div>
+                <h3>Paymaster request Health</h3>
+                {/*<div>*/}
+                {/*    <label htmlFor="timeRange">Time Range: </label>*/}
+                {/*    /!*<select id="timeRange" value={timeRange} onChange={handleTimeRangeChange}>*!/*/}
+                {/*    <select id="timeRange">*/}
+                {/*        <option value="1d">1 Day</option>*/}
+                {/*        <option value="1w">1 Week</option>*/}
+                {/*        <option value="1m">1 Month</option>*/}
+                {/*        <option value="1y">1 Year</option>*/}
+                {/*    </select>*/}
+                {/*</div>*/}
+                {/*<div>*/}
+                {/*    <label htmlFor="network">Network: </label>*/}
+                {/*    /!*<select id="network" value={network} onChange={handleNetworkChange}>*!/*/}
+                {/*    <select id="network" >*/}
+                {/*        <option value="op">Optimism</option>*/}
+                {/*        <option value="ethereum">Ethereum</option>*/}
+                {/*    </select>*/}
+                {/*</div>*/}
             </div>
             <RequestHealthChart requestHealthData={requestHealthChartData}/>
         </div>
