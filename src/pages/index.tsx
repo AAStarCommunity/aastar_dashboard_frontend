@@ -13,15 +13,15 @@ const data = [
 export default function Home() {
     const router = useRouter()
     let   rateData = [
-        {time: '05/07', successRate: 99.0},
-        {time: '05/08', successRate: 99.0},
-        {time: '05/09', successRate: 99.0},
-        {time: '05/10', successRate: 80.0},
-        {time: '05/11', successRate: 99.0},
-        {time: '05/12', successRate: 99.0},
-        {time: '05/13', successRate: 99.0},
-        {time: '05/14', successRate: 99.0},
-        {time: '05/15', successRate: 98.0},
+        {time: '05/07', success_rate: 99.0},
+        {time: '05/08', success_rate: 99.0},
+        {time: '05/09', success_rate: 99.0},
+        {time: '05/10', success_rate: 80.0},
+        {time: '05/11', success_rate: 99.0},
+        {time: '05/12', success_rate: 99.0},
+        {time: '05/13', success_rate: 99.0},
+        {time: '05/14', success_rate: 99.0},
+        {time: '05/15', success_rate: 98.0},
     ]
     return (
         <main>
@@ -120,34 +120,13 @@ export function APICard() {
 
 
 const requestHealthChartData = [
-    {date: '05/04', successful: 0, failed: 0},
-    {date: '05/05', successful: 0, failed: 0},
-    {date: '05/06', successful: 0, failed: 800},
-    {date: '05/07', successful: 3600, failed: 3600},
-    {date: '05/08', successful: 1800, failed: 0},
-    {date: '05/09', successful: 0, failed: 0},
-    {date: '05/10', successful: 0, failed: 0},
-    {date: '05/11', successful: 0, failed: 0},
-    {date: '05/12', successful: 0, failed: 0},
-    {date: '05/13', successful: 0, failed: 0},
-    {date: '05/14', successful: 200, failed: 100},
-    {date: '05/15', successful: 200, failed: 0},
-    {date: '05/16', successful: 0, failed: 0},
-    {date: '05/17', successful: 0, failed: 0},
-    {date: '05/18', successful: 0, failed: 0},
-    {date: '05/19', successful: 0, failed: 0},
-    {date: '05/20', successful: 0, failed: 0},
-    {date: '05/21', successful: 0, failed: 0},
-    {date: '05/22', successful: 0, failed: 0},
-    {date: '05/23', successful: 0, failed: 0},
-    {date: '05/24', successful: 0, failed: 0},
-    {date: '05/25', successful: 0, failed: 0},
-    {date: '05/26', successful: 0, failed: 0},
-    {date: '05/27', successful: 0, failed: 0},
-    {date: '05/28', successful: 0, failed: 0},
-    {date: '05/29', successful: 0, failed: 0},
-    {date: '05/30', successful: 0, failed: 0},
-    {date: '05/31', successful: 0, failed: 0},
-    {date: '06/01', successful: 0, failed: 0},
-    {date: '06/02', successful: 0, failed: 0},
+    {time: '05/04', successful: 0, failed: 0},
+    {time: '05/05', successful: 0, failed: 0},
+    {time: '05/06', successful: 0, failed: 800},
+    {time: '05/07', successful: 3600, failed: 3600},
+    {time: '05/08', successful: 1800, failed: 0},
+    {time: '05/09', successful: 0, failed: 0},
+    {time: '05/10', successful: 0, failed: 0},
+    {time: '05/11', successful: 0, failed: 0},
+
 ];

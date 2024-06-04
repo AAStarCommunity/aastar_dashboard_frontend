@@ -2,27 +2,15 @@ import {useRouter} from "next/router";
 import React, {useEffect, useMemo, useState} from "react";
 import {RequestHealthChart, SuccessRateChart} from "@/components/chart";
 import {AgGridReact} from "ag-grid-react";
-import { ColDef } from 'ag-grid-community';
+import {ColDef} from 'ag-grid-community';
+import JsonView from '@uiw/react-json-view';
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import ajax, {API} from "@/ajax"; // Optional Theme applied to the grid
-const requestHealthChartData = [
 
-    {date: '05/07', successful: 3600, failed: 123},
-    {date: '05/08', successful: 1800, failed: 0},
-    {date: '05/09', successful: 2323, failed: 123},
-    {date: '05/10', successful: 123, failed: 0},
-    {date: '05/11', successful: 123, failed: 0},
-    {date: '05/12', successful: 23, failed: 0},
-    {date: '05/13', successful: 2442, failed: 0},
-    {date: '05/14', successful: 200, failed: 100},
-    {date: '05/15', successful: 200, failed: 0},
-
-];
 export default function ApiKeyDetail() {
     const router = useRouter()
     const apiKey = router.query.key?.toString()
-
     return (
         <div>
             <div className='flex justify-between items-center'>
@@ -68,30 +56,47 @@ export default function ApiKeyDetail() {
     );
 }
 
-export function APIKeyRequestSuccessChart() {
-    let rateData = [
-        {time: '05/07', successRate: 99.0},
-        {time: '05/08', successRate: 99.0},
-        {time: '05/09', successRate: 99.0},
-        {time: '05/10', successRate: 80.0},
-        {time: '05/11', successRate: 99.0},
-        {time: '05/12', successRate: 99.0},
-        {time: '05/13', successRate: 99.0},
-        {time: '05/14', successRate: 99.0},
-        {time: '05/15', successRate: 98.0},
-    ]
+export function APIKeyRequestSuccessChart(
+    {ApiKey}: { ApiKey?: string }
+) {
+    const [rowData, setRowData] = useState([]);
+
+    const tableInit = () => {
+        ajax.get(API.GET_SUCCESS_RATE_LIST, {
+            api_key: ApiKey
+        }).then(({data}) => {
+            setRowData(data.data)
+        })
+    }
+    useEffect(() => {
+        tableInit()
+    }, []);
 
     return (
         <div>
             <div>
                 <h3>Paymaster Success Rate</h3>
             </div>
-            <SuccessRateChart successRateData={rateData}/>
+            <SuccessRateChart successRateData={rowData}/>
         </div>
     )
 }
 
-export function APIKeyRequestHealthChart() {
+export function APIKeyRequestHealthChart(
+    {ApiKey}: { ApiKey?: string }
+) {
+    const [rowData, setRowData] = useState([]);
+
+    const tableInit = () => {
+        ajax.get(API.GET_REQUEST_HEALTH_LIST, {
+            api_key: ApiKey
+        }).then(({data}) => {
+            setRowData(data.data)
+        })
+    }
+    useEffect(() => {
+        tableInit()
+    }, []);
     return (
         <div>
             <div>
@@ -115,23 +120,23 @@ export function APIKeyRequestHealthChart() {
                 {/*    </select>*/}
                 {/*</div>*/}
             </div>
-            <RequestHealthChart requestHealthData={requestHealthChartData}/>
+            <RequestHealthChart requestHealthData={rowData}/>
         </div>
     )
 
 }
+
 // JSON Cell Renderer
 const JsonCellRenderer = (params: { value: string }) => {
-    let formattedJson;
-    try {
-        formattedJson = JSON.stringify(JSON.parse(params.value), null, 2);
-    } catch (e) {
-        formattedJson = params.value; // If parsing fails, show the raw value
-    }
+
+    let valueObj = JSON.parse(params.value)
     return (
-        <pre style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
-            {formattedJson}
-        </pre>
+        // <pre style={{whiteSpace: 'pre-wrap', wordWrap: 'break-word'}}>
+        //     {params.value}
+        //
+        // </pre>
+        <JsonView value={valueObj}>
+        </JsonView>
     );
 };
 
@@ -143,7 +148,7 @@ export function RequestHisToryTable(
     }
 ) {
 
-    const columnDefs:ColDef[] = useMemo(()=> [
+    const columnDefs: ColDef[] = useMemo(() => [
         {headerName: "network", field: "network", flex: 1},
         {headerName: "method", field: "paymaster_method", flex: 1},
         {
@@ -154,13 +159,33 @@ export function RequestHisToryTable(
                     } else {
                         return {color: 'red'};
                     }
-
                 }
         },
-        {headerName: "latency(ms)", field: "latency", flex: 1},
-        {headerName: "request", field: "request_body", flex: 1},
-        {headerName: "response", field: "response_body", flex: 1},
-    ],[]);
+        {
+            headerName: "latency(ms)", field: "latency", valueFormatter: p => {
+                let value = p.value
+                let afterValue = value / Math.pow(10, 6)
+                return afterValue + "(ms)"
+            }, flex: 1
+        },
+        {
+            headerName: "request", field: "request_body", flex: 1, cellRenderer: 'jsonCellRenderer'
+        },
+        {headerName: "response", field: "response_body", flex: 1,},
+    ], []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const defaultColDef = useMemo(() => ({
+        filter: true,
+        enableCellTextSelection: true,
+        ensureDomOrder: true,
+        suppressCopyRowsToClipboard: true,
+        editable: true,
+        suppressCopySingleCellRanges: true,
+        enableRangeSelection: true,
+        enableFillHandle: true,
+        className: "min-w-full"
+    }), []);
+
     const [rowData, setRowData] = useState([]);
 
     const tableInit = () => {
@@ -170,18 +195,13 @@ export function RequestHisToryTable(
             setRowData(data.data)
         })
     }
+    useEffect(() => {
+        tableInit()
+    }, [ApiKey]);
     const pagination = true;
     const paginationPageSize = 10;
     const paginationPageSizeSelector = [10];
-    useEffect(() => {
-        tableInit()
-    },[ApiKey]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const defaultColDef = useMemo(() => ({
-        filter: true,
-        enableCellTextSelection: true,
-        ensureDomOrder: true,
-    }), []);
+
 
     return (
         <div
@@ -190,8 +210,6 @@ export function RequestHisToryTable(
         >
             <AgGridReact
                 defaultColDef={defaultColDef}
-
-                className="min-w-full"
                 rowData={rowData}
                 columnDefs={columnDefs}
                 pagination={pagination}

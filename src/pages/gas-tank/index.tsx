@@ -2,16 +2,12 @@ import PageTitle from "@/components/Typography/PageTitle";
 import {Button} from "@windmill/react-ui";
 import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
-import {Inter} from "next/font/google";
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
 import {AgGridReact} from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
 import ajax, {API} from "@/ajax";
-
-const inter = Inter({
-    subsets: ["latin"]
-});
+import {BalanceDetailCard} from "@/components/chart";
 
 
 export default function GasTank() {
@@ -29,7 +25,7 @@ export default function GasTank() {
                 <h2 className="text-9xl md:text-2xl">Balance Detail</h2>
                 <div className="grid gap-6 sm:grid-cols-5 lg:grid-cols-5 grid-cols-5">
                     <div className="col-span-1">
-                        <BalanceDetailCard title={"Total consume Balance "} balanceValue={32}/>
+                        <TotalBalanceBalanceDetailCard/>
                         <BalanceDetailCard title={"Gas Tank Quota Balance"} balanceValue={12.2}/>
                     </div>
                     <ComsumeTankChartInDay/>
@@ -78,37 +74,20 @@ export default function GasTank() {
                     <div className="col-span-1  p-4">
                         <BalanceDetailCard title={"StrategyD - consume balance"} balanceValue={12}/>
                     </div>
-
                 </div>
-
             </div>
         </main>
     )
 }
 
-export function BalanceDetailCard(
-    {
-        title,
-        balanceValue,
-        subInfo
-    }: {
-        title: string
-        balanceValue: number
-        subInfo?: string
-    }
-) {
+export function TotalBalanceBalanceDetailCard() {
     return (
-        <div className="rounded-xl bg-white p-2 shadow-sm mb-2.5">
-            <div className="p-2">
-                <div className="bg-gray-50 p-1 ">{title}</div>
-                <div
-                    className={`${inter.className}sub rounded-xl bg-white px-4 py-8 text-center text-4xl`}>${balanceValue}</div>
-                <div>{subInfo}</div>
-            </div>
+        <BalanceDetailCard title={"Total consume Balance "} balanceValue={32}/>
+    )
 
-        </div>
-    );
+
 }
+
 
 const chartData = [
     {date: '23 Nov', value: 25000},
@@ -148,8 +127,8 @@ function TransHisToryTable() {
     const [rowData, setRowData] = useState([]);
 
     const tableInit = () => {
-        ajax.get(API.GET_SPONSOR_TRANSACTION_LIST,{
-            is_test_net : true
+        ajax.get(API.GET_SPONSOR_TRANSACTION_LIST, {
+            is_test_net: true
         }).then(({data: {data}}) => {
             setRowData(data)
         })
@@ -161,7 +140,7 @@ function TransHisToryTable() {
     }, []);
     const columnDefs: any = [
         {headerName: 'UpdateType', field: 'update_type', flex: 1},
-        {headerName: 'Amount', field: 'amount', flex: 1},
+        {headerName: 'Amount', field: 'amount', flex: 1, valueFormatter: (params: any) => `$${params.value}`},
         {headerName: 'TxHash', field: 'tx_hash', flex: 1},
         {headerName: 'Time', field: 'time', flex: 1},
     ];

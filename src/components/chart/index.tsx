@@ -11,6 +11,7 @@ import {
     YAxis
 } from "recharts";
 import React from "react";
+import {Inter} from "next/font/google";
 
 
 const data = [
@@ -45,9 +46,38 @@ export function SuccessRatePieChar() {
         </div>
     )
 }
+
+const inter = Inter({
+    subsets: ["latin"]
+});
+
+export function BalanceDetailCard(
+    {
+        title,
+        balanceValue,
+        subInfo
+    }: {
+        title: string
+        balanceValue: number
+        subInfo?: string
+    }
+) {
+    return (
+        <div className="rounded-xl bg-white p-2 shadow-sm mb-2.5">
+            <div className="p-2">
+                <div className="bg-gray-50 p-1 ">{title}</div>
+                <div
+                    className={`${inter.className}sub rounded-xl bg-white px-4 py-8 text-center text-4xl`}>${balanceValue}</div>
+                <div>{subInfo}</div>
+            </div>
+
+        </div>
+    );
+}
+
 export function RequestHealthChart(
     {requestHealthData}: {
-        requestHealthData?: { date: string, successful: number, failed: number }[]
+        requestHealthData?: { time: string, successful: number, failed: number }[]
     }
 ) {
     return (
@@ -58,7 +88,7 @@ export function RequestHealthChart(
                     margin={{top: 5, right: 30, left: 20, bottom: 5}}
                 >
                     <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="date"/>
+                    <XAxis dataKey="time"/>
                     <YAxis/>
                     <Tooltip/>
                     <Legend/>
@@ -71,7 +101,7 @@ export function RequestHealthChart(
 }
 export function SuccessRateChart(
     {successRateData}:{
-        successRateData?: {time: string, successRate: number}[]
+        successRateData?: {time: string, success_rate: number}[]
     }
 ) {
     return (
@@ -86,7 +116,7 @@ export function SuccessRateChart(
                     <YAxis/>
                     <Tooltip/>
                     <Legend/>
-                    <Line type="monotone" dataKey="successRate" stroke="#8884d8"/>
+                    <Line type="monotone" dataKey="success_rate" stroke="#8884d8"/>
                 </LineChart>
             </ResponsiveContainer>
         </div>
