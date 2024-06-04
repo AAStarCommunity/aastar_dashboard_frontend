@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Suspense} from 'react';
 import {RequestHealthChart, SuccessRateChart, SuccessRatePieChar} from "@/components/chart";
 import Loading from "@/pages/loading";
 import {Button} from "@windmill/react-ui";
 import router, {useRouter} from "next/router";
 import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import ajax, {API} from "@/ajax";
 
 
 const data = [
@@ -12,7 +13,7 @@ const data = [
 ];
 export default function Home() {
     const router = useRouter()
-    let   rateData = [
+    let rateData = [
         {time: '05/07', success_rate: 99.0},
         {time: '05/08', success_rate: 99.0},
         {time: '05/09', success_rate: 99.0},
@@ -32,16 +33,17 @@ export default function Home() {
                 <div className='grid gap-5  grid-cols-6'>
                     <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
                         <h2>Request Health</h2>
-                        {/* eslint-disable-next-line react/jsx-no-undef */}
-                        <RequestHealthChart requestHealthData={requestHealthChartData }/>
+                        <Suspense fallback={"loading"}>
+                            <HomeRequestHealthChart></HomeRequestHealthChart>
+                        </Suspense>
                     </div>
                     <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
                         <h2>PayMaster Sponsor PayTypeRequest (TODO )</h2>
-                        <RequestHealthChart requestHealthData={requestHealthChartData }/>
+                        <RequestHealthChart requestHealthData={requestHealthChartData}/>
                     </div>
                     <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
                         <h2>RequestSuccessRate</h2>
-                        <SuccessRateChart successRateData={rateData}/>
+                      <HomeApIkeyRequestSuccessRate/>
                     </div>
                 </div>
 
@@ -73,9 +75,56 @@ export default function Home() {
         </main>
     );
 }
+function HomeApIkeyRequestSuccessRate() {
+    const [rowData, setRowData] = useState([]);
+
+    const tableInit = () => {
+        ajax.get(API.GET_SUCCESS_RATE_LIST ).then(({data}) => {
+            setRowData(data.data)
+        })
+    }
+    useEffect(() => {
+        tableInit()
+    }, []);
+   return(
+       <SuccessRateChart successRateData={rowData}/>
+   )
+}
+function HomeRequestHealthChart() {
+    const [rowData, setRowData] = useState([]);
+
+    const tableInit = () => {
+        ajax.get(API.GET_REQUEST_HEALTH_LIST).then(({data}) => {
+            setRowData(data.data)
+        })
+    }
+    useEffect(() => {
+        tableInit()
+    }, []);
+    return (
+        <div className="container mx-auto my-1 mt-4">
+            <ResponsiveContainer width="100%" height={400}>
+                <LineChart
+                    data={rowData}
+                    margin={{top: 5, right: 30, left: 20, bottom: 5}}
+                >
+                    <CartesianGrid strokeDasharray="3 3"/>
+                    <XAxis dataKey="time"/>
+                    <YAxis/>
+                    <Tooltip/>
+                    <Legend/>
+                    <Line type="monotone" dataKey="successful" stroke="#8884d8"/>
+                    <Line type="monotone" dataKey="failed" stroke="#ff4848"/>
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+    );
+
+}
+
 export function MultiSuccessRateChart(
-    {successRateData}:{
-        successRateData?: {time: string, successRate: number}[]
+    {successRateData}: {
+        successRateData?: { time: string, successRate: number }[]
     }
 ) {
     return (
@@ -112,7 +161,8 @@ export function APICard() {
             </div>
             <div className="flex justify-between items-center">
                 <button className="bg-gray-100 text-gray-700 rounded px-3 py-1 text-sm">Connect API key</button>
-                <button onClick={() => router.push(`/api-keys/detail/8bced19b-505e-4d11-ae80-abbee3d3a38c`)}  className="text-xl text-gray-700 rounded">&rarr;</button>
+                <button onClick={() => router.push(`/api-keys/detail/8bced19b-505e-4d11-ae80-abbee3d3a38c`)}
+                        className="text-xl text-gray-700 rounded">&rarr;</button>
             </div>
         </div>
     )

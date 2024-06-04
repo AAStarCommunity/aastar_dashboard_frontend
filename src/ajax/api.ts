@@ -1,6 +1,7 @@
 enum API {
+  GET_BALANCE = "/api/v1/data/balance",
   GET_REQUEST_COUNT_ONE = "/api/v1/data/request_count_one",
-  GET_REQUEST_RATE_ONE = "/api/v1/data/request_rate_one",
+  GET_SUCCESS_RATE_ONE = "/api/v1/data/success_rate_one",
   GET_REQUEST_HEALTH_LIST = "/api/v1/data/request_health_list",
   GET_SUCCESS_RATE_LIST = "/api/v1/data/success_rate_list",
   GET_API_KEY_LIST = "/api/v1/api_key/list",

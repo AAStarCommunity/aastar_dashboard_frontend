@@ -33,12 +33,7 @@ export default function ApiKeyDetail() {
 
             </div>
 
-            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
-                <DataShowCard dataName="Success rate (last 1 hour)" dataNum="99.0%"/>
-                <DataShowCard dataName="Success rate (last 24 hour)" dataNum="99.0%"/>
-                <DataShowCard dataName="Total Request (last 24 hour)" dataNum="100"/>
-                <DataShowCard dataName="Invalid Request (last 24 hour)" dataNum="1"/>
-            </div>
+            <APiKeyCardList/>
 
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
                 <div className="mt-10 bg-white grid col-span-2">
@@ -54,6 +49,54 @@ export default function ApiKeyDetail() {
             </div>
         </div>
     );
+}
+
+export function APiKeyCardList(
+    {ApiKey}: { ApiKey?: string }
+) {
+    const [data, setData] = useState({
+        successRateHour: 0,
+        successRateDay: 0,
+        totalRequestCount: 0,
+        invalidRequestCount: 0,
+    });
+    const tableInit = async () => {
+        try {
+            const [totalRequests, invalidRequests, successRateHour, successRateDay] = await Promise.all([
+                ajax.get(API.GET_REQUEST_COUNT_ONE, {
+                    api_key: ApiKey
+                }),
+                ajax.get(API.GET_REQUEST_COUNT_ONE, {
+                    api_key: ApiKey
+                }),
+                ajax.get(API.GET_SUCCESS_RATE_ONE, {
+                    api_key: ApiKey
+                }),
+                ajax.get(API.GET_SUCCESS_RATE_ONE, {
+                    api_key: ApiKey
+                })
+            ])
+            setData({
+                totalRequestCount: totalRequests.data.data.result,
+                invalidRequestCount: invalidRequests.data.data.result,
+                successRateHour: successRateHour.data.data.result,
+                successRateDay: successRateDay.data.data.result,
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        tableInit();
+    }, [ApiKey]);
+    return (
+        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
+            <DataShowCard dataName="Success rate (last 1 hour)" dataNum={`${data.successRateHour}%`} />
+            <DataShowCard dataName="Success rate (last 24 hour)" dataNum={`${data.successRateDay}%`} />
+            <DataShowCard dataName="Total Request (last 24 hour)" dataNum={`${data.totalRequestCount}`} />
+            <DataShowCard dataName="Invalid Request (last 24 hour)" dataNum={`${data.invalidRequestCount}`} />
+        </div>
+    )
 }
 
 export function APIKeyRequestSuccessChart(
@@ -173,7 +216,6 @@ export function RequestHisToryTable(
         },
         {headerName: "response", field: "response_body", flex: 1,},
     ], []);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const defaultColDef = useMemo(() => ({
         filter: true,
         enableCellTextSelection: true,
@@ -226,7 +268,6 @@ export function DataShowCard(
     {dataNum, dataName}: {
         dataNum?: string,
         dataName: string
-
     }
 ) {
     let dataNumDefault = dataNum || '_ _'

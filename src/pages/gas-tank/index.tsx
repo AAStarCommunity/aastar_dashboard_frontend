@@ -1,7 +1,7 @@
 import PageTitle from "@/components/Typography/PageTitle";
 import {Button} from "@windmill/react-ui";
 import {useRouter} from "next/router";
-import React, {useEffect, useState} from "react";
+import React, {Suspense, useEffect, useState} from "react";
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
 import {AgGridReact} from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
@@ -25,13 +25,19 @@ export default function GasTank() {
                 <h2 className="text-9xl md:text-2xl">Balance Detail</h2>
                 <div className="grid gap-6 sm:grid-cols-5 lg:grid-cols-5 grid-cols-5">
                     <div className="col-span-1">
-                        <TotalBalanceBalanceDetailCard/>
-                        <BalanceDetailCard title={"Gas Tank Quota Balance"} balanceValue={12.2}/>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <TotalBalanceBalanceDetailCard/>
+                        </Suspense>
+                        <Suspense>
+                            <GasTankQuotaBalanceDetailCard/>
+                        </Suspense>
                     </div>
-                    <ComsumeTankChartInDay/>
-                    <ComsumeTankChartInDay/>
-
-
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <ComsumeTankChartInDay/>
+                    </Suspense>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <ComsumeTankChartInDay/>
+                    </Suspense>
                 </div>
                 <div className="bg-white mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md">
                     <h3 className="text-5xl md:text-2xl">Trans HisTory</h3>
@@ -81,11 +87,40 @@ export default function GasTank() {
 }
 
 export function TotalBalanceBalanceDetailCard() {
+    const [balance, setBalance] = useState(0)
+    try {
+        useEffect(() => {
+            ajax.get(API.GET_BALANCE, {
+                is_test_net: true
+            }).then(({data: {data}}) => {
+                setBalance(data.result)
+            })
+        }, [])
+    } catch (e) {
+        console.log(e)
+    }
+
     return (
-        <BalanceDetailCard title={"Total consume Balance "} balanceValue={32}/>
+        <BalanceDetailCard title={"Total consume Balance "} balanceValue={balance}/>
     )
+}
 
-
+export function GasTankQuotaBalanceDetailCard() {
+    const [balance, setBalance] = useState(0)
+    try {
+        useEffect(() => {
+            ajax.get(API.GET_BALANCE, {
+                is_test_net: true
+            }).then(({data: {data}}) => {
+                setBalance(data.result)
+            })
+        }, [])
+    } catch (e) {
+        console.log(e)
+    }
+    return (
+        <BalanceDetailCard title={"Gas Tank Quota Balance"} balanceValue={balance}/>
+    )
 }
 
 
