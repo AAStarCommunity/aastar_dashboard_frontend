@@ -1,29 +1,16 @@
 import React, {useState, useEffect, Suspense} from 'react';
-import {RequestHealthChart, SuccessRateChart, SuccessRatePieChar} from "@/components/chart";
+import {RequestHealthChart, SuccessRateChart} from "@/components/chart";
 import Loading from "@/pages/loading";
 import {Button} from "@windmill/react-ui";
 import router, {useRouter} from "next/router";
 import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import ajax, {API} from "@/ajax";
+import {ObjType} from "@/utils/types";
 
 
-const data = [
-    {name: 'Successful', value: 23, color: '#8884d8'}, // Blue color for successful
-    {name: 'Failed', value: 3, color: '#ff4848'}, // Red color for failed
-];
 export default function Home() {
     const router = useRouter()
-    let rateData = [
-        {time: '05/07', success_rate: 99.0},
-        {time: '05/08', success_rate: 99.0},
-        {time: '05/09', success_rate: 99.0},
-        {time: '05/10', success_rate: 80.0},
-        {time: '05/11', success_rate: 99.0},
-        {time: '05/12', success_rate: 99.0},
-        {time: '05/13', success_rate: 99.0},
-        {time: '05/14', success_rate: 99.0},
-        {time: '05/15', success_rate: 98.0},
-    ]
+
     return (
         <main>
             <div className='mt-10 relative overflow-x-auto sm:rounded-lg overflow-hidden"'>
@@ -38,12 +25,12 @@ export default function Home() {
                         </Suspense>
                     </div>
                     <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
-                        <h2>PayMaster Sponsor PayTypeRequest (TODO )</h2>
-                        <RequestHealthChart requestHealthData={requestHealthChartData}/>
+                        <h2>PayMaster Sponsor PayTypeRequest</h2>
+                        <PaymasterSponsorPayTypeChart/>
                     </div>
                     <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
                         <h2>RequestSuccessRate</h2>
-                      <HomeApIkeyRequestSuccessRate/>
+                        <HomeApIkeyRequestSuccessRate/>
                     </div>
                 </div>
 
@@ -57,39 +44,90 @@ export default function Home() {
                         <Button onClick={() => router.push(`/api-keys`)}>View All API</Button>
                     </dl>
                 </div>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4">
-                    <APICard/>
-                    <APICard/>
-                    <APICard/>
-                </div>
+                <APICardSOverView></APICardSOverView>
             </div>
-
-            {/*<div className='flex mt-10 items-center justify-between'>*/}
-            {/*    <h1>My Strategies</h1>*/}
-            {/*    <dl>*/}
-            {/*        <Button onClick={() => router.push(`/strategy`)}>View All Strategies</Button>*/}
-            {/*    </dl>*/}
-            {/*</div>*/}
-
-
         </main>
     );
 }
+
+export function PaymasterSponsorPayTypeChart() {
+    const [paymasterMetricData, setPaymasterMetricData] = useState([]);
+
+    const tableInit = () => {
+        ajax.get(API.GET_PAYMASTER_PAY_TYPE_METRICS).then(({data}) => {
+            setPaymasterMetricData(data.data)
+        })
+    }
+    useEffect(() => {
+        tableInit()
+    }, []);
+    console.log(paymasterMetricData)
+    return (
+        <div className="container mx-auto my-1 mt-4">
+            <ResponsiveContainer width="100%" height={400}>
+
+                <LineChart
+                    data={paymasterMetricData}
+                    margin={{top: 5, right: 30, left: 20, bottom: 5}}
+                >
+
+                    <CartesianGrid strokeDasharray="3 3"/>
+                    <XAxis dataKey="time"/>
+                    <YAxis/>
+                    <Tooltip/>
+                    <Legend/>
+                    <Line type="monotone" dataKey="erc20_pay_type" stroke="#0000ff"/>
+                    <Line type="monotone" dataKey="project_sponsor" stroke="#ff4748"/>
+                    <Line type="monotone" dataKey="user_pay" stroke="#44ff6d"/>
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+    )
+}
+
+
+
+
+function APICardSOverView() {
+    const [apiKeyDataOverViews, setApiKeyDataOverViews] = useState<ObjType<any>[]>([])
+    const tableInit = () => {
+        ajax.get(API.GET_API_KEY_OVERVIEW_LIST).then(({data}) => {
+            setApiKeyDataOverViews(data.data)
+        })
+    }
+    useEffect(() => {
+        tableInit()
+    }, []);
+    const dataDom = apiKeyDataOverViews.map((item, index) => {
+
+        return (
+            <APICard key={index} apiName={item.api_name} requestCount={item.request_count}
+                     successRate={item.success_rate} apiKey={item.api_key}></APICard>)
+    })
+
+    return (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4">
+            {dataDom}
+        </div>
+    )
+}
+
 function HomeApIkeyRequestSuccessRate() {
     const [rowData, setRowData] = useState([]);
 
     const tableInit = () => {
-        ajax.get(API.GET_SUCCESS_RATE_LIST ).then(({data}) => {
+        ajax.get(API.GET_SUCCESS_RATE_LIST).then(({data}) => {
             setRowData(data.data)
         })
     }
     useEffect(() => {
         tableInit()
     }, []);
-   return(
-       <SuccessRateChart successRateData={rowData}/>
-   )
+    return (
+        <SuccessRateChart successRateData={rowData}/>
+    )
 }
+
 function HomeRequestHealthChart() {
     const [rowData, setRowData] = useState([]);
 
@@ -147,21 +185,28 @@ export function MultiSuccessRateChart(
 }
 
 
-export function APICard() {
+export function APICard(
+    {apiName, requestCount, successRate, apiKey}: {
+        apiName?: string,
+        requestCount?: number,
+        successRate?: number,
+        apiKey?: string
+    }
+) {
     return (
         <div className="border border-gray-200 rounded-lg p-4 max-w-sm shadow-md">
             <div className="flex items-center mb-4">
                 <img src="/icons/key.svg" alt="Ethereum Sepolia"
                      className="w-6 h-6 mr-2"/>
-                <span className="text-sm font-medium">AAStar dev</span>
+                <span className="text-sm font-medium">{apiName}</span>
             </div>
             <div className="mb-4">
-                <p className="text-sm text-gray-600">200 requests (24h)</p>
-                <p className="text-sm text-gray-600">99.9% Success Rate(24h)</p>
+                <p className="text-sm text-gray-600">{requestCount} requests (24h)</p>
+                <p className="text-sm text-gray-600">{successRate}% Success Rate(24h)</p>
             </div>
             <div className="flex justify-between items-center">
                 <button className="bg-gray-100 text-gray-700 rounded px-3 py-1 text-sm">Connect API key</button>
-                <button onClick={() => router.push(`/api-keys/detail/8bced19b-505e-4d11-ae80-abbee3d3a38c`)}
+                <button onClick={() => router.push(`/api-keys/detail/${apiKey}`)}
                         className="text-xl text-gray-700 rounded">&rarr;</button>
             </div>
         </div>

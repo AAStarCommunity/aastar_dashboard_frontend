@@ -42,9 +42,7 @@ export default function Strategy() {
     <>
       <div className='flex items-center justify-between'>
         <PageTitle>Sponsor Strategies</PageTitle>
-
         <Button onClick={() => router.push(`/strategy/create`)} >Create Strategy</Button>
-
       </div>
 
 
