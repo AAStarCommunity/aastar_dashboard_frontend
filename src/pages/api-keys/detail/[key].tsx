@@ -17,7 +17,7 @@ export default function ApiKeyDetail() {
                 <div className="flex item-center">
                     <img src="/icons/apikey.svg" alt="Ethereum Sepolia"
                          className="w-6 h-6 mr-2 mt-1"/>
-                    <h1 className='dark:text-white font-bold text-2xl text-gray-900'>AAStarAPi</h1>
+                    <h1 className='dark:text-white font-bold text-2xl text-gray-900'>api1</h1>
                 </div>
                 <div>
                     <button type="button"
@@ -33,16 +33,9 @@ export default function ApiKeyDetail() {
 
             </div>
 
-            <APiKeyCardList/>
+            <APiKeyCardList ApiKey={apiKey}/>
 
-            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
-                <div className="mt-10 bg-white grid col-span-2">
-                    <APIKeyRequestHealthChart/>
-                </div>
-                <div className="mt-10 bg-white grid col-span-2">
-                    <APIKeyRequestSuccessChart/>
-                </div>
-            </div>
+            <APIKeyRequestHealthAndSuccessRate ApiKey={apiKey}/>
             <div className="bg-white mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md">
                 <h3 className="text-5xl md:text-2xl">Latest Request</h3>
                 <RequestHisToryTable ApiKey={apiKey}></RequestHisToryTable>
@@ -51,81 +44,7 @@ export default function ApiKeyDetail() {
     );
 }
 
-export function APiKeyCardList(
-    {ApiKey}: { ApiKey?: string }
-) {
-    const [data, setData] = useState({
-        successRateHour: 0,
-        successRateDay: 0,
-        totalRequestCount: 0,
-        invalidRequestCount: 0,
-    });
-    const tableInit = async () => {
-        try {
-            const [totalRequests, invalidRequests, successRateHour, successRateDay] = await Promise.all([
-                ajax.get(API.GET_REQUEST_COUNT_ONE, {
-                    api_key: ApiKey
-                }),
-                ajax.get(API.GET_REQUEST_COUNT_ONE, {
-                    api_key: ApiKey
-                }),
-                ajax.get(API.GET_SUCCESS_RATE_ONE, {
-                    api_key: ApiKey
-                }),
-                ajax.get(API.GET_SUCCESS_RATE_ONE, {
-                    api_key: ApiKey
-                })
-            ])
-            setData({
-                totalRequestCount: totalRequests.data.data.result,
-                invalidRequestCount: invalidRequests.data.data.result,
-                successRateHour: successRateHour.data.data.result,
-                successRateDay: successRateDay.data.data.result,
-            });
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    useEffect(() => {
-        tableInit();
-    }, [ApiKey]);
-    return (
-        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
-            <DataShowCard dataName="Success rate (last 1 hour)" dataNum={`${data.successRateHour}%`} />
-            <DataShowCard dataName="Success rate (last 24 hour)" dataNum={`${data.successRateDay}%`} />
-            <DataShowCard dataName="Total Request (last 24 hour)" dataNum={`${data.totalRequestCount}`} />
-            <DataShowCard dataName="Invalid Request (last 24 hour)" dataNum={`${data.invalidRequestCount}`} />
-        </div>
-    )
-}
-
-export function APIKeyRequestSuccessChart(
-    {ApiKey}: { ApiKey?: string }
-) {
-    const [rowData, setRowData] = useState([]);
-
-    const tableInit = () => {
-        ajax.get(API.GET_SUCCESS_RATE_LIST, {
-            api_key: ApiKey
-        }).then(({data}) => {
-            setRowData(data.data)
-        })
-    }
-    useEffect(() => {
-        tableInit()
-    }, []);
-
-    return (
-        <div>
-            <div>
-                <h3>Paymaster Success Rate</h3>
-            </div>
-            <SuccessRateChart successRateData={rowData}/>
-        </div>
-    )
-}
-
-export function APIKeyRequestHealthChart(
+export function APIKeyRequestHealthAndSuccessRate(
     {ApiKey}: { ApiKey?: string }
 ) {
     const [rowData, setRowData] = useState([]);
@@ -139,34 +58,59 @@ export function APIKeyRequestHealthChart(
     }
     useEffect(() => {
         tableInit()
-    }, []);
+    }, [ApiKey]);
     return (
-        <div>
-            <div>
-                <h3>Paymaster request Health</h3>
-                {/*<div>*/}
-                {/*    <label htmlFor="timeRange">Time Range: </label>*/}
-                {/*    /!*<select id="timeRange" value={timeRange} onChange={handleTimeRangeChange}>*!/*/}
-                {/*    <select id="timeRange">*/}
-                {/*        <option value="1d">1 Day</option>*/}
-                {/*        <option value="1w">1 Week</option>*/}
-                {/*        <option value="1m">1 Month</option>*/}
-                {/*        <option value="1y">1 Year</option>*/}
-                {/*    </select>*/}
-                {/*</div>*/}
-                {/*<div>*/}
-                {/*    <label htmlFor="network">Network: </label>*/}
-                {/*    /!*<select id="network" value={network} onChange={handleNetworkChange}>*!/*/}
-                {/*    <select id="network" >*/}
-                {/*        <option value="op">Optimism</option>*/}
-                {/*        <option value="ethereum">Ethereum</option>*/}
-                {/*    </select>*/}
-                {/*</div>*/}
+        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
+            <div className="mt-10 bg-white grid col-span-2">
+                <div>
+                    <h3>Paymaster request Health</h3>
+                </div>
+                <RequestHealthChart requestHealthData={rowData}/>
             </div>
-            <RequestHealthChart requestHealthData={rowData}/>
+            <div className="mt-10 bg-white grid col-span-2">
+                <div>
+                    <div>
+                        <h3>Paymaster Success Rate</h3>
+                    </div>
+                    <SuccessRateChart successRateData={rowData}/>
+                </div>
+            </div>
         </div>
     )
+}
 
+export function APiKeyCardList(
+    {ApiKey}: { ApiKey?: string }
+) {
+    const [hourRequestHealth, setHourRequestHealth] = useState(Object)
+    const [dayRequestHealth, setDayRequestHealth] = useState(Object)
+
+    const tableInit = () => {
+        ajax.get(API.GET_REQUEST_HEALTH_ONE, {
+            api_key: ApiKey,
+            time_type: 'hour'
+        }).then(({data}) => {
+            setHourRequestHealth(data.data)
+        })
+        ajax.get(API.GET_REQUEST_HEALTH_ONE, {
+            api_key: ApiKey,
+            time_type: 'day'
+        }).then(({data}) => {
+            setDayRequestHealth(data.data)
+        })
+    }
+    let totalRequest = dayRequestHealth?.successful + dayRequestHealth?.failed
+    useEffect(() => {
+        tableInit();
+    }, [ApiKey]);
+    return (
+        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
+            <DataShowCard dataName="Success rate (last 1 hour)" dataNum={`${hourRequestHealth?.success_rate}%`}/>
+            <DataShowCard dataName="Success rate (last 24 hour)" dataNum={`${dayRequestHealth?.success_rate}%`}/>
+            <DataShowCard dataName="Total Request (last 24 hour)" dataNum={`${totalRequest}`}/>
+            <DataShowCard dataName="Invalid Request (last 24 hour)" dataNum={`${dayRequestHealth?.failed}`}/>
+        </div>
+    )
 }
 
 // JSON Cell Renderer

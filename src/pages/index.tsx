@@ -10,28 +10,22 @@ import {ObjType} from "@/utils/types";
 
 export default function Home() {
     const router = useRouter()
-
     return (
         <main>
             <div className='mt-10 relative overflow-x-auto sm:rounded-lg overflow-hidden"'>
                 <div className='flex items-center justify-between'>
                     <h1 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">OverView</h1>
                 </div>
-                <div className='grid gap-5  grid-cols-6'>
-                    <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
-                        <h2>Request Health</h2>
-                        <Suspense fallback={"loading"}>
-                            <HomeRequestHealthChart></HomeRequestHealthChart>
-                        </Suspense>
-                    </div>
-                    <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
-                        <h2>PayMaster Sponsor PayTypeRequest</h2>
-                        <PaymasterSponsorPayTypeChart/>
-                    </div>
-                    <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
-                        <h2>RequestSuccessRate</h2>
-                        <HomeApIkeyRequestSuccessRate/>
-                    </div>
+                <div className='grid gap-5  grid-cols-4'>
+                    <Suspense fallback={"loading"}>
+                        <RequestHealthAndSuccessRate/>
+                    </Suspense>
+                    {/*TODO*/}
+                    {/*<div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">*/}
+                    {/*    <h2>PayMaster Sponsor PayTypeRequest</h2>*/}
+                    {/*    <PaymasterSponsorPayTypeChart/>*/}
+                    {/*</div>*/}
+
                 </div>
 
             </div>
@@ -48,6 +42,32 @@ export default function Home() {
             </div>
         </main>
     );
+}
+
+export function RequestHealthAndSuccessRate() {
+    const [rowData, setRowData] = useState([]);
+
+    const tableInit = () => {
+        ajax.get(API.GET_REQUEST_HEALTH_LIST).then(({data}) => {
+            setRowData(data.data)
+        })
+    }
+    useEffect(() => {
+        tableInit()
+    }, []);
+    return (
+        < >
+            <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
+                <h2>Request Health</h2>
+                <HomeRequestHealthChart rowData={rowData}></HomeRequestHealthChart>
+            </div>
+            <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-2">
+                <h2>RequestSuccessRate</h2>
+                <SuccessRateChart successRateData={rowData}/>
+            </div>
+        </>
+    )
+
 }
 
 export function PaymasterSponsorPayTypeChart() {
@@ -86,8 +106,6 @@ export function PaymasterSponsorPayTypeChart() {
 }
 
 
-
-
 function APICardSOverView() {
     const [apiKeyDataOverViews, setApiKeyDataOverViews] = useState<ObjType<any>[]>([])
     const tableInit = () => {
@@ -98,47 +116,37 @@ function APICardSOverView() {
     useEffect(() => {
         tableInit()
     }, []);
-    const dataDom = apiKeyDataOverViews.map((item, index) => {
-
-        return (
-            <APICard key={index} apiName={item.api_name} requestCount={item.request_count}
-                     successRate={item.success_rate} apiKey={item.api_key}></APICard>)
-    })
+    // const dataDom = apiKeyDataOverViews?.map((item, index) => {
+    //
+    //     return (
+    //         <APICard key={index} apiName={item.api_name} requestCount={item.request_count}
+    //                  successRate={item.success_rate} apiKey={item.api_key}></APICard>)
+    // })
 
     return (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4">
-            {dataDom}
+            {apiKeyDataOverViews && apiKeyDataOverViews.length > 0 ? (
+                apiKeyDataOverViews.map((item, index) => (
+                    <APICard
+                        key={index}
+                        apiName={item.api_name}
+                        requestCount={item.request_count}
+                        successRate={item.success_rate}
+                        apiKey={item.api_key}
+                    />
+                ))
+            ) : (
+                <div>Please apply API key</div>
+            )}
         </div>
     )
 }
 
-function HomeApIkeyRequestSuccessRate() {
-    const [rowData, setRowData] = useState([]);
 
-    const tableInit = () => {
-        ajax.get(API.GET_SUCCESS_RATE_LIST).then(({data}) => {
-            setRowData(data.data)
-        })
-    }
-    useEffect(() => {
-        tableInit()
-    }, []);
-    return (
-        <SuccessRateChart successRateData={rowData}/>
-    )
-}
+function HomeRequestHealthChart(
+    {rowData}: { rowData?: { time: string, successful: number, failed: number }[] }
+) {
 
-function HomeRequestHealthChart() {
-    const [rowData, setRowData] = useState([]);
-
-    const tableInit = () => {
-        ajax.get(API.GET_REQUEST_HEALTH_LIST).then(({data}) => {
-            setRowData(data.data)
-        })
-    }
-    useEffect(() => {
-        tableInit()
-    }, []);
     return (
         <div className="container mx-auto my-1 mt-4">
             <ResponsiveContainer width="100%" height={400}>

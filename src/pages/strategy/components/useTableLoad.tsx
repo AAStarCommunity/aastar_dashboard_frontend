@@ -3,6 +3,7 @@ import Switch from "@/components/Switch";
 import useLoading, {REQUEST_STATUS} from "@/hooks/useLoading";
 import {IPropChild, ObjType} from "@/utils/types";
 import {useCallback, useEffect, useState} from "react";
+import Message from "@/utils/message";
 
 const Enable = () => <span style={{color: "green"}}>Enabled</span>;
 const Disable = () => <span style={{color: "red"}}>Disabled</span>;
@@ -51,13 +52,24 @@ export default function useTableLoad({deleteClick, router}: any) {
     const changeStrategyStatus = useCallback((value: boolean, index: number) => {
         const strategy = tableData[index]
         const status = value ? "enable" : "disable"
-        setStrategyStatus(prevArray => {
-            const newArray = [...prevArray];
-            newArray[index] = value;
-            return newArray;
-        })
+        ajax.put(API.SWITCH_STRATEGY_STATUS, {
+            strategy_code: strategy.strategy_code,
+            status: status
+        }).then(() => {
+                setStrategyStatus(prevArray => {
+                    const newArray = [...prevArray];
+                    newArray[index] = value;
+                    return newArray;
+                })
+                Message({
+                    type: "success",
+                    message: "Change Saved!"
+                })
+            }
+        )
+
         // ajax.put(API.UPDATE_STRATEGY, {strategy_code: strategy.strategy_code, status})
-    }, [])
+    }, [tableData])
 
 
     const tableDom = (<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

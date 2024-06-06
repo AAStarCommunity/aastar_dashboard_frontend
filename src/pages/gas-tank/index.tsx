@@ -54,26 +54,7 @@ export default function GasTank() {
                 </div>
             </div>
 
-
-            <div className={subLine}>
-                <h2 className="text-9xl md:text-2xl">APi Tank consume View</h2>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4  grid-cols-4">
-                    <div className="col-span-1  p-4 ">
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
-                    </div>
-                    <div className="col-span-1  p-4">
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
-                    </div>
-                    <div className="col-span-1  p-4">
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
-                    </div>
-                    <div className="col-span-1  p-4">
-                        <BalanceDetailCard title={"balance"} balanceValue={12}/>
-                    </div>
-
-                </div>
-            </div>
-
+            {/*TODO*/}
             <div className={subLine}>
                 <h2 className="text-9xl md:text-2xl"> Strategy View</h2>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4  grid-cols-4">
@@ -102,7 +83,8 @@ export function TotalBalanceBalanceDetailCard(
     const [balance, setBalance] = useState(0)
     useEffect(() => {
         ajax.get(API.GET_BALANCE, {
-            is_test_net: isTestNet
+            is_test_net: isTestNet,
+            balance_type: 'total_sponsored'
         })
             .then(({ data: { data } }) => {
                 setBalance(data.result);
@@ -122,7 +104,8 @@ export function GasTankQuotaBalanceDetailCard() {
     try {
         useEffect(() => {
             ajax.get(API.GET_BALANCE, {
-                is_test_net: true
+                is_test_net: true,
+                balance_type: 'sponsor_quota_balance'
             }).then(({data: {data}}) => {
                 setBalance(data.result)
             })
