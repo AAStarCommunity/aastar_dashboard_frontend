@@ -16,6 +16,9 @@ export default function Copy({ text }: ICopyProps) {
     }, [text])
 
     return (
-        <CopyIcon className="dark:text-white text-slate-900 hover-text-aastar-700 hover:cursor-pointer size-4 ml-2" onClick={copyHandle} />
+        <CopyIcon className="dark:text-white text-slate-900 hover-text-aastar-700 hover:cursor-pointer size-4 ml-2" onClick={(e: { stopPropagation: () => void; })=>{
+            e.stopPropagation()
+            copyHandle()
+        }} />
     )
 }

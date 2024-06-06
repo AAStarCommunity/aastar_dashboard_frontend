@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 // import windmill from "@windmill/react-ui/config";
 // import defaultTheme from "tailwindcss/defaultTheme";
-
+// npx tsc tailwind.config.ts --outDir .
 const config: Config = {
   darkMode: ["class", "theme-dark"],
   content: [

@@ -16,6 +16,7 @@ import OutlineLogoutIcon from "./outlineLogout.svg";
 import OutlinePersonIcon from "./outlinePerson.svg";
 import DropdownIcon from "./dropdown.svg";
 import PagesIcon from "./pages.svg";
+import GasTank from "./gastank.svg";
 import FormsIcon from "./forms.svg";
 import CardsIcon from "./cards.svg";
 import CopyIcon from "./copy.svg";
@@ -43,6 +44,7 @@ export {
   OutlineLogoutIcon,
   DropdownIcon,
   PagesIcon,
+  GasTank,
   CopyIcon,
   ViewIcon,
   ViewOffIcon,

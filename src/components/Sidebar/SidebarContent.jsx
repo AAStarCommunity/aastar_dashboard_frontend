@@ -25,8 +25,8 @@ function SidebarContent() {
 
   return (
     <div className="py-4 text-gray-500 dark:text-gray-400">
-      <a className="ml-6 flex items-center text-lg font-bold text-gray-800 dark:text-gray-200" href="#">
-        
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+      <a className="ml-6 flex items-center text-lg font-bold text-gray-800 dark:text-gray-200" href="/">
         <Image src="/img/startlogo.svg" className="mr-1" width={70} height={70}  alt="AAStar"></Image>
         AAStar
       </a>

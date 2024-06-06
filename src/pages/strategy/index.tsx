@@ -1,8 +1,5 @@
 import ajax, { API } from "@/ajax";
-import Copy from "@/components/Copy";
-import Switch from "@/components/Switch";
 import PageTitle from "@/components/Typography/PageTitle";
-import { REQUEST_STATUS } from "@/hooks/useLoading";
 import { Button, Badge, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHeader, TableRow } from "@windmill/react-ui";
 import { useRouter } from "next/router";
 import { ReactNode, useCallback, useState } from "react";
@@ -16,13 +13,15 @@ export default function Strategy() {
   const [currentItem, setCurrentItem] = useState<ObjType<string>>({})
   const [isOpenDetele, setIsOpenDetele] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [disable, setDisable] = useState(false)
   const deleteClick = useCallback((item: ObjType<string>) => {
     setCurrentItem(item)
     setIsOpenDetele(true)
   }, [])
-  const [dataDom, init] = useTableLoad({ deleteClick, router })
 
-  const continueDetele = () => {
+  const [dataDom, init] = useTableLoad({ deleteClick,router })
+
+  const continueDelete = () => {
     setDeleting(true)
 
     ajax.delete(API.DELETE_STRATEGY, {
@@ -42,16 +41,12 @@ export default function Strategy() {
   return (
     <>
       <div className='flex items-center justify-between'>
-        <PageTitle>Strategy Data</PageTitle>
-
+        <PageTitle>Sponsor Strategies</PageTitle>
         <Button onClick={() => router.push(`/strategy/create`)} >Create Strategy</Button>
-
       </div>
 
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-
-
         {dataDom as ReactNode}
         {/* delete confirm */}
         <Modal className='w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
@@ -69,7 +64,7 @@ export default function Strategy() {
               <button onClick={() => setIsOpenDetele(false)} type="button" className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                 cancel
               </button>
-              <Button onClick={continueDetele} iconLeft={deleting ? LoadingIcon : null} type="button" className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
+              <Button onClick={continueDelete} iconLeft={deleting ? LoadingIcon : null} type="button" className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
                 Continue
               </Button>
             </div>
@@ -77,10 +72,6 @@ export default function Strategy() {
           </ModalFooter>
         </Modal>
       </div>
-
-
-
-
     </>
   )
 }

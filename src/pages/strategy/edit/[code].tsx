@@ -129,13 +129,14 @@ export const formOptions: IFormItem[] =
             defaultValue: [],
             type: "checkbox",
             list: NET_LIST,
+            list_logo_enable: true,
             group: `${style['Chains-group']} Chains-group`
         },
 
     ]
 
 
-export default function ApikeysEdit() {
+export default function StrategyEdit() {
     const [formArr, setFormArr] = useState<IFormItem[]>(formOptions)
 
     const formRefs = useRef<IFormRefs>(null)
@@ -149,7 +150,8 @@ export default function ApikeysEdit() {
             if (vailded) {
                 setommitted(false)
                 ajax.put(API.UPDATE_STRATEGY, {
-                    ...values
+                    ...values,
+                    strategy_code: strategyCode
                 }).then(() => {
                     setommitted(true)
                     Message({
@@ -157,6 +159,11 @@ export default function ApikeysEdit() {
                         message: "Change Saved!"
                     })
                 })
+
+                router.push('/strategy').then(() => {
+                    window.scrollTo(0, 0)
+                })
+
             }
         })
     }
@@ -194,7 +201,7 @@ export default function ApikeysEdit() {
                 {dataDom}
                 <Button onClick={commitChange} disabled={!committed} iconLeft={committed ? null : LoadingIcon}>Save changes
                 </Button>
-                <div className='text-gray-500 text-sm pt-4 dark:text-gray-400'>The changes will take effect in about a minute.</div>
+                <div className='text-gray-500 text-sm pt-4 dark:text-gray-400'>The changes will take effect immediately</div>
             </div>
         </div>
     )
