@@ -120,6 +120,8 @@ class HtttpRequest {
         });
         if (error.response.status === 401) {
           location.href = "/login";
+          const { setLocal } = useLocalStorage();
+          setLocal(KEY, {});
         }
         return Promise.reject(error);
       }

@@ -11,8 +11,9 @@ import React, {
   useMemo
 } from 'react';
 
-import { useUserContext } from '@/context/userContext';
+// import { useUserContext } from '@/context/userContext';
 import { AUTH_WHITE_LIST } from "@/utils/const";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -27,7 +28,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { store } = useUserContext()
+  // const { store } = useUserContext()
+  const { getLocal } = useLocalStorage();
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
   const router = useRouter()
   useEffect(() => {
@@ -40,15 +42,17 @@ export default function RootLayout({
 
   useEffect(() => {
     if (router.isReady) {
-      if (!store?.token && !isCurAuthwhiteRoute) {
+      const token = getLocal('userInfo')?.token
+
+      if (!token && !isCurAuthwhiteRoute) {
         router.replace('/login')
       }
 
-      if (store?.token && isCurAuthwhiteRoute) {
+      if (token && isCurAuthwhiteRoute) {
         router.push('/')
       }
     }
-  }, [store, router.isReady])
+  }, [router.isReady, router])
 
 
   return (
