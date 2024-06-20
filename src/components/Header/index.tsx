@@ -5,6 +5,7 @@ import API from "@/ajax/api";
 import ajax from "@/ajax"
 import { useRouter } from 'next/router';
 
+
 import {
     SearchIcon,
     MoonIcon,
@@ -15,7 +16,8 @@ import {
     OutlineLogoutIcon,
 } from '../../../public/icons'
 import { Avatar, Badge, Dropdown, DropdownItem, Input } from '@windmill/react-ui'
-import { useUserContext } from '@/context/userContext'
+import { KEY, useUserContext } from '@/context/userContext'
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 interface Iprops {
     style: Record<string, string>
@@ -26,6 +28,8 @@ function Header(props: Iprops) {
 
     const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false)
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+
+    const { setLocal } = useLocalStorage();
 
     function handleNotificationsClick() {
         setIsNotificationsMenuOpen(!isNotificationsMenuOpen)
@@ -46,7 +50,9 @@ function Header(props: Iprops) {
     const signOut = () => {
 
         // ajax.post(API.GET_HOUSE_SUMMARYDATA_API).then(() => {
-        setStore(null)
+        // setStore(null)
+
+        setLocal(KEY, {});
         router.replace('/login')
         // })
     }
