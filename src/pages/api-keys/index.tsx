@@ -1,18 +1,19 @@
-import {SetStateAction, useCallback, useRef, useState} from 'react'
+import { SetStateAction, useCallback, useRef, useState } from 'react'
 import Copy from '@/components/Copy'
 import {
     Modal, ModalHeader, ModalBody, ModalFooter,
     Button
 } from '@windmill/react-ui'
 import VaildInput from '@/components/VaildInput'
-import {useEffect} from 'react'
-import ajax, {API} from '@/ajax'
-import {useRouter} from 'next/router'
-import {IFromItemRefs, ObjType} from '@/utils/types'
+import { useEffect } from 'react'
+import ajax, { API } from '@/ajax'
+import { useRouter } from 'next/router'
+import { IFromItemRefs, ObjType } from '@/utils/types'
 import StarText from '@/components/StarText'
 import Message from '@/utils/message'
-import useLoading, {REQUEST_STATUS} from '@/hooks/useLoading'
-import {LoadingIcon} from '~/public/icons'
+import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading'
+import { LoadingIcon } from '~/public/icons'
+import PageTitle from '@/components/Typography/PageTitle'
 
 export default function Apikeys() {
     const router = useRouter()
@@ -29,7 +30,7 @@ export default function Apikeys() {
 
     // init table data
     const init = () => {
-        ajax.get(API.GET_API_KEY_LIST).then(({data}) => {
+        ajax.get(API.GET_API_KEY_LIST).then(({ data }) => {
             setFormData(data.data)
             setStatus(REQUEST_STATUS.SUCCESS)
         })
@@ -48,7 +49,7 @@ export default function Apikeys() {
         const res = keyNameRef.current?.getData()
         if (res?.vaild) {
             setIsOpenCreate(false)
-            ajax.post(API.APPLY_API_KEY, {api_key_name: res?.value}).then(({data}) => {
+            ajax.post(API.APPLY_API_KEY, { api_key_name: res?.value }).then(({ data }) => {
                 if (data.code === 200) {
                     Message({
                         type: "success",
@@ -65,7 +66,7 @@ export default function Apikeys() {
         setDeleting(true)
         ajax.delete(API.DELETE_API_KEY, {
             api_key: currentItem.api_key
-        }).then(({data}) => {
+        }).then(({ data }) => {
             if (data.code === 200) {
                 Message({
                     type: "success",
@@ -83,60 +84,60 @@ export default function Apikeys() {
     const tableDom = (
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-                <th scope="col" className="px-6 py-3">
-                    name
-                </th>
-                <th scope="col" className="px-6 py-3">
-                    api key
-                </th>
-                <th scope="col" className="px-6 py-3">
-                    <span className="">actions</span>
-                </th>
-            </tr>
+                <tr>
+                    <th scope="col" className="px-6 py-3">
+                        name
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                        api key
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                        <span className="">actions</span>
+                    </th>
+                </tr>
             </thead>
             <tbody>
-            {formData?.map((item, index) => {
-                return (
-                    <tr key={index}
-                        className="bg-white border-b hover:bg-gray-200   dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-white cursor-pointer"
-                        onClick={() => router.push(`/api-keys/detail/${item.api_key}`)}>
-                        <th scope="row"
-                            className=" cursor-pointer px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {item.key_name}
-                        </th>
-                        <td className="px-6 py-4">
-                            <div className='flex items-center cursor-pointer'>
-                                <StarText  text={item.api_key}></StarText>
-                                <Copy text={item.api_key}/></div>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                            <div className='flex'>
-                                <button onClick={(e) => {
-                                    e.stopPropagation();
-                                    projectInfoClick(item, 'info')
-                                }} type="button"
+                {formData?.map((item, index) => {
+                    return (
+                        <tr key={index}
+                            className="bg-white border-b hover:bg-gray-200   dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-800 cursor-pointer"
+                            onClick={() => router.push(`/api-keys/detail/${item.api_key}`)}>
+                            <th scope="row"
+                                className=" cursor-pointer px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {item.key_name}
+                            </th>
+                            <td className="px-6 py-4">
+                                <div className='flex items-center cursor-pointer'>
+                                    <StarText text={item.api_key}></StarText>
+                                    <Copy text={item.api_key} /></div>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                                <div className='flex'>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        projectInfoClick(item, 'info')
+                                    }} type="button"
                                         className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
-                                    Project Info
-                                </button>
-                                <button onClick={(e) => {
-                                    e.stopPropagation();
-                                    projectInfoClick(item, 'delete')
-                                }} type="button"
+                                        Project Info
+                                    </button>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        projectInfoClick(item, 'delete')
+                                    }} type="button"
                                         className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
-                                    Delete
-                                </button>
-                                <button onClick={(e) => {
-                                    e.stopPropagation();
-                                    router.push(`/api-keys/edit/${item.api_key}`)
-                                }} type="button"
+                                        Delete
+                                    </button>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        router.push(`/api-keys/edit/${item.api_key}`)
+                                    }} type="button"
                                         className="text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                )
-            })}
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    )
+                })}
 
 
             </tbody>
@@ -148,11 +149,9 @@ export default function Apikeys() {
     return (
         <div>
             <div className='flex items-center justify-between'>
-                <h1 className='dark:text-white font-bold text-2xl text-gray-900'>API Keys</h1>
-                <button onClick={() => setIsOpenCreate(true)} type="button"
-                        className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">API
-                    keys apply
-                </button>
+                <PageTitle>API Keys</PageTitle>
+                <Button onClick={() => setIsOpenCreate(true)} > keys apply</Button>
+
 
             </div>
             <div className="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg overflow-hidden">
@@ -167,13 +166,13 @@ export default function Apikeys() {
                 <ModalHeader>Name</ModalHeader>
                 <ModalBody>
                     <VaildInput required={true}
-                                name="key"
-                                ref={keyNameRef}
+                        name="key"
+                        ref={keyNameRef}
                     />
                 </ModalBody>
                 <ModalFooter>
                     <button onClick={handleGenerateKey} type="button"
-                            className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                        className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                         Generate API Key
                     </button>
                     {/* <Button className="sm:w-auto w-48 mb-6">Generate API Key</Button> */}
@@ -191,7 +190,7 @@ export default function Apikeys() {
                 <ModalBody>
                     {/* <VaildInput label='Access netowrk' name="access_netowrk" defaultValue="sepolia" disabled={true}></VaildInput> */}
                     <VaildInput label='Project code' name="project_code" defaultValue={currentItem.project_code}
-                                disabled={true}></VaildInput>
+                        disabled={true}></VaildInput>
 
                 </ModalBody>
                 {/* <ModalFooter>
@@ -214,11 +213,11 @@ export default function Apikeys() {
                     {/* <Button onClick={} className="sm:w-auto w-48 mb-6">cancel</Button> */}
                     <div className='flex items-center justify-end w-full '>
                         <button onClick={() => setIsOpenDelete(false)} type="button"
-                                className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                            className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                             cancel
                         </button>
                         <Button iconLeft={deleting ? LoadingIcon : null} type="button" onClick={continueDelete}
-                                className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
+                            className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
                             Continue
                         </Button>
                     </div>

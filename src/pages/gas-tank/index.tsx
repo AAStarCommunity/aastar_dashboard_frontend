@@ -1,83 +1,154 @@
 import PageTitle from "@/components/Typography/PageTitle";
-import {Button} from "@windmill/react-ui";
-import {useRouter} from "next/router";
-import React, {Suspense, useEffect, useState, ChangeEvent} from "react";
-import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
-import {AgGridReact} from 'ag-grid-react'; // React Data Grid Component
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "@windmill/react-ui";
+import { useRouter } from "next/router";
+import React, { useMemo, Suspense, useEffect, useState, ChangeEvent, useContext } from "react";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
-import ajax, {API} from "@/ajax";
-import {BalanceDetailCard} from "@/components/chart";
+import ajax, { API } from "@/ajax";
+import { BalanceDetailCard } from "@/components/chart";
+import useLoading, { REQUEST_STATUS } from "@/hooks/useLoading";
+import SectionTitle from "@/components/Typography/SectionTitle";
+import { ThemeContext } from '@/context/ThemeContext'
+import Message from "@/utils/message";
+import VaildInput from "@/components/VaildInput";
+import { useRef } from "react";
+import { IFromItemRefs } from "@/utils/types";
+import { LoadingIcon } from "~/public/icons";
+import AAConnectButton from "@/components/AAConnectButton";
+import { useSendTransaction } from 'wagmi'
+import { BaseError, parseEther } from 'viem'
 
+
+interface ImodelParams {
+    handleComfirm: (res: any) => Promise<boolean>,
+    isModalOpen: boolean,
+    loading: boolean
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+export function GasTankModel({ handleComfirm, isModalOpen, setIsModalOpen, loading }: ImodelParams) {
+    const modalRef = useRef<IFromItemRefs | null>(null)
+
+
+    const handleClick = async () => {
+        const res = modalRef.current?.getData()
+        if (res?.vaild) {
+            await handleComfirm(res?.value)
+        }
+    }
+
+    return (<Modal
+        className='w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+    >
+        <ModalHeader>Amount</ModalHeader>
+        <ModalBody>
+            <VaildInput required={true}
+                name="key"
+                ref={modalRef}
+            />
+        </ModalBody>
+        <ModalFooter>
+            <Button onClick={handleClick} disabled={loading} iconLeft={loading ? LoadingIcon : null}>comfirm</Button>
+        </ModalFooter>
+    </Modal>)
+}
 
 export default function GasTank() {
+
     const router = useRouter()
-    const subLine = " mt-10 relative overflow-x-auto sm:rounded-lg overflow-hidden"
-    const [isTestNet, setIsTestNet] = useState(true)
-    const handleNetworkChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        const selectedNetwork = event.target.value;
-        setIsTestNet(selectedNetwork === 'testNet')
-        console.log("Set " + (selectedNetwork === 'testNet'));
+    const { data: Txhash, error, isPending, sendTransaction } = useSendTransaction()
+    const [isTestNet, setIsTestNet] = useState(false)
+    const [isDepositOpen, setIsDepositOpen] = useState<boolean>(false)
+
+    const handleDeposit = async (res: string): Promise<boolean> => {
+        sendTransaction({ to: `${process.env.NEXT_PUBLIC_TREASURY_ADDRESS}` as `0x${string}`, value: parseEther(res) })
+        return isPending
     }
+    useEffect(() => {
+        if (error) {
+            Message({
+                type: "danger",
+                message: (error as BaseError).shortMessage || error.message
+            })
+        }
+        console.log(Txhash, 'Txhash')
+        if (!isPending && Txhash) {
+            setIsDepositOpen(false)
+            ajax.post(API.SPONSOR_DEPOSIT, { is_test_net: isTestNet, tx_hash: Txhash }).then(({ data }) => {
+                console.log(data)
+            })
+        }
+    }, [error, isPending, Txhash, isTestNet])
+
+    function getCurrChain(chain: { name: string; }) {
+        const isTest = (chain?.name === 'Sepolia')
+        if (isTest !== isTestNet) {
+            setIsTestNet(isTest)
+        }
+    }
+
+    const subLine = " mt-10 relative overflow-x-auto sm:rounded-lg overflow-hidden"
     return (<main>
-            <div className='flex items-center justify-between'>
-                <PageTitle>Gas Tank</PageTitle>
+        <div className='flex items-center justify-between'>
+            <PageTitle>Gas Tank</PageTitle>
 
-                <dl>
-                    <select onChange={handleNetworkChange} value={isTestNet ? 'testNet' : 'mainNet'}>
-                        <option value="testNet">TestNet</option>
-                        <option value="mainNet">MainNet</option>
-                    </select>
-                    <Button onClick={() => router.push(`/strategy/create`)}>Deposit Gas Tank</Button>
-                    <Button onClick={() => router.push(`/strategy/create`)}>WithDraw Gas Tank</Button>
-                </dl>
-            </div>
-            <div className={subLine}>
-                <h2 className="text-9xl md:text-2xl">Balance Detail</h2>
-                <div className="grid gap-6 sm:grid-cols-5 lg:grid-cols-5 grid-cols-5">
+            <AAConnectButton getCurrChain={getCurrChain}>
+                <Button onClick={() => setIsDepositOpen(true)}>Deposit Gas Tank</Button>
+                <Button onClick={() => router.push(`/strategy/create`)}>WithDraw Gas Tank</Button>
+            </AAConnectButton>
+
+        </div>
+        <GasTankModel handleComfirm={handleDeposit}
+            isModalOpen={isDepositOpen} setIsModalOpen={setIsDepositOpen}
+            loading={isPending}
+        ></GasTankModel>
+        <div className={subLine}>
+
+            <SectionTitle>Balance Detail</SectionTitle>
+            <div className="grid gap-6 sm:grid-cols-5 lg:grid-cols-5 grid-cols-5">
                 <div className="col-span-1">
-                        <Suspense fallback={<div>Loading...</div>}>
-                            <TotalBalanceBalanceDetailCard isTestNet={isTestNet}/>
-                        </Suspense>
-                        <Suspense>
-                            <GasTankQuotaBalanceDetailCard/>
-                        </Suspense>
-                    </div>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <SponsorMetricsChart/>
-                    </Suspense>
+                    <TotalBalanceBalanceDetailCard isTestNet={isTestNet} />
 
+                    <GasTankQuotaBalanceDetailCard />
                 </div>
-                <div className="bg-white mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md">
-                    <h3 className="text-5xl md:text-2xl">Trans HisTory</h3>
-                    <TransHisToryTable/>
+                <SponsorMetricsChart />
+
+            </div>
+            <div className="bg-white dark:bg-gray-800 mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md p-6">
+                <SectionTitle>Trans HisTory</SectionTitle>
+                <TransHisToryTable />
+            </div>
+        </div>
+
+        {/*TODO*/}
+        <div className={subLine}>
+            <h2 className="text-9xl md:text-2xl"> Strategy View</h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4  grid-cols-4">
+                <div className="col-span-1  p-4 ">
+                    <BalanceDetailCard title={"StrategyA - consume balance"} balanceValue={12} />
+                </div>
+                <div className="col-span-1  p-4">
+                    <BalanceDetailCard title={"StrategyB - consume balance"} balanceValue={12} />
+                </div>
+                <div className="col-span-1  p-4">
+                    <BalanceDetailCard title={"StrategyC - consume balance"} balanceValue={12} />
+                </div>
+                <div className="col-span-1  p-4">
+                    <BalanceDetailCard title={"StrategyD - consume balance"} balanceValue={12} />
                 </div>
             </div>
+        </div>
 
-            {/*TODO*/}
-            <div className={subLine}>
-                <h2 className="text-9xl md:text-2xl"> Strategy View</h2>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4  grid-cols-4">
-                    <div className="col-span-1  p-4 ">
-                        <BalanceDetailCard title={"StrategyA - consume balance"} balanceValue={12}/>
-                    </div>
-                    <div className="col-span-1  p-4">
-                        <BalanceDetailCard title={"StrategyB - consume balance"} balanceValue={12}/>
-                    </div>
-                    <div className="col-span-1  p-4">
-                        <BalanceDetailCard title={"StrategyC - consume balance"} balanceValue={12}/>
-                    </div>
-                    <div className="col-span-1  p-4">
-                        <BalanceDetailCard title={"StrategyD - consume balance"} balanceValue={12}/>
-                    </div>
-                </div>
-            </div>
-        </main>
+
+    </main>
     )
 }
 
 export function TotalBalanceBalanceDetailCard(
-    {isTestNet }: { isTestNet?: boolean }
+    { isTestNet }: { isTestNet?: boolean }
 ) {
     console.log("TotalBalanceBalanceDetailCard isTestNet" + isTestNet)
     const [balance, setBalance] = useState(0)
@@ -95,7 +166,7 @@ export function TotalBalanceBalanceDetailCard(
     }, [isTestNet]);
 
     return (
-        <BalanceDetailCard title={"Total Gas Sponsor"} balanceValue={balance}/>
+        <BalanceDetailCard title={"Total Gas Sponsor"} balanceValue={balance} />
     )
 }
 
@@ -106,7 +177,7 @@ export function GasTankQuotaBalanceDetailCard() {
             ajax.get(API.GET_BALANCE, {
                 is_test_net: true,
                 balance_type: 'sponsor_quota_balance'
-            }).then(({data: {data}}) => {
+            }).then(({ data: { data } }) => {
                 setBalance(data.result)
             })
         }, [])
@@ -114,38 +185,50 @@ export function GasTankQuotaBalanceDetailCard() {
         console.log(e)
     }
     return (
-        <BalanceDetailCard title={"Gas Tank Quota Balance"} balanceValue={balance}/>
+        <BalanceDetailCard title={"Gas Tank Quota Balance"} balanceValue={balance} />
     )
 }
 export function SponsorMetricsChart() {
-
-    const[sponsorMetrics, setSponsorMetrics] = useState([]);
+    const [error, setError] = useState<string>("")
+    const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
+    const [sponsorMetrics, setSponsorMetrics] = useState([]);
     useEffect(() => {
         ajax.get(API.GET_SPONSOR_METRICS, {
             is_test_net: true
-        }).then(({data: {data}}) => {
-            setSponsorMetrics(data)
-        }).catch((e) => {
-            console.error('Error fetching sponsor metrics:', e);
+        }).then(({ data }) => {
+            if (data.code === 200) {
+                setSponsorMetrics(data.data)
+                data.data.length ? setStatus(REQUEST_STATUS.SUCCESS) : setStatus(REQUEST_STATUS.Empty)
+            } else {
+                setStatus(REQUEST_STATUS.FAIL)
+                setError(data.message)
+            }
+
+        }).catch((err) => {
+            setStatus(REQUEST_STATUS.FAIL)
+            setError(err.toString())
         })
     }, []);
+
+    const gasSponsored = <ResponsiveContainer width="100%" height={400}>
+        <LineChart
+            data={sponsorMetrics}
+            margin={{
+                top: 20, right: 30, left: 20, bottom: 5,
+            }}
+        >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" />
+            <YAxis tickFormatter={(value: { toLocaleString: () => any; }) => `$${value.toLocaleString()}`} />
+            <Tooltip formatter={(value: { toLocaleString: () => any; }) => `$${value.toLocaleString()}`} />
+            <Line type="monotone" dataKey="value" stroke="#000000" activeDot={{ r: 8 }} />
+        </LineChart>
+    </ResponsiveContainer>
+    const LoadGasSponsored = useLoading(status, gasSponsored, { loadingTo: 'self', errTips: error })
     return (
-        <div className="grid rounded-xl bg-white p-2 shadow-smflex-col col-span-4">
-            <h3 className="text-5xl md:text-2xl">Gas sponsored</h3>
-            <ResponsiveContainer width="100%" height={400}>
-                <LineChart
-                    data={sponsorMetrics}
-                    margin={{
-                        top: 20, right: 30, left: 20, bottom: 5,
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="time"/>
-                    <YAxis tickFormatter={(value) => `$${value.toLocaleString()}`}/>
-                    <Tooltip formatter={(value) => `$${value.toLocaleString()}`}/>
-                    <Line type="monotone" dataKey="value" stroke="#000000" activeDot={{r: 8}}/>
-                </LineChart>
-            </ResponsiveContainer>
+        <div className="grid rounded-xl bg-white dark:bg-gray-800  p-2 shadow-smflex-col col-span-4">
+            <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>Gas sponsored</h2>
+            <div className="relative overflow-hidden h-full row-span-10">{LoadGasSponsored}</div>
         </div>
     );
 }
@@ -153,11 +236,11 @@ export function SponsorMetricsChart() {
 
 function TransHisToryTable() {
     const [rowData, setRowData] = useState([]);
-
+    const { theme } = useContext(ThemeContext)
     const tableInit = () => {
         ajax.get(API.GET_SPONSOR_TRANSACTION_LIST, {
             is_test_net: true
-        }).then(({data: {data}}) => {
+        }).then(({ data: { data } }) => {
             setRowData(data)
         })
 
@@ -167,15 +250,16 @@ function TransHisToryTable() {
 
     }, []);
     const columnDefs: any = [
-        {headerName: 'UpdateType', field: 'update_type', flex: 1},
-        {headerName: 'Amount', field: 'amount', flex: 1, valueFormatter: (params: any) => `$${params.value}`},
-        {headerName: 'TxHash', field: 'tx_hash', flex: 1},
-        {headerName: 'Time', field: 'time', flex: 1},
+        { headerName: 'UpdateType', field: 'update_type', flex: 1 },
+        { headerName: 'Amount', field: 'amount', flex: 1, valueFormatter: (params: any) => `$${params.value}` },
+        { headerName: 'TxHash', field: 'tx_hash', flex: 1 },
+        { headerName: 'Time', field: 'time', flex: 1 },
     ];
+
     return (
         <div
-            className="ag-theme-quartz w-full min-w-full" // applying the grid theme
-            style={{height: 500}}
+            className={`w-full min-w-full ${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
+            style={{ height: 500 }}
         >
             <AgGridReact
                 className="min-w-full"

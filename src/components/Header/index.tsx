@@ -14,7 +14,7 @@ import {
     MenuIcon,
     OutlineCogIcon,
     OutlineLogoutIcon,
-} from '../../../public/icons'
+} from '~/public/icons'
 import { Avatar, Badge, Dropdown, DropdownItem, Input } from '@windmill/react-ui'
 import { KEY, useUserContext } from '@/context/userContext'
 import { useLocalStorage } from '@/hooks/useLocalStorage';

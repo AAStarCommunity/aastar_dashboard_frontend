@@ -1,0 +1,10 @@
+.limit-group {
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    margin-top: -10px;
+
+    &>label {
+        // width: 31%;
+        margin: 0 3%;
+    }
+}

@@ -95,3 +95,13 @@ button:active,
 [data-type=loading] {
   animation: spin 1s linear infinite;
 }
+
+.theme-dark .css-13cymwt-control,
+.theme-dark .css-t3ipsp-control {
+  background-color: #24262d;
+
+}
+
+.theme-dark .css-1dimb5e-singleValue {
+  color: #fff
+}

@@ -23,6 +23,10 @@ import CopyIcon from "./copy.svg";
 import ViewIcon from "./view.svg";
 import ViewOffIcon from "./view-off.svg";
 import CloseIcon from "./close.svg";
+import EmptyIcon from "./empty.svg";
+import ErrorIcon from "./error.svg";
+import KeyIcon from "./key.svg";
+import APIKeyIcon from "./apikey.svg";
 export {
   FormsIcon,
   CardsIcon,
@@ -49,4 +53,8 @@ export {
   ViewIcon,
   ViewOffIcon,
   CloseIcon,
+  EmptyIcon,
+  ErrorIcon,
+  KeyIcon,
+  APIKeyIcon,
 };

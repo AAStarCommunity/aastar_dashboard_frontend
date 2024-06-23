@@ -1,15 +1,15 @@
-import {Button} from '@windmill/react-ui'
+import { Button } from '@windmill/react-ui'
 import PageTitle from '@/components/Typography/PageTitle';
-import {useEffect, useState} from 'react';
-import Form, {IFormItem, IFormRefs} from '@/components/Form';
-import {useRef} from 'react';
-import ajax, {API} from '@/ajax';
-import {useRouter} from 'next/router';
-import useLoading, {REQUEST_STATUS} from '@/hooks/useLoading';
-import {LoadingIcon} from '~/public/icons';
-import {mergeLoadedFields} from '@/utils';
+import { useEffect, useState } from 'react';
+import Form, { IFormItem, IFormRefs } from '@/components/Form';
+import { useRef } from 'react';
+import ajax, { API } from '@/ajax';
+import { useRouter } from 'next/router';
+import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading';
+import { LoadingIcon } from '~/public/icons';
+import { mergeLoadedFields } from '@/utils';
 import Message from '@/utils/message';
-import style from "@/pages/strategy/edit/edit.module.scss";
+import style from "./edit.module.scss";
 
 export default function ApikeysEdit() {
 
@@ -44,7 +44,7 @@ export default function ApikeysEdit() {
             defaultValue: '',
             type: "switch",
             isControl: true,
-            group: `${style['limit-group']} time-group flex items-center w-full max-lg:flex-col flex-row `
+            group: `${style['limit-group']} flex`
         },
         {
             name: "erc20_paymaster_enable",
@@ -53,7 +53,7 @@ export default function ApikeysEdit() {
             placeholder: '',
             defaultValue: '',
             type: "switch",
-            group: `${style['limit-group']} time-group flex items-center w-full max-lg:flex-col flex-row `
+            group: `${style['limit-group']} flex`
         },
         {
             name: "project_sponsor_paymaster_enable",
@@ -62,7 +62,7 @@ export default function ApikeysEdit() {
             placeholder: '',
             defaultValue: '',
             type: "switch",
-            group: `${style['limit-group']} time-group flex items-center w-full max-lg:flex-col flex-row `
+            group: `${style['limit-group']} flex`
         },
         {
             name: "user_pay_paymaster_enable",
@@ -71,13 +71,13 @@ export default function ApikeysEdit() {
             placeholder: '',
             defaultValue: '',
             type: "switch",
-            group: `${style['limit-group']} time-group flex items-center w-full max-lg:flex-col flex-row `
+            group: `${style['limit-group']} flex`
         },
 
         {
             name: "ip_white_list",
             label: "IP Allow List",
-            desc:  "Restrict read and write requests through this API key to specified IPv4 addresses If Empty Will Allow All",
+            desc: "Restrict read and write requests through this API key to specified IPv4 addresses If Empty Will Allow All",
             placeholder: '',
             defaultValue: '',
             type: "input",
@@ -86,7 +86,7 @@ export default function ApikeysEdit() {
         {
             name: "domain_white_list",
             label: "Domain Allow list",
-            desc:  "Restrict read and write requests through this API key to specified domains If Empty Will Allow All",
+            desc: "Restrict read and write requests through this API key to specified domains If Empty Will Allow All",
             placeholder: '',
             defaultValue: '',
             type: "input",
@@ -95,7 +95,7 @@ export default function ApikeysEdit() {
     ])
 
     function commitChange() {
-        formRefs.current?.getData(({vailded, values}) => {
+        formRefs.current?.getData(({ vailded, values }) => {
             if (vailded) {
                 setCommitted(false)
                 ajax.put(API.UPDATE_API_KEY, {
@@ -116,7 +116,7 @@ export default function ApikeysEdit() {
     useEffect(() => {
         if (router.isReady) {
             apiKey = router.query.key
-            ajax.get(API.GET_API_KEY, {api_key: apiKey}).then(({data}) => {
+            ajax.get(API.GET_API_KEY, { api_key: apiKey }).then(({ data }) => {
                 setFormArr(prev => {
                     return mergeLoadedFields(prev, data.data)
                 })
@@ -125,7 +125,7 @@ export default function ApikeysEdit() {
         }
     }, [router, router.isReady, router.query])
 
-    const dataDom = useLoading(status, <Form formArr={formArr} ref={formRefs}/>)
+    const dataDom = useLoading(status, <Form formArr={formArr} ref={formRefs} />)
 
 
     return (
