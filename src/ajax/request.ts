@@ -5,7 +5,7 @@ import axios, {
   AxiosResponse,
   AxiosPromise,
 } from "axios";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { getLocal, setLocal } from "@/utils/localStorage";
 import { KEY } from "@/context/userContext";
 
 export interface ResponseData {
@@ -83,7 +83,6 @@ class HtttpRequest {
     // Intercept request
     instance.interceptors.request.use(
       (config) => {
-        const { getLocal } = useLocalStorage();
         const userInfo = getLocal(KEY);
 
         config.headers.Authorization = `Bearer ${userInfo.token}`;
@@ -120,7 +119,6 @@ class HtttpRequest {
         });
         if (error.response.status === 401) {
           location.href = "/login";
-          const { setLocal } = useLocalStorage();
           setLocal(KEY, {});
         }
         return Promise.reject(error);

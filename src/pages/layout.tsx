@@ -13,7 +13,7 @@ import React, {
 
 // import { useUserContext } from '@/context/userContext';
 import { AUTH_WHITE_LIST } from "@/utils/const";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { getLocal } from "@/utils/localStorage";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -29,7 +29,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   // const { store } = useUserContext()
-  const { getLocal } = useLocalStorage();
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
   const router = useRouter()
   useEffect(() => {

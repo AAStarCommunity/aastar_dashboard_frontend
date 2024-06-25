@@ -108,6 +108,9 @@ export default function ApikeysEdit() {
                         message: "Change submitted successfully!"
                     })
                     setCommitted(true)
+                    router.push('/api-keys').then(() => {
+                        window.scrollTo(0, 0)
+                    })
                 })
             }
         })

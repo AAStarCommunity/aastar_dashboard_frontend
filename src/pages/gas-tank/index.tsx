@@ -1,3 +1,4 @@
+"use client";
 import PageTitle from "@/components/Typography/PageTitle";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "@windmill/react-ui";
 import { useRouter } from "next/router";
@@ -60,8 +61,10 @@ export default function GasTank() {
 
     const router = useRouter()
     const { data: Txhash, error, isPending, sendTransaction } = useSendTransaction()
-    const [isTestNet, setIsTestNet] = useState(false)
+    const [isTestNet, setIsTestNet] = useState(true)
+    const [balanceKey, setBalanceKey] = useState(0)
     const [isDepositOpen, setIsDepositOpen] = useState<boolean>(false)
+
 
     const handleDeposit = async (res: string): Promise<boolean> => {
         sendTransaction({ to: `${process.env.NEXT_PUBLIC_TREASURY_ADDRESS}` as `0x${string}`, value: parseEther(res) })
@@ -77,14 +80,22 @@ export default function GasTank() {
         console.log(Txhash, 'Txhash')
         if (!isPending && Txhash) {
             setIsDepositOpen(false)
-            ajax.post(API.SPONSOR_DEPOSIT, { is_test_net: isTestNet, tx_hash: Txhash }).then(({ data }) => {
-                console.log(data)
-            })
+            setTimeout(() => {
+                ajax.post(API.SPONSOR_DEPOSIT, { is_test_net: isTestNet, tx_hash: Txhash }).then(({ data }) => {
+                    setBalanceKey(new Date().getTime())
+                    Message({
+                        type: "success",
+                        message: "Deposit Success!"
+                    })
+                })
+            }, 2000)
         }
     }, [error, isPending, Txhash, isTestNet])
 
+
     function getCurrChain(chain: { name: string; }) {
-        const isTest = (chain?.name === 'Sepolia')
+        console.log(chain?.name, 'chain?.name')
+        const isTest = (chain?.name !== 'Optimism')
         if (isTest !== isTestNet) {
             setIsTestNet(isTest)
         }
@@ -109,7 +120,7 @@ export default function GasTank() {
 
             <SectionTitle>Balance Detail</SectionTitle>
             <div className="grid gap-6 sm:grid-cols-5 lg:grid-cols-5 grid-cols-5">
-                <div className="col-span-1">
+                <div className="col-span-1" key={balanceKey}>
                     <TotalBalanceBalanceDetailCard isTestNet={isTestNet} />
 
                     <GasTankQuotaBalanceDetailCard />

@@ -4,7 +4,7 @@ import React, {
   useEffect,
 } from 'react';
 import { IPropChild, IStore } from './types';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { getLocal, setLocal } from '@/utils/localStorage';
 
 
 
@@ -16,7 +16,6 @@ export function getCxtProvider<T>(
 ) {
 
   return ({ children }: IPropChild) => {
-    const { getLocal, setLocal } = useLocalStorage();
     const [store, setStore] = useState(defaultValue);
 
     useEffect(() => {
@@ -37,7 +36,7 @@ export function getCxtProvider<T>(
         ,
       })
     }
-      , [setLocal, store]);
+      , [store]);
 
     return (
       <AppContext.Provider value={value}>

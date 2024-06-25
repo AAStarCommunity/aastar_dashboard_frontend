@@ -56,7 +56,7 @@ export const ThemeProvider = ({
 
   // update root element class on theme change
   const oldTheme = usePrevious(theme as string);
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.documentElement.classList.remove(`theme-${oldTheme}`);
     document.documentElement.classList.add(`theme-${theme}`);
   }, [theme, oldTheme]);

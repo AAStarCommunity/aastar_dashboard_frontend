@@ -1,3 +1,4 @@
+"use client";
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import "~/public/styles/globals.css";
@@ -18,7 +19,7 @@ import {
   darkTheme,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { mainnet, sepolia } from 'wagmi/chains';
+import { optimismSepolia, optimism } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient, } from "@tanstack/react-query";
 
 
@@ -26,8 +27,8 @@ export default function App({ Component, pageProps }: AppProps) {
   const config = getDefaultConfig({
     appName: 'AAstar',
     projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
-    chains: [mainnet, sepolia],
-    ssr: false
+    chains: [optimismSepolia, optimism],
+    ssr: true
   });
   const queryClient = new QueryClient();
   return (

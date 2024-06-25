@@ -4,6 +4,7 @@ import { ThemeContext } from '@/context/ThemeContext'
 import API from "@/ajax/api";
 import ajax from "@/ajax"
 import { useRouter } from 'next/router';
+import { setLocal } from '@/utils/localStorage'
 
 
 import {
@@ -17,7 +18,7 @@ import {
 } from '~/public/icons'
 import { Avatar, Badge, Dropdown, DropdownItem, Input } from '@windmill/react-ui'
 import { KEY, useUserContext } from '@/context/userContext'
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { getLocal } from '@/utils/localStorage';
 
 interface Iprops {
     style: Record<string, string>
@@ -28,8 +29,6 @@ function Header(props: Iprops) {
 
     const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false)
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
-
-    const { setLocal } = useLocalStorage();
 
     function handleNotificationsClick() {
         setIsNotificationsMenuOpen(!isNotificationsMenuOpen)
