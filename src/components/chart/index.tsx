@@ -11,7 +11,8 @@ import {
     YAxis
 } from "recharts";
 import React from "react";
-import {Inter} from "next/font/google";
+import { Inter } from "next/font/google";
+import { IRowDataItem } from "@/utils/types";
 
 
 // const data = [
@@ -63,11 +64,11 @@ export function BalanceDetailCard(
     }
 ) {
     return (
-        <div className="rounded-xl bg-white p-2 shadow-sm mb-2.5">
+        <div className="rounded-xl bg-white  dark:bg-gray-800  p-2 shadow-sm mb-2.5 dark:text-gray-300">
             <div className="p-2">
-                <div className="bg-gray-50 p-1 ">{title}</div>
+                <div className="bg-gray-50 dark:bg-gray-700  p-1 ">{title}</div>
                 <div
-                    className={`${inter.className}sub rounded-xl bg-white px-4 py-8 text-center text-4xl`}>${balanceValue}</div>
+                    className={`${inter.className}sub rounded-xl bg-white  dark:bg-gray-800  px-4 py-8 text-center text-4xl`}>${balanceValue}</div>
                 <div>{subInfo}</div>
             </div>
 
@@ -76,8 +77,8 @@ export function BalanceDetailCard(
 }
 
 export function RequestHealthChart(
-    {requestHealthData}: {
-        requestHealthData?: { time: string, successful: number, failed: number }[]
+    { requestHealthData }: {
+        requestHealthData?: IRowDataItem[]
     }
 ) {
     return (
@@ -85,15 +86,15 @@ export function RequestHealthChart(
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                     data={requestHealthData}
-                    margin={{top: 5, right: 30, left: 20, bottom: 5}}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
-                    <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="time"/>
-                    <YAxis/>
-                    <Tooltip/>
-                    <Legend/>
-                    <Line type="monotone" dataKey="successful" stroke="#0000ff"/>
-                    <Line type="monotone" dataKey="failed" stroke="#ff0000"/>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="successful" stroke="#0000ff" />
+                    <Line type="monotone" dataKey="failed" stroke="#ff0000" />
                 </LineChart>
             </ResponsiveContainer>
         </div>
@@ -101,8 +102,8 @@ export function RequestHealthChart(
 }
 
 export function SuccessRateChart(
-    {successRateData}:{
-        successRateData?: {time: string, success_rate: number}[]
+    { successRateData }: {
+        successRateData?: { time: string, success_rate?: number }[]
     }
 ) {
     return (
@@ -110,14 +111,14 @@ export function SuccessRateChart(
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                     data={successRateData}
-                    margin={{top: 5, right: 30, left: 20, bottom: 5}}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
-                    <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="time"/>
-                    <YAxis/>
-                    <Tooltip/>
-                    <Legend/>
-                    <Line type="monotone" dataKey="success_rate" stroke="#8884d8"/>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="success_rate" stroke="#8884d8" />
                 </LineChart>
             </ResponsiveContainer>
         </div>

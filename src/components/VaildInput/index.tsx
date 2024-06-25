@@ -10,9 +10,10 @@ const ValidInput = forwardRef<IFromItemRefs<string | number | undefined>, IFromI
 ) => {
     const [valided, setValided] = useState(true)
     const [value, setValue] = useState(defaultValue)
+    const [addEmptyTip, setAddEmptyTip] = useState('')
     const [listVal, setListVal] = useState<(string | number | undefined)[]>([])
     const handleChange = useCallback((e: any) => {
-        setValue?.(e.target.value)
+        setValue(e.target.value)
     }, [])
 
     const handleVaild = function (value: any) {
@@ -35,11 +36,18 @@ const ValidInput = forwardRef<IFromItemRefs<string | number | undefined>, IFromI
         }
     }
     const handleAddlist = useCallback(() => {
-        setListVal(prev => [
-            ...prev,
-            value
-        ])
-        setValue('')
+        if (value) {
+            setListVal(prev => [
+                ...prev,
+                value
+            ])
+            setAddEmptyTip('')
+            setValue('')
+
+        } else {
+            setAddEmptyTip("Can not add a empty to List !")
+        }
+
     }, [value])
 
 
@@ -111,6 +119,7 @@ const ValidInput = forwardRef<IFromItemRefs<string | number | undefined>, IFromI
                 {addlist && <Button onClick={handleAddlist} className="ml-4">Add</Button>}
             </div>
             {!valided && <HelperText valid={valided}>{errorTip}</HelperText>}
+            {addEmptyTip && <HelperText valid={false}>{addEmptyTip}</HelperText>}
             {addlist &&
                 <ul className="divide-y divide-gray-200 dark:divide-gray-700">
                     {listVal.map((item, index) =>

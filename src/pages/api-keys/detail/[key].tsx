@@ -1,12 +1,19 @@
-import {useRouter} from "next/router";
-import React, {useEffect, useMemo, useState} from "react";
-import {RequestHealthChart, SuccessRateChart} from "@/components/chart";
-import {AgGridReact} from "ag-grid-react";
-import {ColDef} from 'ag-grid-community';
+import { useRouter } from "next/router";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { RequestHealthChart, SuccessRateChart } from "@/components/chart";
+import { AgGridReact } from "ag-grid-react";
+import { ColDef } from 'ag-grid-community';
 import JsonView from '@uiw/react-json-view';
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import ajax, {API} from "@/ajax"; // Optional Theme applied to the grid
+import ajax, { API } from "@/ajax"; // Optional Theme applied to the grid
+import PageTitle from "@/components/Typography/PageTitle";
+import { APIKeyIcon } from '~/public/icons';
+import { Button } from "@windmill/react-ui";
+import useLoading, { REQUEST_STATUS } from "@/hooks/useLoading";
+import { IRowDataItem } from "@/utils/types";
+import SectionTitle from "@/components/Typography/SectionTitle";
+import { ThemeContext } from '@/context/ThemeContext'
 
 export default function ApiKeyDetail() {
     const router = useRouter()
@@ -14,73 +21,88 @@ export default function ApiKeyDetail() {
     return (
         <div>
             <div className='flex justify-between items-center'>
-                <div className="flex item-center">
-                    <img src="/icons/apikey.svg" alt="Ethereum Sepolia"
-                         className="w-6 h-6 mr-2 mt-1"/>
-                    <h1 className='dark:text-white font-bold text-2xl text-gray-900'>api1</h1>
-                </div>
+                <PageTitle>
+                    <APIKeyIcon className="w-6 h-6 mr-2 mt-1" />API1</PageTitle>
                 <div>
-                    <button type="button"
-                            className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                            onClick={() => router.push(`/api-keys/edit/${apiKey}`)}>
+
+                    <Button onClick={() => router.push(`/api-keys/edit/${apiKey}`)}>
                         API Key Info
-                    </button>
-                    <button type="button"
-                            className="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
-                        Connect APIKey
-                    </button>
+                    </Button>
+                    <Button >  Connect APIKey</Button>
+
                 </div>
 
             </div>
 
-            <APiKeyCardList ApiKey={apiKey}/>
+            <APiKeyCardList ApiKey={apiKey} />
 
-            <APIKeyRequestHealthAndSuccessRate ApiKey={apiKey}/>
-            <div className="bg-white mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md">
-                <h3 className="text-5xl md:text-2xl">Latest Request</h3>
+            <APIKeyRequestHealthAndSuccessRate ApiKey={apiKey} />
+            <div className="bg-white dark:bg-gray-800 mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md p-6">
+                <SectionTitle>Latest Request</SectionTitle>
                 <RequestHisToryTable ApiKey={apiKey}></RequestHisToryTable>
             </div>
         </div>
     );
 }
-
 export function APIKeyRequestHealthAndSuccessRate(
-    {ApiKey}: { ApiKey?: string }
+    { ApiKey }: { ApiKey?: string }
 ) {
-    const [rowData, setRowData] = useState([]);
+    const [rowData, setRowData] = useState<IRowDataItem[]>([]);
+    const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
+    const [error, setError] = useState<string>("")
+    const LoadRequestHealthChart = useLoading(status, RequestHealthChart({ requestHealthData: rowData }), { loadingTo: 'self', errTips: error })
+    const LoadSuccessRateChart = useLoading(status, SuccessRateChart({ successRateData: rowData }), { loadingTo: 'self', errTips: error })
 
     const tableInit = () => {
         ajax.get(API.GET_REQUEST_HEALTH_LIST, {
             api_key: ApiKey
-        }).then(({data}) => {
-            setRowData(data.data)
+        }).then(({ data }) => {
+            if (data.code === 200) {
+                setRowData(data.data)
+                data.data.length ? setStatus(REQUEST_STATUS.SUCCESS) : setStatus(REQUEST_STATUS.Empty)
+            } else {
+                setStatus(REQUEST_STATUS.FAIL)
+                setError(data.message)
+            }
+        }).catch((err) => {
+            setStatus(REQUEST_STATUS.FAIL)
+            setError(err.toString())
         })
     }
     useEffect(() => {
         tableInit()
     }, [ApiKey]);
     return (
-        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
-            <div className="mt-10 bg-white grid col-span-2">
-                <div>
-                    <h3>Paymaster request Health</h3>
-                </div>
-                <RequestHealthChart requestHealthData={rowData}/>
+        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4 mt-10'>
+            <div className="grid rounded-xl bg-white dark:bg-gray-800  p-2 shadow-smflex-col col-span-2 grid-rows-11">
+                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>Request Health</h2>
+                <div className="relative overflow-hidden h-full row-span-10">{LoadRequestHealthChart}</div>
             </div>
-            <div className="mt-10 bg-white grid col-span-2">
-                <div>
-                    <div>
-                        <h3>Paymaster Success Rate</h3>
-                    </div>
-                    <SuccessRateChart successRateData={rowData}/>
-                </div>
-            </div>
-        </div>
+            <div className="grid rounded-xl bg-white dark:bg-gray-800 p-2 shadow-smflex-col col-span-2 grid-rows-11">
+                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>RequestSuccessRate</h2>
+                <div className="relative overflow-hidden h-full row-span-10">{LoadSuccessRateChart}</div>
+            </div></div>
+        // <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
+        //     <div className="mt-10 bg-white grid col-span-2">
+        //         <div>
+        //             <h3>Paymaster request Health</h3>
+        //         </div>
+        //         <RequestHealthChart requestHealthData={rowData} />
+        //     </div>
+        //     <div className="mt-10 bg-white grid col-span-2">
+        //         <div>
+        //             <div>
+        //                 <h3>Paymaster Success Rate</h3>
+        //             </div>
+        //             <SuccessRateChart successRateData={rowData} />
+        //         </div>
+        //     </div>
+        // </div>
     )
 }
 
 export function APiKeyCardList(
-    {ApiKey}: { ApiKey?: string }
+    { ApiKey }: { ApiKey?: string }
 ) {
     const [hourRequestHealth, setHourRequestHealth] = useState(Object)
     const [dayRequestHealth, setDayRequestHealth] = useState(Object)
@@ -89,13 +111,13 @@ export function APiKeyCardList(
         ajax.get(API.GET_REQUEST_HEALTH_ONE, {
             api_key: ApiKey,
             time_type: 'hour'
-        }).then(({data}) => {
+        }).then(({ data }) => {
             setHourRequestHealth(data.data)
         })
         ajax.get(API.GET_REQUEST_HEALTH_ONE, {
             api_key: ApiKey,
             time_type: 'day'
-        }).then(({data}) => {
+        }).then(({ data }) => {
             setDayRequestHealth(data.data)
         })
     }
@@ -105,10 +127,10 @@ export function APiKeyCardList(
     }, [ApiKey]);
     return (
         <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
-            <DataShowCard dataName="Success rate (last 1 hour)" dataNum={`${hourRequestHealth?.success_rate}%`}/>
-            <DataShowCard dataName="Success rate (last 24 hour)" dataNum={`${dayRequestHealth?.success_rate}%`}/>
-            <DataShowCard dataName="Total Request (last 24 hour)" dataNum={`${totalRequest}`}/>
-            <DataShowCard dataName="Invalid Request (last 24 hour)" dataNum={`${dayRequestHealth?.failed}`}/>
+            <DataShowCard dataName="Success rate (last 1 hour)" dataNum={`${hourRequestHealth?.success_rate}%`} />
+            <DataShowCard dataName="Success rate (last 24 hour)" dataNum={`${dayRequestHealth?.success_rate}%`} />
+            <DataShowCard dataName="Total Request (last 24 hour)" dataNum={`${totalRequest}`} />
+            <DataShowCard dataName="Invalid Request (last 24 hour)" dataNum={`${dayRequestHealth?.failed}`} />
         </div>
     )
 }
@@ -136,15 +158,15 @@ export function RequestHisToryTable(
 ) {
 
     const columnDefs: ColDef[] = useMemo(() => [
-        {headerName: "network", field: "network", flex: 1},
-        {headerName: "method", field: "paymaster_method", flex: 1},
+        { headerName: "network", field: "network", flex: 1 },
+        { headerName: "method", field: "paymaster_method", flex: 1 },
         {
             headerName: "state", field: "status", flex: 1, cellStyle:
                 function (params: { value: number; }) {
                     if (params.value === 200) {
-                        return {color: 'green'};
+                        return { color: 'green' };
                     } else {
-                        return {color: 'red'};
+                        return { color: 'red' };
                     }
                 }
         },
@@ -158,7 +180,8 @@ export function RequestHisToryTable(
         {
             headerName: "request", field: "request_body", flex: 1, cellRenderer: 'jsonCellRenderer'
         },
-        {headerName: "response", field: "response_body", flex: 1,},
+        { headerName: "response", field: "response_body", flex: 1, },
+        { headerName: 'Time', field: 'time', flex: 1 },
     ], []);
     const defaultColDef = useMemo(() => ({
         filter: true,
@@ -169,7 +192,7 @@ export function RequestHisToryTable(
         suppressCopySingleCellRanges: true,
         enableRangeSelection: true,
         enableFillHandle: true,
-        className: "min-w-full"
+        className: "min-w-full "
     }), []);
 
     const [rowData, setRowData] = useState([]);
@@ -177,7 +200,7 @@ export function RequestHisToryTable(
     const tableInit = () => {
         ajax.get(API.GET_PAYMASTER_REQUEST_LIST, {
             api_key: ApiKey
-        }).then(({data}) => {
+        }).then(({ data }) => {
             setRowData(data.data)
         })
     }
@@ -187,12 +210,12 @@ export function RequestHisToryTable(
     const pagination = true;
     const paginationPageSize = 10;
     const paginationPageSizeSelector = [10];
-
+    const { theme } = useContext(ThemeContext)
 
     return (
         <div
-            className="ag-theme-quartz" // applying the grid theme
-            style={{height: 500}}
+            className={`${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
+            style={{ height: 500 }}
         >
             <AgGridReact
                 defaultColDef={defaultColDef}
@@ -201,24 +224,24 @@ export function RequestHisToryTable(
                 pagination={pagination}
                 paginationPageSize={paginationPageSize}
                 paginationPageSizeSelector={paginationPageSizeSelector}
-                components={{jsonCellRenderer: JsonCellRenderer}}
+                components={{ jsonCellRenderer: JsonCellRenderer }}
 
             />
-        </div>
+        </div >
     )
 }
 
 export function DataShowCard(
-    {dataNum, dataName}: {
+    { dataNum, dataName }: {
         dataNum?: string,
         dataName: string
     }
 ) {
     let dataNumDefault = dataNum || '_ _'
     return (
-        <div className="p-9 bg-white shadow rounded-md grid  col-span-1">
-            <div className="text-4xl font-bold text-left"> {dataNumDefault}</div>
-            <div className="text-gray-500 text-left">{dataName}</div>
+        <div className="p-9 bg-white dark:bg-gray-800 shadow rounded-md grid  col-span-1">
+            <div className="text-4xl font-bold text-left dark:text-gray-300"> {dataNumDefault}</div>
+            <div className="text-gray-500 text-left ">{dataName}</div>
         </div>
     )
 }

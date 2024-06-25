@@ -1,3 +1,4 @@
+"use client";
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import "~/public/styles/globals.css";
@@ -10,10 +11,26 @@ import { SidebarProvider } from '@/context/SidebarContext';
 import Alert from '@/components/Alert';
 import Layout from './layout';
 import myTheme from '@/utils/myTheme';
+import '@rainbow-me/rainbowkit/styles.css';
+
+import {
+  getDefaultConfig, RainbowKitProvider, cssStringFromTheme,
+  lightTheme,
+  darkTheme,
+} from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
+import { optimismSepolia, optimism } from 'wagmi/chains';
+import { QueryClientProvider, QueryClient, } from "@tanstack/react-query";
 
 
 export default function App({ Component, pageProps }: AppProps) {
-
+  const config = getDefaultConfig({
+    appName: 'AAstar',
+    projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
+    chains: [optimismSepolia, optimism],
+    ssr: true
+  });
+  const queryClient = new QueryClient();
   return (
     <>
       <Head>
@@ -30,9 +47,24 @@ export default function App({ Component, pageProps }: AppProps) {
           <ThemeProvider>
             <Alert>
               <UserInfo>
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
+                <WagmiProvider config={config} >
+
+                  <QueryClientProvider client={queryClient}>
+                    <RainbowKitProvider locale="en-US" modalSize="compact" theme={null} >
+                      <style
+                        dangerouslySetInnerHTML={{
+                          __html: `:root {${cssStringFromTheme(lightTheme)}}
+                          html.theme-dark {${cssStringFromTheme(darkTheme, {
+                            extends: lightTheme,
+                          })}}`,
+                        }}
+                      />
+                      <Layout>
+                        <Component {...pageProps} />
+                      </Layout>
+                    </RainbowKitProvider>
+                  </QueryClientProvider>
+                </WagmiProvider>
               </UserInfo>
             </Alert>
           </ThemeProvider>
