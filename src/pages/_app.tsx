@@ -12,11 +12,13 @@ import Alert from '@/components/Alert';
 import Layout from './layout';
 import myTheme from '@/utils/myTheme';
 import '@rainbow-me/rainbowkit/styles.css';
+import { rainbowWallet, metaMaskWallet, coinbaseWallet } from '@rainbow-me/rainbowkit/wallets';
 
 import {
   getDefaultConfig, RainbowKitProvider, cssStringFromTheme,
   lightTheme,
   darkTheme,
+  connectorsForWallets
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { optimismSepolia, optimism } from 'wagmi/chains';
@@ -24,13 +26,26 @@ import { QueryClientProvider, QueryClient, } from "@tanstack/react-query";
 
 
 export default function App({ Component, pageProps }: AppProps) {
+  const connectors = connectorsForWallets(
+    [
+      {
+        groupName: 'Recommended',
+        wallets: [metaMaskWallet, rainbowWallet, coinbaseWallet],
+      },
+
+    ],
+    { appName: "AAstar", projectId: "YOUR_PROJECT_ID" }
+  );
   const config = getDefaultConfig({
     appName: 'AAstar',
     projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
     chains: [optimismSepolia, optimism],
-    ssr: true
+    ssr: true,
+    connectors
   });
   const queryClient = new QueryClient();
+
+
   return (
     <>
       <Head>
