@@ -181,6 +181,7 @@ export function RequestHisToryTable(
             headerName: "request", field: "request_body", flex: 1, cellRenderer: 'jsonCellRenderer'
         },
         { headerName: "response", field: "response_body", flex: 1, },
+        { headerName: 'Time', field: 'time', flex: 1 },
     ], []);
     const defaultColDef = useMemo(() => ({
         filter: true,
