@@ -25,11 +25,10 @@ function SidebarContent() {
 
   return (
     <div className="py-4 text-gray-500 dark:text-gray-400">
-        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-      <a className="ml-6 flex items-center text-lg font-bold text-gray-800 dark:text-gray-200" href="/">
-        <Image src="/img/startlogo.svg" className="mr-1" width={70} height={70}  alt="AAStar"></Image>
+      <Link className="ml-6 flex items-center text-lg font-bold text-gray-800 dark:text-gray-200" href="/">
+        <img src="/img/startlogo.svg" className="mr-1" width={70} height={70} alt="AAStar"/>
         AAStar
-      </a>
+      </Link>
       <ul className="mt-6">
         {routes.map((route) =>
           route.routes ? (

@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { GithubIcon, GoogleIcon, LoadingIcon } from '../../../public/icons/index'
 import { Label, Button, Input } from '@windmill/react-ui'
 
+
 import { useUserContext } from '@/context/userContext';
 import Message from '@/utils/message';
 import ajax, { API } from '@/ajax';
@@ -121,31 +122,20 @@ export default function Login() {
                   Sign in
                 </h1>
                 <h2 className="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-200">to continue to AAStar</h2>
-                <Form formArr={formArr} ref={formRefs}></Form>
+                {/* <Form formArr={formArr} ref={formRefs}></Form>
 
                 <Button className="mt-4" iconLeft={butloading ? LoadingIcon : null} disabled={butloading} block onClick={loginHandler}>
                   Sign in
-                </Button>
+                </Button> */}
 
-                <hr className="my-8" />
+                {/* <hr className="my-8" /> */}
 
-                <Button block layout="outline" onClick={githubLogin}>
-                  <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+                <Button block layout="outline" className='h-12 text-lg font-bold' onClick={githubLogin}>
+                  <GithubIcon className="w-6 h-6 mr-2" aria-hidden="true" />
                   Github
                 </Button>
-                {/* <Button className="mt-4" block layout="outline">
-                                <GoogleIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                                google
-                            </Button> */}
 
-                {/* <p className="mt-4">
-                                <Link
-                                    className="text-sm font-medium text-aastar-600 dark:text-aastar-400 hover:underline"
-                                    href="/forgot-password"
-                                >
-                                    Forgot your password?
-                                </Link>
-                            </p> */}
+
               </div>
             </main>
           </div>

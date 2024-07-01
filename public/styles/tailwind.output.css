@@ -608,6 +608,10 @@ video {
   visibility: hidden;
 }
 
+.static {
+  position: static;
+}
+
 .fixed {
   position: fixed;
 }
@@ -872,6 +876,10 @@ video {
 .size-full {
   width: 100%;
   height: 100%;
+}
+
+.h-12 {
+  height: 3rem;
 }
 
 .h-2 {
@@ -1938,10 +1946,6 @@ video {
 .hover\:text-gray-900:hover {
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity));
-}
-
-.hover\:underline:hover {
-  text-decoration-line: underline;
 }
 
 .focus\:border-blue-500:focus {

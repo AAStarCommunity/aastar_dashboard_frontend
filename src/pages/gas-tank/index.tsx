@@ -18,7 +18,7 @@ import { useRef } from "react";
 import { IFromItemRefs } from "@/utils/types";
 import { LoadingIcon } from "~/public/icons";
 import AAConnectButton from "@/components/AAConnectButton";
-import { useSendTransaction } from 'wagmi'
+import { useSendTransaction, useTransactionConfirmations } from 'wagmi'
 import { BaseError, parseEther } from 'viem'
 
 
@@ -64,33 +64,34 @@ export default function GasTank() {
     const [isTestNet, setIsTestNet] = useState(true)
     const [balanceKey, setBalanceKey] = useState(0)
     const [isDepositOpen, setIsDepositOpen] = useState<boolean>(false)
-
+    const { isSuccess: depositSuccess, error: depositConfirmErr } = useTransactionConfirmations({ hash: Txhash })
 
     const handleDeposit = async (res: string): Promise<boolean> => {
         sendTransaction({ to: `${process.env.NEXT_PUBLIC_TREASURY_ADDRESS}` as `0x${string}`, value: parseEther(res) })
         return isPending
     }
     useEffect(() => {
-        if (error) {
+        if (error || depositConfirmErr) {
             Message({
                 type: "danger",
-                message: (error as BaseError).shortMessage || error.message
+                message: (error as BaseError).shortMessage || error?.message || (depositConfirmErr as BaseError).shortMessage || depositConfirmErr?.message!,
+                delay: 4000
             })
         }
-        console.log(Txhash, 'Txhash')
-        if (!isPending && Txhash) {
+        if (!isPending && Txhash && depositSuccess) {
             setIsDepositOpen(false)
-            setTimeout(() => {
-                ajax.post(API.SPONSOR_DEPOSIT, { is_test_net: isTestNet, tx_hash: Txhash }).then(({ data }) => {
-                    setBalanceKey(new Date().getTime())
-                    Message({
-                        type: "success",
-                        message: "Deposit Success!"
-                    })
+            ajax.post(API.SPONSOR_DEPOSIT, { is_test_net: isTestNet, tx_hash: Txhash }).then(({ data }) => {
+                setBalanceKey(new Date().getTime())
+                Message({
+                    type: "success",
+                    message: "Successful deposit!"
                 })
-            }, 2000)
+            })
+
         }
-    }, [error, isPending, Txhash, isTestNet])
+    }, [error, isPending, Txhash, isTestNet, depositSuccess])
+
+
 
 
     function getCurrChain(chain: { name: string; }) {

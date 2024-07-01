@@ -12,25 +12,25 @@ import Alert from '@/components/Alert';
 import Layout from './layout';
 import myTheme from '@/utils/myTheme';
 import '@rainbow-me/rainbowkit/styles.css';
+import { config } from '../wagmi';
+
 
 import {
-  getDefaultConfig, RainbowKitProvider, cssStringFromTheme,
+  RainbowKitProvider, cssStringFromTheme,
   lightTheme,
   darkTheme,
+
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { optimismSepolia, optimism } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient, } from "@tanstack/react-query";
+import ErrorBoundary from '@/components/ErrorBounty';
 
 
 export default function App({ Component, pageProps }: AppProps) {
-  const config = getDefaultConfig({
-    appName: 'AAstar',
-    projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
-    chains: [optimismSepolia, optimism],
-    ssr: true
-  });
+
   const queryClient = new QueryClient();
+
+
   return (
     <>
       <Head>
@@ -42,34 +42,38 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="icon" type="image/svg+xml" href="/img/startlogo.svg" />
         {/* <meta name="keywords" content=""/> */}
       </Head>
-      <Windmill usePreferences theme={myTheme}>
-        <SidebarProvider>
-          <ThemeProvider>
-            <Alert>
-              <UserInfo>
-                <WagmiProvider config={config} >
-
-                  <QueryClientProvider client={queryClient}>
-                    <RainbowKitProvider locale="en-US" modalSize="compact" theme={null} >
-                      <style
-                        dangerouslySetInnerHTML={{
-                          __html: `:root {${cssStringFromTheme(lightTheme)}}
+      <WagmiProvider config={config} >
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider locale="en-US" modalSize="compact" theme={null} >
+            <style
+              dangerouslySetInnerHTML={{
+                __html: `:root {${cssStringFromTheme(lightTheme)}}
                           html.theme-dark {${cssStringFromTheme(darkTheme, {
-                            extends: lightTheme,
-                          })}}`,
-                        }}
-                      />
+                  extends: lightTheme,
+                })}}`,
+              }}
+            />
+            <Windmill usePreferences theme={myTheme}>
+              <SidebarProvider>
+                <ThemeProvider>
+                  <Alert>
+                    <UserInfo>
+
                       <Layout>
-                        <Component {...pageProps} />
+                        <ErrorBoundary>
+                          <Component {...pageProps} />
+                        </ErrorBoundary>
                       </Layout>
-                    </RainbowKitProvider>
-                  </QueryClientProvider>
-                </WagmiProvider>
-              </UserInfo>
-            </Alert>
-          </ThemeProvider>
-        </SidebarProvider>
-      </Windmill >
+
+                    </UserInfo>
+                  </Alert>
+                </ThemeProvider>
+              </SidebarProvider>
+            </Windmill >
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+
     </>
   )
 }
