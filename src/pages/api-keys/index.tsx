@@ -14,12 +14,14 @@ import Message from '@/utils/message'
 import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading'
 import { LoadingIcon } from '~/public/icons'
 import PageTitle from '@/components/Typography/PageTitle'
+import { NEW_DETAIL_LIST } from '@/utils/const';
 
 export default function Apikeys() {
     const router = useRouter()
     const [isOpenCreate, setIsOpenCreate] = useState(false)
     const [isOpenDelete, setIsOpenDelete] = useState(false)
     const [isOpenProjectInfo, setIsOpenProjectInfo] = useState(false)
+    const [isRpcInfo, setIsRpcInfo] = useState<boolean>(false)
     const [currentItem, setCurrentItem] = useState<ObjType<string>>({})
     const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
     const [deleting, setDeleting] = useState(false)
@@ -40,9 +42,17 @@ export default function Apikeys() {
     }, [])
 
 
-    const projectInfoClick = useCallback((item: ObjType<string>, type: 'info' | 'delete') => {
+    const projectInfoClick = useCallback((item: ObjType<string>, type: 'info' | 'delete' | 'rpc') => {
         setCurrentItem(item)
-        type == 'info' ? setIsOpenProjectInfo(true) : setIsOpenDelete(true)
+        if (type === 'info') {
+            setIsOpenProjectInfo(true)
+        } else if (type === 'delete') {
+            setIsOpenDelete(true)
+        } else if (type === 'rpc') {
+            setIsRpcInfo(true)
+        }
+
+
     }, [])
 
     const handleGenerateKey = () => {
@@ -80,6 +90,9 @@ export default function Apikeys() {
         })
     }
 
+    const handleRpcInfo = () => {
+        setIsRpcInfo(false);
+    }
 
     const tableDom = (
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -115,6 +128,14 @@ export default function Apikeys() {
                                 <div className='flex'>
                                     <button onClick={(e) => {
                                         e.stopPropagation();
+                                        projectInfoClick(item, 'rpc')
+                                    }} type="button"
+                                        className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
+                                        PRC URL
+                                    </button>
+
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
                                         projectInfoClick(item, 'info')
                                     }} type="button"
                                         className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
@@ -147,6 +168,7 @@ export default function Apikeys() {
 
 
     return (
+
         <div>
             <div className='flex items-center justify-between'>
                 <PageTitle>API Keys</PageTitle>
@@ -157,6 +179,7 @@ export default function Apikeys() {
             <div className="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg overflow-hidden">
                 {dataDom}
             </div>
+
 
             <Modal
                 className='w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
@@ -180,6 +203,8 @@ export default function Apikeys() {
             </Modal>
 
 
+
+
             {/* project info */}
             <Modal
                 className='w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
@@ -197,6 +222,9 @@ export default function Apikeys() {
           <Button onClick={() => setIsOpenCreate(true)} className="sm:w-auto w-48 mb-6">Generate API Key</Button>
         </ModalFooter> */}
             </Modal>
+
+            {/* RPC Info */}
+            <WindowComponetn isRpcInfo={isRpcInfo} setIsRpcInfoFunc={handleRpcInfo} currentItem={currentItem} />
 
             {/* delete confirm */}
             <Modal
@@ -225,5 +253,46 @@ export default function Apikeys() {
                 </ModalFooter>
             </Modal>
         </div>
+    )
+}
+
+export function WindowComponetn({ isRpcInfo, setIsRpcInfoFunc, currentItem }: {
+    isRpcInfo: boolean,
+    setIsRpcInfoFunc: () => void,
+    currentItem: ObjType<string>
+}) {
+    const [network, setNetwork] = useState('');
+    const rpcUrl = `https://paymaster.aastar.io/api/v1/paymaster/${network}/rpc?apikey=${currentItem.api_key}`;
+
+    return (
+        <Modal
+            className='w-full px-10 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
+            isOpen={isRpcInfo}
+            onClose={setIsRpcInfoFunc}
+        >
+            <ModalBody>
+                <div className='bg-white dark:bg-gray-800 p-30 rounded-lg w-full max-w-sm space-y-4'>
+                    <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Networks</h2>
+                    <label className="text-black dark:text-white">Select a network</label>
+                    <select className="block w-full border rounded px-2 py-1 mb-4 dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white" name='select' value={network} onChange={(e) => setNetwork(e.target.value)} >
+                        {   NEW_DETAIL_LIST?.map((item, index) => {
+                            return <option key={index} value={item.networkId}>{item.networkName}</option>
+                        })}
+                    </select>
+                    <div className="mt-4 space-y-4'">
+                        <div className='flex'>
+                            <label className="text-black dark:text-white">Paymaster RPC URL</label>
+                            <Copy text={rpcUrl} />
+                        </div>
+                        <input
+                            type="text"
+                            value={rpcUrl}
+                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white"
+                            readOnly
+                        />
+                    </div>
+                </div>
+            </ModalBody>
+        </Modal>
     )
 }
