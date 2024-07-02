@@ -14,15 +14,31 @@ import useLoading, { REQUEST_STATUS } from "@/hooks/useLoading";
 import { IRowDataItem } from "@/utils/types";
 import SectionTitle from "@/components/Typography/SectionTitle";
 import { ThemeContext } from '@/context/ThemeContext'
+import { DataShowCard, NetworkSelect } from "@/components/Form";
+import DatePicker from "tailwind-datepicker-react";
+import { DataDateRangePicker } from "@/components/Form/select";
 
 export default function ApiKeyDetail() {
     const router = useRouter()
     const apiKey = router.query.key?.toString()
+    const [apiKeyModelData, setApiKeyData] = useState(Object);
+
+    const tableInit = () => {
+        ajax.get(API.GET_API_KEY, {
+            api_key: apiKey
+        }).then(({ data }) => {
+            setApiKeyData(data.data)
+        })
+    }
+    useEffect(() => {
+        tableInit()
+    }, [apiKey]);
+
     return (
         <div>
             <div className='flex justify-between items-center'>
                 <PageTitle>
-                    <APIKeyIcon className="w-6 h-6 mr-2 mt-1" />API1</PageTitle>
+                    <APIKeyIcon className="w-6 h-6 mr-2 mt-1" />{apiKeyModelData.key_name}</PageTitle>
                 <div>
 
                     <Button onClick={() => router.push(`/api-keys/edit/${apiKey}`)}>
@@ -38,7 +54,7 @@ export default function ApiKeyDetail() {
 
             <APIKeyRequestHealthAndSuccessRate ApiKey={apiKey} />
             <div className="bg-white dark:bg-gray-800 mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md p-6">
-                <SectionTitle>Latest Request</SectionTitle>
+
                 <RequestHisToryTable ApiKey={apiKey}></RequestHisToryTable>
             </div>
         </div>
@@ -51,11 +67,15 @@ export function APIKeyRequestHealthAndSuccessRate(
     const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
     const [error, setError] = useState<string>("")
     const LoadRequestHealthChart = useLoading(status, RequestHealthChart({ requestHealthData: rowData }), { loadingTo: 'self', errTips: error })
-    const LoadSuccessRateChart = useLoading(status, SuccessRateChart({ successRateData: rowData }), { loadingTo: 'self', errTips: error })
+    // const LoadSuccessRateChart = useLoading(status, SuccessRateChart({ successRateData: rowData }), { loadingTo: 'self', errTips: error })
 
     const tableInit = () => {
+        console.log('tableInit' + requestHealthConditionNetWork + startDate + endDate)
         ajax.get(API.GET_REQUEST_HEALTH_LIST, {
-            api_key: ApiKey
+            api_key: ApiKey,
+            network: requestHealthConditionNetWork,
+            start_time: startDate,
+            end_time: endDate
         }).then(({ data }) => {
             if (data.code === 200) {
                 setRowData(data.data)
@@ -69,35 +89,33 @@ export function APIKeyRequestHealthAndSuccessRate(
             setError(err.toString())
         })
     }
+    const [requestHealthConditionNetWork, setRequestHealthConditionNetWork] = useState('');
+    const handleRequestHealthNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setRequestHealthConditionNetWork(e.target.value);
+    };
+    const defaultCurrentDate = new Date();
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
+    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
+    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
     useEffect(() => {
         tableInit()
-    }, [ApiKey]);
+    }, [ApiKey, requestHealthConditionNetWork, startDate, endDate]);
     return (
-        <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4 mt-10'>
-            <div className="grid rounded-xl bg-white dark:bg-gray-800  p-2 shadow-smflex-col col-span-2 grid-rows-11">
+        <div className='gap-6 mt-10'>
+            <div className="flex">
                 <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>Request Health</h2>
-                <div className="relative overflow-hidden h-full row-span-10">{LoadRequestHealthChart}</div>
+                <div className="pl-8  pt-3">
+                    <span>network select</span>
+                    <NetworkSelect handleSelectChange={handleRequestHealthNetworkChange} />
+                </div>
+                <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
+
             </div>
-            <div className="grid rounded-xl bg-white dark:bg-gray-800 p-2 shadow-smflex-col col-span-2 grid-rows-11">
-                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>RequestSuccessRate</h2>
-                <div className="relative overflow-hidden h-full row-span-10">{LoadSuccessRateChart}</div>
-            </div></div>
-        // <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
-        //     <div className="mt-10 bg-white grid col-span-2">
-        //         <div>
-        //             <h3>Paymaster request Health</h3>
-        //         </div>
-        //         <RequestHealthChart requestHealthData={rowData} />
-        //     </div>
-        //     <div className="mt-10 bg-white grid col-span-2">
-        //         <div>
-        //             <div>
-        //                 <h3>Paymaster Success Rate</h3>
-        //             </div>
-        //             <SuccessRateChart successRateData={rowData} />
-        //         </div>
-        //     </div>
-        // </div>
+            <div className="relative overflow-hidden h-full row-span-10">{LoadRequestHealthChart}</div>
+
+        </div>
+
     )
 }
 
@@ -197,51 +215,60 @@ export function RequestHisToryTable(
 
     const [rowData, setRowData] = useState([]);
 
-    const tableInit = () => {
+    const { theme } = useContext(ThemeContext)
+    const [requestHistoryConditionNetWork, setRequestHealthConditionNetWork] = useState('');
+    const handleRequestHistoryNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setRequestHealthConditionNetWork(e.target.value);
+    };
+    const defaultCurrentDate = new Date();
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
+    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
+    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
+
+
+
+    useEffect(() => {
         ajax.get(API.GET_PAYMASTER_REQUEST_LIST, {
-            api_key: ApiKey
+            api_key: ApiKey,
+            network: requestHistoryConditionNetWork,
+            start_time: startDate,
+            end_time: endDate
         }).then(({ data }) => {
             setRowData(data.data)
         })
-    }
-    useEffect(() => {
-        tableInit()
-    }, [ApiKey]);
+    }, [ApiKey, requestHistoryConditionNetWork, startDate, endDate]);
+
     const pagination = true;
     const paginationPageSize = 10;
     const paginationPageSizeSelector = [10];
-    const { theme } = useContext(ThemeContext)
-
     return (
-        <div
-            className={`${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
-            style={{ height: 500 }}
-        >
-            <AgGridReact
-                defaultColDef={defaultColDef}
-                rowData={rowData}
-                columnDefs={columnDefs}
-                pagination={pagination}
-                paginationPageSize={paginationPageSize}
-                paginationPageSizeSelector={paginationPageSizeSelector}
-                components={{ jsonCellRenderer: JsonCellRenderer }}
+        <div>
+            <div className="flex">
+                <SectionTitle>Paymaster Latest Request</SectionTitle>
+                <div className="pl-8  pt-3">
+                    <span>network select</span>
+                    <NetworkSelect handleSelectChange={handleRequestHistoryNetworkChange} />
+                </div>
+                <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
+            </div>
+            <div
+                className={`${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
+                style={{ height: 500 }}
+            >
+                <AgGridReact
+                    defaultColDef={defaultColDef}
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    pagination={pagination}
+                    paginationPageSize={paginationPageSize}
+                    paginationPageSizeSelector={paginationPageSizeSelector}
+                    components={{ jsonCellRenderer: JsonCellRenderer }}
 
-            />
-        </div >
-    )
-}
-
-export function DataShowCard(
-    { dataNum, dataName }: {
-        dataNum?: string,
-        dataName: string
-    }
-) {
-    let dataNumDefault = dataNum || '_ _'
-    return (
-        <div className="p-9 bg-white dark:bg-gray-800 shadow rounded-md grid  col-span-1">
-            <div className="text-4xl font-bold text-left dark:text-gray-300"> {dataNumDefault}</div>
-            <div className="text-gray-500 text-left ">{dataName}</div>
+                />
+            </div >
         </div>
+
     )
 }
+

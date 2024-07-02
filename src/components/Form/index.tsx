@@ -5,8 +5,8 @@ import DatePicker from "../DatePicker";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useImperativeHandle, forwardRef } from "react";
-import { useCallback } from "react";
 import Checkbox from "../Checkbox";
+import { NEW_DETAIL_LIST } from '@/utils/const';
 
 export interface IFormItem extends IFromItemProps {
   type: "switch" | "input" | "select" | "datepicker" | "checkbox",
@@ -184,3 +184,43 @@ const Form = forwardRef<IFormRefs, IFormArrProps>(({ formArr }, ref) => {
 })
 Form.displayName = 'Form'
 export default Form
+
+
+
+
+
+interface NetworkSelectComponentProps {
+  handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+export const  NetworkSelect: React.FC<NetworkSelectComponentProps> = ({ handleSelectChange }) => {
+  return (
+      <select 
+          className="block  border rounded px-2 py-1 mb-4 dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white" 
+          name="select" 
+          onChange={handleSelectChange}
+      >
+            <option value='All'>All</option>
+          {NEW_DETAIL_LIST.map((item, index) => (
+              <option key={index} value={item.networkId}>{item.networkName}</option>
+          ))}
+      </select>
+  );
+};;
+
+
+export function DataShowCard(
+  { dataNum, dataName }: {
+      dataNum?: string,
+      dataName: string
+  }
+) {
+  let dataNumDefault = dataNum || '_ _'
+  return (
+      <div className="p-9 bg-white dark:bg-gray-800 shadow rounded-md grid  col-span-1">
+          <div className="text-4xl font-bold text-left dark:text-gray-300"> {dataNumDefault}</div>
+          <div className="text-gray-500 text-left ">{dataName}</div>
+      </div>
+  )
+}
+
+
