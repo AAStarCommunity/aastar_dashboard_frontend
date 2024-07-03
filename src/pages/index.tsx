@@ -85,10 +85,21 @@ export function RequestHealthAndSuccessRate() {
     const [error, setError] = useState<string>("")
     const LoadHomeRequestHealthChart = useLoading(status, HomeRequestHealthChart({ rowData }), { loadingTo: 'self', errTips: error })
     // const LoadSuccessRateChart = useLoading(status, HomeRequestHealthChart({ rowData }), { loadingTo: 'self', errTips: error })
-    const tableInit = () => {
 
+    const [requestHealthConditionNetWork, setRequestHealthConditionNetWork] = useState('');
+    const handleRequestHealthNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setRequestHealthConditionNetWork(e.target.value);
+    };
+    const defaultCurrentDate = new Date();
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
+    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
+    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
+
+    useEffect(() => {
         ajax.get(API.GET_REQUEST_HEALTH_LIST, {
-
+            start_time: startDate,
+            end_time: endDate
         }).then(({ data }) => {
             if (data.code === 200) {
                 setRowData(data.data)
@@ -101,21 +112,7 @@ export function RequestHealthAndSuccessRate() {
             setStatus(REQUEST_STATUS.FAIL)
             setError(err.toString())
         })
-
-    }
-    const [requestHealthConditionNetWork, setRequestHealthConditionNetWork] = useState('');
-    const handleRequestHealthNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRequestHealthConditionNetWork(e.target.value);
-    };
-    const defaultCurrentDate = new Date();
-    const defaultStartDate = new Date();
-    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
-    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
-    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
-
-    useEffect(() => {
-        tableInit()
-    }, []);
+    }, [startDate, endDate]);
     return (
         <div className="grid rounded-xl bg-white dark:bg-gray-800 p-2 shadow-sm flex-col col-span-4 grid-rows-8">
             <div className="flex justify-between items-center pl-8 pt-4">
@@ -133,7 +130,7 @@ export function RequestHealthAndSuccessRate() {
                     </div>
                 </div>
             </div>
-            <div className="relative overflow-hidden row-span-10 mt-4">
+            <div className="relative overflow-hidden row-span-10 mt-10 mb-5">
                 {LoadHomeRequestHealthChart}
             </div>
         </div>
@@ -230,7 +227,8 @@ function APICardSOverView() {
                     />
                 ))
             ) : (
-                <div>Please apply API key</div>
+                <button onClick={() => router.push(`/api-keys`)}
+                    className="text-gray-700  dark:text-gray-300">Empty Here Apply Your API key &rarr;</button>
             )}
         </div>
     )

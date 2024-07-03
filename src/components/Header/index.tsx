@@ -23,6 +23,29 @@ import { getLocal } from '@/utils/localStorage';
 interface Iprops {
     style: Record<string, string>
 }
+interface ExternalLinkIconProps {
+    width?: number;
+    height?: number;
+    className?: string;
+}
+const ExternalLinkIcon: React.FC<ExternalLinkIconProps> = ({ width = 24, height = 24, className = '' }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={`lucide lucide-external-link w-4 h-4 ${className}`}
+    >
+        <path d="M15 3h6v6"></path>
+        <path d="M10 14 21 3"></path>
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+    </svg>
+);
 function Header(props: Iprops) {
     const { theme, toggleTheme } = useContext(ThemeContext)
     const { toggleSidebar } = useContext(SidebarContext)
@@ -96,6 +119,12 @@ function Header(props: Iprops) {
                             )}
                         </button>
                     </li>
+                    <li className='flex'>
+                        <button className='flex  items-center'>
+                        <OutlineCogIcon className="w-4 h-4" aria-hidden="true" />
+                            <span>Docs</span>
+                        </button>
+                    </li>
                     {/* <!-- Notifications menu --> */}
                     <li className="relative hidden">
                         <button
@@ -154,10 +183,10 @@ function Header(props: Iprops) {
                                 <OutlinePersonIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                                 <span>Profile</span>
                             </DropdownItem> */}
-                            <DropdownItem tag="a" href="#">
+                            {/* <DropdownItem tag="a" href="https://docs.aastar.io/">
                                 <OutlineCogIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                                 <span>Docs</span>
-                            </DropdownItem>
+                            </DropdownItem> */}
                             <DropdownItem onClick={signOut}>
                                 <OutlineLogoutIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                                 <span>sign out</span>
