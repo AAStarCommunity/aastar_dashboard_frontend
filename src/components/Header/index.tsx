@@ -121,7 +121,7 @@ function Header(props: Iprops) {
                     </li>
                     <li className='flex'>
                         <button className='flex  items-center'>
-                        <OutlineCogIcon className="w-4 h-4" aria-hidden="true" />
+                            <ExternalLinkIcon/>
                             <span>Docs</span>
                         </button>
                     </li>
