@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Suspense, ReactNode } from 'react';
-import { RequestHealthChart, SuccessRateChart } from "@/components/chart";
 import { Button } from "@windmill/react-ui";
 import router, { useRouter } from "next/router";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -85,21 +84,10 @@ export function RequestHealthAndSuccessRate() {
     const [error, setError] = useState<string>("")
     const LoadHomeRequestHealthChart = useLoading(status, HomeRequestHealthChart({ rowData }), { loadingTo: 'self', errTips: error })
     // const LoadSuccessRateChart = useLoading(status, HomeRequestHealthChart({ rowData }), { loadingTo: 'self', errTips: error })
+    const tableInit = () => {
 
-    const [requestHealthConditionNetWork, setRequestHealthConditionNetWork] = useState('');
-    const handleRequestHealthNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRequestHealthConditionNetWork(e.target.value);
-    };
-    const defaultCurrentDate = new Date();
-    const defaultStartDate = new Date();
-    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
-    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
-    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
-
-    useEffect(() => {
         ajax.get(API.GET_REQUEST_HEALTH_LIST, {
-            start_time: startDate,
-            end_time: endDate
+
         }).then(({ data }) => {
             if (data.code === 200) {
                 setRowData(data.data)
@@ -112,14 +100,39 @@ export function RequestHealthAndSuccessRate() {
             setStatus(REQUEST_STATUS.FAIL)
             setError(err.toString())
         })
-    }, [startDate, endDate]);
+
+    }
+    const [requestHealthConditionNetWork, setRequestHealthConditionNetWork] = useState('');
+    const handleRequestHealthNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setRequestHealthConditionNetWork(e.target.value);
+    };
+    const defaultCurrentDate = new Date();
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
+    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
+    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
+
+    useEffect(() => {
+        tableInit()
+    }, []);
     return (
-        < >
-            <div className="grid rounded-xl bg-white dark:bg-gray-800  p-2 shadow-smflex-col col-span-2 grid-rows-11">
-                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>Request Health</h2>
-                <div className="relative overflow-hidden h-full row-span-10">{LoadHomeRequestHealthChart}</div>
+        <div className="grid rounded-xl bg-white dark:bg-gray-800 p-2 shadow-sm flex-col col-span-4 grid-rows-8">
+            <div className="flex justify-between items-center pl-8 pt-4">
+                <div>
+                    <h2 className="text-gray-500 dark:text-gray-400 text-xl">Request Health</h2>
+                    <span className="block text-gray-700 dark:text-gray-300 pt-1">The Success And Failed number of requests you have sent</span>
+                </div>
+                <div className="flex items-center space-x-4 ml-auto">
+                    <div>
+                        <span className="block text-gray-700 dark:text-gray-300">Network Select</span>
+                        <NetworkSelect handleSelectChange={handleRequestHealthNetworkChange} />
+                    </div>
+                    <div>
+                        <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
+                    </div>
+                </div>
             </div>
-            <div className="relative overflow-hidden row-span-10 mt-10 mb-5">
+            <div className="relative overflow-hidden row-span-10 mt-4">
                 {LoadHomeRequestHealthChart}
             </div>
         </div>
