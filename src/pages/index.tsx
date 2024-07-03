@@ -114,21 +114,10 @@ export function RequestHealthAndSuccessRate() {
         })
     }, [startDate, endDate]);
     return (
-        <div className="grid rounded-xl bg-white dark:bg-gray-800 p-2 shadow-sm flex-col col-span-4 grid-rows-8">
-            <div className="flex justify-between items-center pl-8 pt-4">
-                <div>
-                    <h2 className="text-gray-500 dark:text-gray-400 text-xl">Request Health</h2>
-                    <span className="block text-gray-700 dark:text-gray-300 pt-1">The Success And Failed number of requests you have sent</span>
-                </div>
-                <div className="flex items-center space-x-4 ml-auto">
-                    <div>
-                        <span className="block text-gray-700 dark:text-gray-300">Network Select</span>
-                        <NetworkSelect handleSelectChange={handleRequestHealthNetworkChange} />
-                    </div>
-                    <div>
-                        <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
-                    </div>
-                </div>
+        < >
+            <div className="grid rounded-xl bg-white dark:bg-gray-800  p-2 shadow-smflex-col col-span-2 grid-rows-11">
+                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>Request Health</h2>
+                <div className="relative overflow-hidden h-full row-span-10">{LoadHomeRequestHealthChart}</div>
             </div>
             <div className="relative overflow-hidden row-span-10 mt-10 mb-5">
                 {LoadHomeRequestHealthChart}
