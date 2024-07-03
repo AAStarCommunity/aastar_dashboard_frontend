@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Suspense, ReactNode } from 'react';
-import { RequestHealthChart, SuccessRateChart } from "@/components/chart";
 import { Button } from "@windmill/react-ui";
 import router, { useRouter } from "next/router";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -230,7 +229,8 @@ function APICardSOverView() {
                     />
                 ))
             ) : (
-                <div>Please apply API key</div>
+                <button onClick={() => router.push(`/api-keys`)}
+                    className="text-gray-700  dark:text-gray-300">Empty Here Apply Your API key &rarr;</button>
             )}
         </div>
     )

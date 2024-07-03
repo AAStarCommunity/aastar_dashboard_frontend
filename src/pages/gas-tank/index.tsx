@@ -2,7 +2,7 @@
 import PageTitle from "@/components/Typography/PageTitle";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "@windmill/react-ui";
 import { useRouter } from "next/router";
-import React, { useMemo, Suspense, useEffect, useState, ChangeEvent, useContext } from "react";
+import React, { useMemo, Suspense, useEffect, useState, ChangeEvent, useContext, ReactNode } from "react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
@@ -15,7 +15,7 @@ import { ThemeContext } from '@/context/ThemeContext'
 import Message from "@/utils/message";
 import VaildInput from "@/components/VaildInput";
 import { useRef } from "react";
-import { IFromItemRefs } from "@/utils/types";
+import { IFromItemRefs, IRowDataItem } from "@/utils/types";
 import { LoadingIcon } from "~/public/icons";
 import AAConnectButton from "@/components/AAConnectButton";
 import { useSendTransaction, useTransactionConfirmations } from 'wagmi'
@@ -137,7 +137,7 @@ export default function GasTank() {
         </div>
 
         {/*TODO*/}
-        <div className={subLine}>
+        {/* <div className={subLine}>
             <h2 className="text-9xl md:text-2xl"> Strategy View</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4  grid-cols-4">
                 <div className="col-span-1  p-4 ">
@@ -153,7 +153,7 @@ export default function GasTank() {
                     <BalanceDetailCard title={"StrategyD - consume balance"} balanceValue={12} />
                 </div>
             </div>
-        </div>
+        </div> */}
 
 
     </main>
@@ -265,32 +265,36 @@ export function SponsorMetricsChart({ isTestNet }: { isTestNet?: boolean }) {
 
 function TransHisToryTable({ isTestNet }: { isTestNet?: boolean }) {
     const [rowData, setRowData] = useState([]);
-    const { theme } = useContext(ThemeContext)
+
     const defaultCurrentDate = new Date();
     const defaultStartDate = new Date();
     defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
     const [startDate, setStartDate] = useState<Date>(defaultStartDate);
     const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
 
+    const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
+    const [error, setError] = useState<string>("")
+    const HistoryChart = useLoading(status, <HistToryChar rowData={rowData} />, { loadingTo: 'self', errTips: error }) 
     useEffect(() => {
         ajax.get(API.GET_SPONSOR_TRANSACTION_LIST, {
             is_test_net: isTestNet,
             start_time: startDate,
             end_time: endDate
-        }).then(({ data: { data } }) => {
-            setRowData(data)
+        }).then(({ data}) => {
+            if (data.code == 200) {
+                setRowData(data.data)
+                data.data.length ? setStatus(REQUEST_STATUS.SUCCESS) : setStatus(REQUEST_STATUS.Empty)
+            } else {
+                setStatus(REQUEST_STATUS.FAIL)
+                setError(data.message)
+            }
+        }).catch((err) => {
+            setStatus(REQUEST_STATUS.FAIL)
+            setError(err.toString())
         })
 
     }, [isTestNet, startDate, endDate]);
-    const columnDefs: any = [
-        { headerName: 'UpdateType', field: 'update_type', flex: 1 },
-        { headerName: 'Amount', field: 'amount', flex: 1, valueFormatter: (params: any) => `$${params.value}` },
-        { headerName: 'TxHash', field: 'tx_hash', flex: 1 },
-        { headerName: 'Time', field: 'time', flex: 1 },
-    ];
-    const pagination = true;
-    const paginationPageSize = 10;
-    const paginationPageSizeSelector = [10];
+
     return (
         <div>
             <div className="flex gap-5">
@@ -299,22 +303,35 @@ function TransHisToryTable({ isTestNet }: { isTestNet?: boolean }) {
                     <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
                 </div>
             </div>
-            <div
-                className={`w-full min-w-full ${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
-                style={{ height: 500 }}
-            >
-                <AgGridReact
-                    className="min-w-full"
-                    rowData={rowData}
-                    pagination={pagination}
-                    paginationPageSize={paginationPageSize}
-                    paginationPageSizeSelector={paginationPageSizeSelector}
-                    columnDefs={columnDefs}
-                />
+            <div className="relative overflow-hidden row-span-10 mt-10 mb-5">
+                {HistoryChart}
             </div>
         </div>
-
     )
-
 }
-
+function HistToryChar(
+    { rowData }: { rowData?: IRowDataItem[] }
+): ReactNode {
+    const { theme } = useContext(ThemeContext)
+    const columnDefs: any = [
+        { headerName: 'UpdateType', field: 'update_type', flex: 1 },
+        { headerName: 'Amount', field: 'amount', flex: 1, valueFormatter: (params: any) => `$${params.value}` },
+        { headerName: 'TxHash', field: 'tx_hash', flex: 1 },
+        { headerName: 'Time', field: 'time', flex: 1 },
+    ];
+    return (
+        <div
+            className={`w-full min-w-full ${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
+            style={{ height: 500 }}
+        >
+            <AgGridReact
+                className="min-w-full"
+                rowData={rowData}
+                pagination={true}
+                paginationPageSize={10}
+                paginationPageSizeSelector={[10]}
+                columnDefs={columnDefs}
+            />
+        </div>
+    )
+}
