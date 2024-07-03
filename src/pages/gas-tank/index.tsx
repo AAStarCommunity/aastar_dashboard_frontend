@@ -20,6 +20,7 @@ import { LoadingIcon } from "~/public/icons";
 import AAConnectButton from "@/components/AAConnectButton";
 import { useSendTransaction, useTransactionConfirmations } from 'wagmi'
 import { BaseError, parseEther } from 'viem'
+import { DataDateRangePicker } from "@/components/Form/select";
 
 
 interface ImodelParams {
@@ -124,14 +125,14 @@ export default function GasTank() {
                 <div className="col-span-1" key={balanceKey}>
                     <TotalBalanceBalanceDetailCard isTestNet={isTestNet} />
 
-                    <GasTankQuotaBalanceDetailCard />
+                    <GasTankQuotaBalanceDetailCard isTestNet={isTestNet} />
                 </div>
-                <SponsorMetricsChart />
+                <SponsorMetricsChart isTestNet={isTestNet} />
 
             </div>
             <div className="bg-white dark:bg-gray-800 mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md p-6">
-                <SectionTitle>Trans HisTory</SectionTitle>
-                <TransHisToryTable />
+
+                <TransHisToryTable isTestNet={isTestNet} />
             </div>
         </div>
 
@@ -182,17 +183,17 @@ export function TotalBalanceBalanceDetailCard(
     )
 }
 
-export function GasTankQuotaBalanceDetailCard() {
+export function GasTankQuotaBalanceDetailCard({ isTestNet }: { isTestNet?: boolean }) {
     const [balance, setBalance] = useState(0)
     try {
         useEffect(() => {
             ajax.get(API.GET_BALANCE, {
-                is_test_net: true,
+                is_test_net: isTestNet,
                 balance_type: 'sponsor_quota_balance'
             }).then(({ data: { data } }) => {
                 setBalance(data.result)
             })
-        }, [])
+        }, [isTestNet])
     } catch (e) {
         console.log(e)
     }
@@ -200,13 +201,23 @@ export function GasTankQuotaBalanceDetailCard() {
         <BalanceDetailCard title={"Gas Tank Quota Balance"} balanceValue={balance} />
     )
 }
-export function SponsorMetricsChart() {
+export function SponsorMetricsChart({ isTestNet }: { isTestNet?: boolean }) {
     const [error, setError] = useState<string>("")
     const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
     const [sponsorMetrics, setSponsorMetrics] = useState([]);
+
+
+    const defaultCurrentDate = new Date();
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
+    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
+    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
+
     useEffect(() => {
         ajax.get(API.GET_SPONSOR_METRICS, {
-            is_test_net: true
+            is_test_net: isTestNet,
+            start_time: startDate,
+            end_time: endDate
         }).then(({ data }) => {
             if (data.code === 200) {
                 setSponsorMetrics(data.data)
@@ -220,7 +231,7 @@ export function SponsorMetricsChart() {
             setStatus(REQUEST_STATUS.FAIL)
             setError(err.toString())
         })
-    }, []);
+    }, [isTestNet, startDate, endDate]);
 
     const gasSponsored = <ResponsiveContainer width="100%" height={400}>
         <LineChart
@@ -238,47 +249,71 @@ export function SponsorMetricsChart() {
     </ResponsiveContainer>
     const LoadGasSponsored = useLoading(status, gasSponsored, { loadingTo: 'self', errTips: error })
     return (
-        <div className="grid rounded-xl bg-white dark:bg-gray-800  p-2 shadow-smflex-col col-span-4">
-            <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>Gas sponsored</h2>
+        <div className="grid rounded-xl bg-white dark:bg-gray-800  p-2 shadow-smflex-col col-span-4 gap-4">
+            <div className="flex">
+                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4  text-xl'>Gas sponsored</h2>
+                <div className="pl-8 mt-3">
+                    <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
+                </div>
+            </div>
+
             <div className="relative overflow-hidden h-full row-span-10">{LoadGasSponsored}</div>
         </div>
     );
 }
 
 
-function TransHisToryTable() {
+function TransHisToryTable({ isTestNet }: { isTestNet?: boolean }) {
     const [rowData, setRowData] = useState([]);
     const { theme } = useContext(ThemeContext)
-    const tableInit = () => {
+    const defaultCurrentDate = new Date();
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
+    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
+    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
+
+    useEffect(() => {
         ajax.get(API.GET_SPONSOR_TRANSACTION_LIST, {
-            is_test_net: true
+            is_test_net: isTestNet,
+            start_time: startDate,
+            end_time: endDate
         }).then(({ data: { data } }) => {
             setRowData(data)
         })
 
-    }
-    useEffect(() => {
-        tableInit();
-
-    }, []);
+    }, [isTestNet, startDate, endDate]);
     const columnDefs: any = [
         { headerName: 'UpdateType', field: 'update_type', flex: 1 },
         { headerName: 'Amount', field: 'amount', flex: 1, valueFormatter: (params: any) => `$${params.value}` },
         { headerName: 'TxHash', field: 'tx_hash', flex: 1 },
         { headerName: 'Time', field: 'time', flex: 1 },
     ];
-
+    const pagination = true;
+    const paginationPageSize = 10;
+    const paginationPageSizeSelector = [10];
     return (
-        <div
-            className={`w-full min-w-full ${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
-            style={{ height: 500 }}
-        >
-            <AgGridReact
-                className="min-w-full"
-                rowData={rowData}
-                columnDefs={columnDefs}
-            />
+        <div>
+            <div className="flex gap-5">
+                <SectionTitle>Trans HisTory</SectionTitle>
+                <div className="pl-8 mb-4">
+                    <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
+                </div>
+            </div>
+            <div
+                className={`w-full min-w-full ${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
+                style={{ height: 500 }}
+            >
+                <AgGridReact
+                    className="min-w-full"
+                    rowData={rowData}
+                    pagination={pagination}
+                    paginationPageSize={paginationPageSize}
+                    paginationPageSizeSelector={paginationPageSizeSelector}
+                    columnDefs={columnDefs}
+                />
+            </div>
         </div>
+
     )
 
 }

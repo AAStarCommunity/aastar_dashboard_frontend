@@ -10,6 +10,8 @@ import PageTitle from '@/components/Typography/PageTitle';
 import SectionTitle from '@/components/Typography/SectionTitle';
 import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading';
 import { KeyIcon } from '~/public/icons'
+import { DataShowCard, NetworkSelect } from '@/components/Form';
+import { DataDateRangePicker } from '@/components/Form/select';
 
 
 export default function Home() {
@@ -82,10 +84,12 @@ export function RequestHealthAndSuccessRate() {
     const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
     const [error, setError] = useState<string>("")
     const LoadHomeRequestHealthChart = useLoading(status, HomeRequestHealthChart({ rowData }), { loadingTo: 'self', errTips: error })
-    const LoadSuccessRateChart = useLoading(status, HomeRequestHealthChart({ rowData }), { loadingTo: 'self', errTips: error })
+    // const LoadSuccessRateChart = useLoading(status, HomeRequestHealthChart({ rowData }), { loadingTo: 'self', errTips: error })
     const tableInit = () => {
 
-        ajax.get(API.GET_REQUEST_HEALTH_LIST).then(({ data }) => {
+        ajax.get(API.GET_REQUEST_HEALTH_LIST, {
+
+        }).then(({ data }) => {
             if (data.code === 200) {
                 setRowData(data.data)
                 data.data.length ? setStatus(REQUEST_STATUS.SUCCESS) : setStatus(REQUEST_STATUS.Empty)
@@ -99,20 +103,43 @@ export function RequestHealthAndSuccessRate() {
         })
 
     }
+    const [requestHealthConditionNetWork, setRequestHealthConditionNetWork] = useState('');
+    const handleRequestHealthNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setRequestHealthConditionNetWork(e.target.value);
+    };
+    const defaultCurrentDate = new Date();
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
+    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
+    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
+
     useEffect(() => {
         tableInit()
     }, []);
     return (
-        < >
-            <div className="grid rounded-xl bg-white dark:bg-gray-800  p-2 shadow-smflex-col col-span-2 grid-rows-11">
-                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>Request Health</h2>
-                <div className="relative overflow-hidden h-full row-span-10">{LoadHomeRequestHealthChart}</div>
+        <div className="grid rounded-xl bg-white dark:bg-gray-800 p-2 shadow-sm flex-col col-span-4 grid-rows-8">
+            <div className="flex justify-between items-center pl-8 pt-4">
+                <div>
+                    <h2 className="text-gray-500 dark:text-gray-400 text-xl">Request Health</h2>
+                    <span className="block text-gray-700 dark:text-gray-300 pt-1">The Success And Failed number of requests you have sent</span>
+                </div>
+                <div className="flex items-center space-x-4 ml-auto">
+                    <div>
+                        <span className="block text-gray-700 dark:text-gray-300">Network Select</span>
+                        <NetworkSelect handleSelectChange={handleRequestHealthNetworkChange} />
+                    </div>
+                    <div>
+                        <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
+                    </div>
+                </div>
             </div>
-            <div className="grid rounded-xl bg-white dark:bg-gray-800 p-2 shadow-smflex-col col-span-2 grid-rows-11">
-                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>RequestSuccessRate</h2>
-                <div className="relative overflow-hidden h-full row-span-10">{LoadSuccessRateChart}</div>
+            <div className="relative overflow-hidden row-span-10 mt-4">
+                {LoadHomeRequestHealthChart}
             </div>
-        </>
+        </div>
+
+
+
     )
 
 }
@@ -151,7 +178,27 @@ export function PaymasterSponsorPayTypeChart() {
         </div>
     )
 }
+// export function OverViewDataCard(
 
+// ) {
+//     const [dayRequestHealth, setDayRequestHealth] = useState(Object)
+
+//     const tableInit = () => {
+
+
+//     }
+//     useEffect(() => {
+//         tableInit();
+//     }, []);
+//     return (
+//         <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 grid-cols-4'>
+//             <DataShowCard dataName="Total Request (last 24 hour)" dataNum={`${hourRequestHealth?.success_rate}%`} />
+//             <DataShowCard dataName="Success rate (last 24 hour)" dataNum={`${dayRequestHealth?.success_rate}%`} />
+//             <DataShowCard dataName="Total Request (last 24 hour)" dataNum={`${totalRequest}`} />
+//             <DataShowCard dataName="Invalid Request (last 24 hour)" dataNum={`${dayRequestHealth?.failed}`} />
+//         </div>
+//     )
+// }
 
 function APICardSOverView() {
     const [apiKeyDataOverViews, setApiKeyDataOverViews] = useState<ObjType<any>[]>([])
@@ -240,7 +287,7 @@ export function APICard(
                 <div className="flex justify-between items-center">
                     <button className="bg-gray-100 text-gray-700 rounded px-3 py-1 text-sm">Connect API key</button>
                     <button onClick={() => router.push(`/api-keys/detail/${apiKey}`)}
-                        className="text-xl text-gray-700 rounded dark:text-gray-300">&rarr;</button>
+                        className="text-xl text-gray-700 rounded dark:text-gray-300">View Metrics &rarr;</button>
                 </div>
             </CardBody>
         </Card>
@@ -248,14 +295,4 @@ export function APICard(
 }
 
 
-const requestHealthChartData = [
-    { time: '05/04', successful: 0, failed: 0 },
-    { time: '05/05', successful: 0, failed: 0 },
-    { time: '05/06', successful: 0, failed: 800 },
-    { time: '05/07', successful: 3600, failed: 3600 },
-    { time: '05/08', successful: 1800, failed: 0 },
-    { time: '05/09', successful: 0, failed: 0 },
-    { time: '05/10', successful: 0, failed: 0 },
-    { time: '05/11', successful: 0, failed: 0 },
 
-];

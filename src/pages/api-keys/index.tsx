@@ -14,7 +14,7 @@ import Message from '@/utils/message'
 import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading'
 import { LoadingIcon } from '~/public/icons'
 import PageTitle from '@/components/Typography/PageTitle'
-import { NEW_DETAIL_LIST } from '@/utils/const';
+import { NetworkSelect } from '@/components/Form'
 
 export default function Apikeys() {
     const router = useRouter()
@@ -263,7 +263,9 @@ export function WindowComponetn({ isRpcInfo, setIsRpcInfoFunc, currentItem }: {
 }) {
     const [network, setNetwork] = useState('');
     const rpcUrl = `https://paymaster.aastar.io/api/v1/paymaster/${network}/rpc?apikey=${currentItem.api_key}`;
-
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setNetwork(e.target.value);
+    };
     return (
         <Modal
             className='w-full px-10 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
@@ -274,11 +276,8 @@ export function WindowComponetn({ isRpcInfo, setIsRpcInfoFunc, currentItem }: {
                 <div className='bg-white dark:bg-gray-800 p-30 rounded-lg w-full max-w-sm space-y-4'>
                     <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Networks</h2>
                     <label className="text-black dark:text-white">Select a network</label>
-                    <select className="block w-full border rounded px-2 py-1 mb-4 dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white" name='select' value={network} onChange={(e) => setNetwork(e.target.value)} >
-                        {   NEW_DETAIL_LIST?.map((item, index) => {
-                            return <option key={index} value={item.networkId}>{item.networkName}</option>
-                        })}
-                    </select>
+                    <NetworkSelect handleSelectChange={handleSelectChange} />
+
                     <div className="mt-4 space-y-4'">
                         <div className='flex'>
                             <label className="text-black dark:text-white">Paymaster RPC URL</label>
@@ -296,3 +295,4 @@ export function WindowComponetn({ isRpcInfo, setIsRpcInfoFunc, currentItem }: {
         </Modal>
     )
 }
+
