@@ -120,7 +120,7 @@ function Header(props: Iprops) {
                         </button>
                     </li>
                     <li className='flex'>
-                        <button className='flex  items-center'>
+                        <button onClick= {()=>window.location.href = 'https://docs.aastar.io/'} className='flex  items-center'>
                             <ExternalLinkIcon/>
                             <span>Docs</span>
                         </button>
