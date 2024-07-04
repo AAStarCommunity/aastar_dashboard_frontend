@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { RequestHealthChart, SuccessRateChart } from "@/components/chart";
 import { AgGridReact } from "ag-grid-react";
 import { ColDef } from 'ag-grid-community';
@@ -175,6 +175,79 @@ export function RequestHisToryTable(
     }
 ) {
 
+    const [rowData, setRowData] = useState([]);
+
+    const [requestHistoryConditionNetWork, setRequestHealthConditionNetWork] = useState('');
+    const handleRequestHistoryNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setRequestHealthConditionNetWork(e.target.value);
+    };
+    const defaultCurrentDate = new Date();
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
+    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
+    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
+
+    const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
+    const [error, setError] = useState<string>("")
+    const PaymasterRequestChart = useLoading(status, <PaymasterRequestChartComponent rowData={rowData} />, { loadingTo: 'self' ,errTips:error})
+    useEffect(() => {
+        ajax.get(API.GET_PAYMASTER_REQUEST_LIST, {
+            api_key: ApiKey,
+            network: requestHistoryConditionNetWork,
+            start_time: startDate,
+            end_time: endDate
+        }).then(({ data }) => {
+            if (data.code == 200) {
+                setRowData(data.data)
+                data.data.length ? setStatus(REQUEST_STATUS.SUCCESS) : setStatus(REQUEST_STATUS.Empty)
+            } else {
+                setStatus(REQUEST_STATUS.FAIL)
+                setError(data.message)
+            }
+        }).catch((err) => {
+            setStatus(REQUEST_STATUS.FAIL)
+            setError(err.toString())
+        })
+    }, [ApiKey, requestHistoryConditionNetWork, startDate, endDate]);
+
+    return (
+        <div>
+            <div className="flex">
+                <SectionTitle>Paymaster Latest Request</SectionTitle>
+                <div className="pl-8  pt-3">
+                    <span>network select</span>
+                    <NetworkSelect handleSelectChange={handleRequestHistoryNetworkChange} />
+                </div>
+                <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
+            </div>
+            <div className="relative overflow-hidden row-span-10 mt-10 mb-5">
+               {PaymasterRequestChart}
+            </div>
+        </div>
+
+    )
+}
+
+
+
+function PaymasterRequestChartComponent(
+    { rowData }: { rowData?: IRowDataItem[] }
+): ReactNode {
+    const { theme } = useContext(ThemeContext)
+    const pagination = true;
+    const paginationPageSize = 10;
+    const paginationPageSizeSelector = [10];
+    const defaultColDef = useMemo(() => ({
+        filter: true,
+        enableCellTextSelection: true,
+        ensureDomOrder: true,
+        suppressCopyRowsToClipboard: true,
+        editable: true,
+        suppressCopySingleCellRanges: true,
+        enableRangeSelection: true,
+        enableFillHandle: true,
+        className: "min-w-full "
+    }), []);
     const columnDefs: ColDef[] = useMemo(() => [
         { headerName: "network", field: "network", flex: 1 },
         { headerName: "method", field: "paymaster_method", flex: 1 },
@@ -201,74 +274,22 @@ export function RequestHisToryTable(
         { headerName: "response", field: "response_body", flex: 1, },
         { headerName: 'Time', field: 'time', flex: 1 },
     ], []);
-    const defaultColDef = useMemo(() => ({
-        filter: true,
-        enableCellTextSelection: true,
-        ensureDomOrder: true,
-        suppressCopyRowsToClipboard: true,
-        editable: true,
-        suppressCopySingleCellRanges: true,
-        enableRangeSelection: true,
-        enableFillHandle: true,
-        className: "min-w-full "
-    }), []);
 
-    const [rowData, setRowData] = useState([]);
-
-    const { theme } = useContext(ThemeContext)
-    const [requestHistoryConditionNetWork, setRequestHealthConditionNetWork] = useState('');
-    const handleRequestHistoryNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRequestHealthConditionNetWork(e.target.value);
-    };
-    const defaultCurrentDate = new Date();
-    const defaultStartDate = new Date();
-    defaultStartDate.setDate(defaultCurrentDate.getDate() - 7);
-    const [startDate, setStartDate] = useState<Date>(defaultStartDate);
-    const [endDate, setEndDate] = useState<Date>(defaultCurrentDate);
-
-
-
-    useEffect(() => {
-        ajax.get(API.GET_PAYMASTER_REQUEST_LIST, {
-            api_key: ApiKey,
-            network: requestHistoryConditionNetWork,
-            start_time: startDate,
-            end_time: endDate
-        }).then(({ data }) => {
-            setRowData(data.data)
-        })
-    }, [ApiKey, requestHistoryConditionNetWork, startDate, endDate]);
-
-    const pagination = true;
-    const paginationPageSize = 10;
-    const paginationPageSizeSelector = [10];
     return (
-        <div>
-            <div className="flex">
-                <SectionTitle>Paymaster Latest Request</SectionTitle>
-                <div className="pl-8  pt-3">
-                    <span>network select</span>
-                    <NetworkSelect handleSelectChange={handleRequestHistoryNetworkChange} />
-                </div>
-                <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
-            </div>
-            <div
-                className={`${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
-                style={{ height: 500 }}
-            >
-                <AgGridReact
-                    defaultColDef={defaultColDef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    pagination={pagination}
-                    paginationPageSize={paginationPageSize}
-                    paginationPageSizeSelector={paginationPageSizeSelector}
-                    components={{ jsonCellRenderer: JsonCellRenderer }}
+        <div
+            className={`${theme === "dark" ? "ag-theme-quartz-dark" : "ag-theme-quartz "} `}// applying the grid theme
+            style={{ height: 500 }}
+        >
+            <AgGridReact
+                defaultColDef={defaultColDef}
+                rowData={rowData}
+                columnDefs={columnDefs}
+                pagination={pagination}
+                paginationPageSize={paginationPageSize}
+                paginationPageSizeSelector={paginationPageSizeSelector}
+                components={{ jsonCellRenderer: JsonCellRenderer }}
 
-                />
-            </div >
-        </div>
-
+            />
+        </div >
     )
 }
-

@@ -14,7 +14,7 @@ import Message from '@/utils/message'
 import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading'
 import { LoadingIcon } from '~/public/icons'
 import PageTitle from '@/components/Typography/PageTitle'
-import { NetworkSelect } from '@/components/Form'
+import { JsonRpcConnectComponent, NetworkSelect } from '@/components/Form'
 
 export default function Apikeys() {
     const router = useRouter()
@@ -131,7 +131,7 @@ export default function Apikeys() {
                                         projectInfoClick(item, 'rpc')
                                     }} type="button"
                                         className="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2">
-                                        PRC URL
+                                        Connect API
                                     </button>
 
                                     <button onClick={(e) => {
@@ -224,7 +224,7 @@ export default function Apikeys() {
             </Modal>
 
             {/* RPC Info */}
-            <WindowComponetn isRpcInfo={isRpcInfo} setIsRpcInfoFunc={handleRpcInfo} currentItem={currentItem} />
+            <JsonRpcConnectComponent isRpcInfo={isRpcInfo} setIsRpcInfoFunc={handleRpcInfo} apiKey={currentItem.api_key} />
 
             {/* delete confirm */}
             <Modal
@@ -255,44 +255,3 @@ export default function Apikeys() {
         </div>
     )
 }
-
-export function WindowComponetn({ isRpcInfo, setIsRpcInfoFunc, currentItem }: {
-    isRpcInfo: boolean,
-    setIsRpcInfoFunc: () => void,
-    currentItem: ObjType<string>
-}) {
-    const [network, setNetwork] = useState('');
-    const rpcUrl = `https://paymaster.aastar.io/api/v1/paymaster/${network}/rpc?apikey=${currentItem.api_key}`;
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setNetwork(e.target.value);
-    };
-    return (
-        <Modal
-            className='w-full px-10 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
-            isOpen={isRpcInfo}
-            onClose={setIsRpcInfoFunc}
-        >
-            <ModalBody>
-                <div className='bg-white dark:bg-gray-800 p-30 rounded-lg w-full max-w-sm space-y-4'>
-                    <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Networks</h2>
-                    <label className="text-black dark:text-white">Select a network</label>
-                    <NetworkSelect handleSelectChange={handleSelectChange} />
-
-                    <div className="mt-4 space-y-4'">
-                        <div className='flex'>
-                            <label className="text-black dark:text-white">Paymaster RPC URL</label>
-                            <Copy text={rpcUrl} />
-                        </div>
-                        <input
-                            type="text"
-                            value={rpcUrl}
-                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white"
-                            readOnly
-                        />
-                    </div>
-                </div>
-            </ModalBody>
-        </Modal>
-    )
-}
-
