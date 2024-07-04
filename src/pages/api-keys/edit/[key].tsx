@@ -37,6 +37,15 @@ export default function ApikeysEdit() {
             type: "input"
         },
         {
+            name: "airaccount_enable",
+            label: "AiraccountEnable",
+            desc: "AiraccountEnable",
+            placeholder: '',
+            defaultValue: '',
+            type: "switch",
+            isControl: true,
+        },
+        {
             name: "paymaster_enable",
             label: "Paymaster enable",
             desc: "Paymaster enable",

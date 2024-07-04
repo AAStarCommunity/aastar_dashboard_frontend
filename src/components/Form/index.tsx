@@ -1,4 +1,4 @@
-import { IFromItemProps, IFromItemRefs } from "@/utils/types"
+import { IFromItemProps, IFromItemRefs, ObjType } from "@/utils/types"
 import ValidInput from "../VaildInput"
 import Switch from "../Switch";
 import DatePicker from "../DatePicker";
@@ -7,6 +7,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useImperativeHandle, forwardRef } from "react";
 import Checkbox from "../Checkbox";
 import { NEW_DETAIL_LIST } from '@/utils/const';
+import { Modal, ModalBody } from "@windmill/react-ui";
+import Copy from "../Copy";
 
 export interface IFormItem extends IFromItemProps {
   type: "switch" | "input" | "select" | "datepicker" | "checkbox",
@@ -224,3 +226,42 @@ export function DataShowCard(
 }
 
 
+export function JsonRpcConnectComponent({ isRpcInfo, setIsRpcInfoFunc, apiKey }: {
+  isRpcInfo: boolean,
+  setIsRpcInfoFunc: () => void,
+  apiKey: string
+}) {
+  const [network, setNetwork] = useState('');
+  const rpcUrl = `https://paymaster.aastar.io/api/v1/paymaster/${network}/rpc?apikey=${apiKey}`;
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setNetwork(e.target.value);
+  };
+  return (
+      <Modal
+          className='w-full px-10 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
+          isOpen={isRpcInfo}
+          onClose={setIsRpcInfoFunc}
+      >
+          <ModalBody>
+              <div className='bg-white dark:bg-gray-800 p-30 rounded-lg w-full max-w-sm space-y-4'>
+                  <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Networks</h2>
+                  <label className="text-black dark:text-white">Select a network</label>
+                  <NetworkSelect handleSelectChange={handleSelectChange} />
+
+                  <div className="mt-4 space-y-4'">
+                      <div className='flex'>
+                          <label className="text-black dark:text-white">Paymaster RPC URL</label>
+                          <Copy text={rpcUrl} />
+                      </div>
+                      <input
+                          type="text"
+                          value={rpcUrl}
+                          className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white"
+                          readOnly
+                      />
+                  </div>
+              </div>
+          </ModalBody>
+      </Modal>
+  )
+}
