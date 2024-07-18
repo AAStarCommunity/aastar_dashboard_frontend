@@ -11,6 +11,7 @@ import useLoading, { REQUEST_STATUS } from '@/hooks/useLoading';
 import { KeyIcon } from '~/public/icons'
 import { DataShowCard, NetworkSelect } from '@/components/Form';
 import { DataDateRangePicker } from '@/components/Form/select';
+import { ISingleSeltype } from '@/utils/const';
 
 
 export default function Home() {
@@ -103,8 +104,11 @@ export function RequestHealthAndSuccessRate() {
 
     }
     const [requestHealthConditionNetWork, setRequestHealthConditionNetWork] = useState('');
-    const handleRequestHealthNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRequestHealthConditionNetWork(e.target.value);
+    // const handleRequestHealthNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    //     setRequestHealthConditionNetWork(e.target.value);
+    // };
+    const handleRequestHealthNetworkChange = (val: ISingleSeltype) => {
+        setRequestHealthConditionNetWork(val?.value || '');
     };
     const defaultCurrentDate = new Date();
     const defaultStartDate = new Date();
@@ -117,19 +121,18 @@ export function RequestHealthAndSuccessRate() {
     }, []);
     return (
         <div className="grid rounded-xl bg-white dark:bg-gray-800 p-2 shadow-sm flex-col col-span-4 grid-rows-8">
-            <div className="flex justify-between items-center pl-8 pt-4">
+            <div className="flex justify-between items-start pl-8 pt-4 flex-wrap">
                 <div>
-                    <h2 className="text-gray-500 dark:text-gray-400 text-xl">Request Health</h2>
-                    <span className="block text-gray-700 dark:text-gray-300 pt-1">The Success And Failed number of requests you have sent</span>
+                    <SectionTitle>Request Health</SectionTitle>
+                    <span className="block text-gray-700 dark:text-gray-300  text-sm text-opacity-55">The Success And Failed number of requests you have sent</span>
                 </div>
-                <div className="flex items-center space-x-4 ml-auto">
-                    <div>
-                        <span className="block text-gray-700 dark:text-gray-300">Network Select</span>
+                <div className="flex flex-col items-end pr-6">
+                    <div className='flex items-center mb-6'>
+
                         <NetworkSelect handleSelectChange={handleRequestHealthNetworkChange} />
                     </div>
-                    <div>
-                        <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
-                    </div>
+                    <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
+
                 </div>
             </div>
             <div className="relative overflow-hidden row-span-10 mt-4">
@@ -287,7 +290,7 @@ export function APICard(
                 <div className="flex justify-between items-center">
                     <button className="bg-gray-100 text-gray-700 rounded px-3 py-1 text-sm">Connect API key</button>
                     <button onClick={() => router.push(`/api-keys/detail/${apiKey}`)}
-                        className="text-xl text-gray-700 rounded dark:text-gray-300">View Metrics &rarr;</button>
+                        className="text-sm text-gray-700 rounded dark:text-gray-300">View Metrics &rarr;</button>
                 </div>
             </CardBody>
         </Card>

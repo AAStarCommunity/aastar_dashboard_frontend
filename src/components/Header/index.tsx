@@ -120,9 +120,9 @@ function Header(props: Iprops) {
                         </button>
                     </li>
                     <li className='flex'>
-                        <button onClick= {()=>window.location.href = 'https://docs.aastar.io/'} className='flex  items-center'>
-                            <ExternalLinkIcon/>
-                            <span>Docs</span>
+                        <button className="flex items-center" onClick={() => window.location.href = 'https://docs.aastar.io/'} >
+                            <ExternalLinkIcon />
+                            <span className='ml-2'>Docs</span>
                         </button>
                     </li>
                     {/* <!-- Notifications menu --> */}

@@ -6,7 +6,8 @@ import DatePicker from "../DatePicker";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useImperativeHandle, forwardRef } from "react";
 import Checkbox from "../Checkbox";
-import { NEW_DETAIL_LIST } from '@/utils/const';
+import { ISingleSeltype, NEW_DETAIL_LIST } from '@/utils/const';
+import Select from 'react-select';
 import { Modal, ModalBody } from "@windmill/react-ui";
 import Copy from "../Copy";
 
@@ -189,39 +190,58 @@ export default Form
 
 
 
-
-
 interface NetworkSelectComponentProps {
-  handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  handleSelectChange: (newValue: ISingleSeltype) => void,
+  className?: string
 }
-export const  NetworkSelect: React.FC<NetworkSelectComponentProps> = ({ handleSelectChange }) => {
+export const NetworkSelect: React.FC<NetworkSelectComponentProps> = ({ handleSelectChange, className }) => {
   return (
-      <select 
-          className="block  border rounded px-2 py-1 mb-4 dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white" 
-          name="select" 
-          onChange={handleSelectChange}
+
+    <div className={`flex items-center max-w-[350px] ${className}`}>
+      <span className="block text-black dark:text-white mr-3">Network Select: </span>
+      <Select
+        className=" w-full h-10 rounded-lg "
+        classNamePrefix="select"
+        onChange={handleSelectChange}
+        // defaultValue={NEW_DETAIL_LIST[0]}
+        isSearchable={true}
+        name="color"
+        options={NEW_DETAIL_LIST}
+      />
+      {/* 
+      <select
+        className="block  border rounded px-2 py-1 mb-4 dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white"
+        name="select"
+        onChange={handleSelectChange}
       >
-            <option value='All'>All</option>
-          {NEW_DETAIL_LIST.map((item, index) => (
-              <option key={index} value={item.networkId}>{item.networkName}</option>
-          ))}
-      </select>
+        <option value='All'>All</option>
+        {NEW_DETAIL_LIST.map((item, index) => (
+          <option key={index} value={item.networkId}>{item.networkName}</option>
+        ))}
+      </select> */}
+    </div>
   );
 };;
 
 
 export function DataShowCard(
   { dataNum, dataName }: {
-      dataNum?: string,
-      dataName: string
+    dataNum?: string,
+    dataName: string
   }
 ) {
   let dataNumDefault = dataNum || '_ _'
+  const isPending = typeof dataNum == 'undefined' || ['undefined', 'null', 'NaN'].includes(dataNum) || dataNum.includes('undefined')
   return (
-      <div className="p-9 bg-white dark:bg-gray-800 shadow rounded-md grid  col-span-1">
-          <div className="text-4xl font-bold text-left dark:text-gray-300"> {dataNumDefault}</div>
-          <div className="text-gray-500 text-left ">{dataName}</div>
-      </div>
+    <div className="p-9 bg-white dark:bg-gray-800 shadow rounded-md grid col-span-1">
+      {isPending ? <div className="animate-pulse text-left mb-4">
+        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 max-w-[50px] mb-2.5"></div>
+        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 max-w-[40px]"></div>
+      </div> :
+        <div className="text-4xl font-bold text-left dark:text-gray-300"> {dataNumDefault}</div>}
+
+      <div className="text-gray-500 text-left ">{dataName}</div>
+    </div>
   )
 }
 
@@ -233,35 +253,35 @@ export function JsonRpcConnectComponent({ isRpcInfo, setIsRpcInfoFunc, apiKey }:
 }) {
   const [network, setNetwork] = useState('');
   const rpcUrl = `https://paymaster.aastar.io/api/v1/paymaster/${network}/rpc?apikey=${apiKey}`;
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setNetwork(e.target.value);
+  const handleSelectChange = (e: ISingleSeltype) => {
+    setNetwork(e!.value);
   };
   return (
-      <Modal
-          className='w-full px-10 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
-          isOpen={isRpcInfo}
-          onClose={setIsRpcInfoFunc}
-      >
-          <ModalBody>
-              <div className='bg-white dark:bg-gray-800 p-30 rounded-lg w-full max-w-sm space-y-4'>
-                  <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Networks</h2>
-                  <label className="text-black dark:text-white">Select a network</label>
-                  <NetworkSelect handleSelectChange={handleSelectChange} />
+    <Modal
+      className='w-full px-10 py-4 bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-md'
+      isOpen={isRpcInfo}
+      onClose={setIsRpcInfoFunc}
+    >
+      <ModalBody>
+        <div className='bg-white dark:bg-gray-800 p-30 rounded-lg w-full max-w-sm space-y-4'>
+          <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">Networks</h2>
+          {/* <label className="text-black dark:text-white">Select a network</label> */}
+          <NetworkSelect handleSelectChange={handleSelectChange} className="flex-col justify-start !items-start !max-w-[100%] relative z-20 gap-2" />
 
-                  <div className="mt-4 space-y-4'">
-                      <div className='flex'>
-                          <label className="text-black dark:text-white">Paymaster RPC URL</label>
-                          <Copy text={rpcUrl} />
-                      </div>
-                      <input
-                          type="text"
-                          value={rpcUrl}
-                          className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white"
-                          readOnly
-                      />
-                  </div>
-              </div>
-          </ModalBody>
-      </Modal>
+          <div className="mt-4 space-y-4 sm:items-center'">
+            <div className='flex'>
+              <label className="text-black dark:text-white">Paymaster RPC URL</label>
+              <Copy text={rpcUrl} />
+            </div>
+            <input
+              type="text"
+              value={rpcUrl}
+              className="w-full !mt-2 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 text-black dark:text-white"
+              readOnly
+            />
+          </div>
+        </div>
+      </ModalBody>
+    </Modal>
   )
 }

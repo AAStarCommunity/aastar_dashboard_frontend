@@ -17,6 +17,7 @@ import { ThemeContext } from '@/context/ThemeContext'
 import { DataShowCard, NetworkSelect } from "@/components/Form";
 import DatePicker from "tailwind-datepicker-react";
 import { DataDateRangePicker } from "@/components/Form/select";
+import { ISingleSeltype } from "@/utils/const";
 
 export default function ApiKeyDetail() {
     const router = useRouter()
@@ -44,15 +45,16 @@ export default function ApiKeyDetail() {
                     <Button onClick={() => router.push(`/api-keys/edit/${apiKey}`)}>
                         API Key Info
                     </Button>
-                    <Button >  Connect APIKey</Button>
+                    <Button > Connect APIKey</Button>
 
                 </div>
 
             </div>
 
             <APiKeyCardList ApiKey={apiKey} />
-
-            <APIKeyRequestHealthAndSuccessRate ApiKey={apiKey} />
+            <div className="bg-white dark:bg-gray-800 mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md p-6">
+                <APIKeyRequestHealthAndSuccessRate ApiKey={apiKey} />
+            </div>
             <div className="bg-white dark:bg-gray-800 mt-5 overflow-x-auto sm:rounded-lg overflow-hidden shadow-md p-6">
 
                 <RequestHisToryTable ApiKey={apiKey}></RequestHisToryTable>
@@ -90,8 +92,8 @@ export function APIKeyRequestHealthAndSuccessRate(
         })
     }
     const [requestHealthConditionNetWork, setRequestHealthConditionNetWork] = useState('');
-    const handleRequestHealthNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRequestHealthConditionNetWork(e.target.value);
+    const handleRequestHealthNetworkChange = (e: ISingleSeltype) => {
+        setRequestHealthConditionNetWork(e!.value);
     };
     const defaultCurrentDate = new Date();
     const defaultStartDate = new Date();
@@ -102,17 +104,17 @@ export function APIKeyRequestHealthAndSuccessRate(
         tableInit()
     }, [ApiKey, requestHealthConditionNetWork, startDate, endDate]);
     return (
-        <div className='gap-6 mt-10'>
-            <div className="flex">
-                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>Request Health</h2>
-                <div className="pl-8  pt-3">
-                    <span>network select</span>
-                    <NetworkSelect handleSelectChange={handleRequestHealthNetworkChange} />
+        <div className='gap-6'>
+            <div className="flex justify-between items-start pl-8 pt-4 flex-wrap">
+                <SectionTitle>Request Health</SectionTitle>
+                <div className="flex flex-col items-end pr-6">
+                    <div className='mb-6'>
+                        <NetworkSelect handleSelectChange={handleRequestHealthNetworkChange} />
+                    </div>
+                    <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
                 </div>
-                <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
-
             </div>
-            <div className="relative overflow-hidden h-full row-span-10">{LoadRequestHealthChart}</div>
+            <div className="relative overflow-hidden h-full mt-10 row-span-10">{LoadRequestHealthChart}</div>
 
         </div>
 
@@ -178,8 +180,8 @@ export function RequestHisToryTable(
     const [rowData, setRowData] = useState([]);
 
     const [requestHistoryConditionNetWork, setRequestHealthConditionNetWork] = useState('');
-    const handleRequestHistoryNetworkChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setRequestHealthConditionNetWork(e.target.value);
+    const handleRequestHistoryNetworkChange = (e: ISingleSeltype) => {
+        setRequestHealthConditionNetWork(e!.value);
     };
     const defaultCurrentDate = new Date();
     const defaultStartDate = new Date();
@@ -189,7 +191,7 @@ export function RequestHisToryTable(
 
     const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
     const [error, setError] = useState<string>("")
-    const PaymasterRequestChart = useLoading(status, <PaymasterRequestChartComponent rowData={rowData} />, { loadingTo: 'self' ,errTips:error})
+    const PaymasterRequestChart = useLoading(status, <PaymasterRequestChartComponent rowData={rowData} />, { loadingTo: 'self', errTips: error })
     useEffect(() => {
         ajax.get(API.GET_PAYMASTER_REQUEST_LIST, {
             api_key: ApiKey,
@@ -212,16 +214,18 @@ export function RequestHisToryTable(
 
     return (
         <div>
-            <div className="flex">
+            <div className="flex justify-between items-start pl-8 pt-4 flex-wrap">
                 <SectionTitle>Paymaster Latest Request</SectionTitle>
-                <div className="pl-8  pt-3">
-                    <span>network select</span>
-                    <NetworkSelect handleSelectChange={handleRequestHistoryNetworkChange} />
+
+                <div className="flex flex-col items-end pr-6">
+                    <div className='mb-6'>
+                        <NetworkSelect handleSelectChange={handleRequestHistoryNetworkChange} />
+                    </div>
+                    <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
                 </div>
-                <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
             </div>
             <div className="relative overflow-hidden row-span-10 mt-10 mb-5">
-               {PaymasterRequestChart}
+                {PaymasterRequestChart}
             </div>
         </div>
 

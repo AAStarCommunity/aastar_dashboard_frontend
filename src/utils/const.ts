@@ -1,3 +1,4 @@
+import { SingleValue } from "react-select";
 export const NET_LIST = [
   "ethereum-mainnet",
   "ethereum-sepolia",
@@ -15,53 +16,100 @@ export const NET_LIST = [
 export const AUTH_WHITE_LIST = ["/login", "/oauth/github"];
 
 type NetWork = {
-  networkName : string;
-  networkId : string;
-}
-export const NEW_DETAIL_LIST: NetWork[] = [
+  networkName: string;
+  networkId: string;
+};
+// export const NEW_DETAIL_LIST: NetWork[] = [
+//   {
+//     networkName: "Ethereum Mainnet",
+//     networkId: "ethereum-mainnet",
+//   },
+//   {
+//     networkName: "Ethereum Sepolia",
+//     networkId: "ethereum-sepolia",
+//   },
+//   {
+//     networkName: "Optimism Mainnet",
+//     networkId: "optimism-mainnet",
+//   },
+//   {
+//     networkName: "Optimism Sepolia",
+//     networkId: "optimism-sepolia",
+//   },
+//   {
+//     networkName: "Arbitrum One",
+//     networkId: "arbitrum-one",
+//   },
+//   {
+//     networkName: "Arbitrum Nova",
+//     networkId: "arbitrum-nova",
+//   },
+//   {
+//     networkName: "Arbitrum Sepolia",
+//     networkId: "arbitrum-sepolia",
+//   },
+//   {
+//     networkName: "Scroll Mainnet",
+//     networkId: "scroll-mainnet",
+//   },
+//   {
+//     networkName: "Scroll Sepolia",
+//     networkId: "scroll-sepolia",
+//   },
+//   {
+//     networkName: "Base Mainnet",
+//     networkId: "base-mainnet",
+//   },
+//   {
+//     networkName: "Base Sepolia",
+//     networkId: "base-sepolia",
+//   },
+
+// ];
+export type ISingleSeltype = SingleValue<{ label: string; value: string }>;
+export const NEW_DETAIL_LIST: ISingleSeltype[] = [
   {
-    networkName: "Ethereum Mainnet",
-    networkId: "ethereum-mainnet",
+    label: "Ethereum Mainnet",
+    value: "ethereum-mainnet",
   },
   {
-    networkName: "Ethereum Sepolia",
-    networkId: "ethereum-sepolia",
+    label: "Ethereum Sepolia",
+    value: "ethereum-sepolia",
   },
   {
-    networkName: "Optimism Mainnet",
-    networkId: "optimism-mainnet",
+    label: "Optimism Mainnet",
+    value: "optimism-mainnet",
   },
   {
-    networkName: "Optimism Sepolia",
-    networkId: "optimism-sepolia",
+    label: "Optimism Sepolia",
+    value: "optimism-sepolia",
   },
   {
-    networkName: "Arbitrum One",
-    networkId: "arbitrum-one",
+    label: "Arbitrum One",
+    value: "arbitrum-one",
   },
   {
-    networkName: "Arbitrum Nova",
-    networkId: "arbitrum-nova",
+    label: "Arbitrum Nova",
+    value: "arbitrum-nova",
   },
   {
-    networkName: "Arbitrum Sepolia",
-    networkId: "arbitrum-sepolia",
+    label: "Arbitrum Sepolia",
+    value: "arbitrum-sepolia",
   },
   {
-    networkName: "Scroll Mainnet",
-    networkId: "scroll-mainnet",
+    label: "Scroll Mainnet",
+    value: "scroll-mainnet",
   },
   {
-    networkName: "Scroll Sepolia",
-    networkId: "scroll-sepolia",
+    label: "Scroll Sepolia",
+    value: "scroll-sepolia",
   },
   {
-    networkName: "Base Mainnet",
-    networkId: "base-mainnet",
+    label: "Base Mainnet",
+    value: "base-mainnet",
   },
   {
-    networkName: "Base Sepolia",
-    networkId: "base-sepolia",
+    label: "Base Sepolia",
+    value: "base-sepolia",
   },
- 
 ];
