@@ -250,8 +250,8 @@ export function SponsorMetricsChart({ isTestNet }: { isTestNet?: boolean }) {
     const LoadGasSponsored = useLoading(status, gasSponsored, { loadingTo: 'self', errTips: error })
     return (
         <div className="grid rounded-xl bg-white dark:bg-gray-800  p-2 shadow-smflex-col col-span-4 gap-4">
-            <div className="flex">
-                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4  text-xl'>Gas sponsored</h2>
+            <div className="flex justify-between items-center pr-5">
+                <h2 className='text-gray-500 dark:text-gray-400 pl-8 pt-4 text-xl'>Gas sponsored</h2>
                 <div className="pl-8 mt-3">
                     <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />
                 </div>
@@ -274,13 +274,13 @@ function TransHisToryTable({ isTestNet }: { isTestNet?: boolean }) {
 
     const [status, setStatus] = useState<REQUEST_STATUS>(REQUEST_STATUS.LOADING)
     const [error, setError] = useState<string>("")
-    const HistoryChart = useLoading(status, <HistToryChar rowData={rowData} />, { loadingTo: 'self', errTips: error }) 
+    const HistoryChart = useLoading(status, <HistToryChar rowData={rowData} />, { loadingTo: 'self', errTips: error })
     useEffect(() => {
         ajax.get(API.GET_SPONSOR_TRANSACTION_LIST, {
             is_test_net: isTestNet,
             start_time: startDate,
             end_time: endDate
-        }).then(({ data}) => {
+        }).then(({ data }) => {
             if (data.code == 200) {
                 setRowData(data.data)
                 data.data.length ? setStatus(REQUEST_STATUS.SUCCESS) : setStatus(REQUEST_STATUS.Empty)
@@ -297,7 +297,7 @@ function TransHisToryTable({ isTestNet }: { isTestNet?: boolean }) {
 
     return (
         <div>
-            <div className="flex gap-5">
+            <div className="flex gap-5 justify-between pr-6">
                 <SectionTitle>Trans HisTory</SectionTitle>
                 <div className="pl-8 mb-4">
                     <DataDateRangePicker startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} />

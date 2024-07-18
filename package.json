@@ -5,6 +5,7 @@
   "scripts": {
     "tailwind:dev": "tailwindcss build public/styles/tailwind.css -o public/styles/tailwind.output.css",
     "tailwind:build": "cross-env NODE_ENV=production postcss public/styles/tailwind.css -o public/styles/tailwind.output.css",
+    "tailwind:watch": "npx tailwindcss -i ./public/styles/tailwind.css -o ./public/styles/tailwind.output.css --watch",
     "dev": "cross-env NODE_ENV=development dotenv -e  etc/secrets/.env.local -- next dev",
     "build:dev": "cross-env NODE_ENV=production dotenv -e  etc/secrets/.env.development -- next build",
     "start:dev": "cross-env NODE_ENV=production dotenv -e  etc/secrets/.env.development -- next start",
